@@ -6,6 +6,6 @@ Twórcy projektu:
 Maciej Dworak(@aureliusz13)  
 Kamil Gwiżdż(@kamilgw)  
 Paulina Jewulska(@paulinajewulska)  
-Piotr Ksel  
+Piotr Ksel(@piter984)  
 Emilia Rutkowska (@emiliarutkowska)  
 Szymon Telega
