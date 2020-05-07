@@ -31,28 +31,6 @@ class EmployeeModel(db.Model):
     def __repr__(self):
         return f"<User {self.name} + {self.surname}"
 
-class AdminModel(db.Model):
-    __tablename__ = 'admin'
-
-    admin_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(length=80))
-    surname = db.Column(db.String(length=80))
-    login = db.Column(db.String(length=80))
-    password = db.Column(db.String(length=80))
-    is_admin = db.Column(db.Boolean)
-
-    def __init__(self, _id=None, name=None, surname=None, login=None, password=None, is_admin=True):
-        self.id = _id or id
-        self.name = name
-        self.surname = surname
-        self.login = login
-        self.password = password
-        self.is_admin = is_admin
-
-    def __repr__(self):
-        return f"<User {self.name} + {self.surname}"
-
-
 class MovieModel(db.Model):
     __tablename__ = 'movie'
 
