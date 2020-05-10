@@ -1,13 +1,4 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-
-
-app = Flask(__name__)
-app.config[
-    'SQLALCHEMY_DATABASE_URI'] = "postgresql://qxbvllvcvqymqm:f4691671a6044da4462dd817ae4ad5b9681686b7ae36cd119d7150efc44c58bb@ec2-54-247-103-43.eu-west-1.compute.amazonaws.com:5432/d85bk4b0thbo18"
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+from database.database import db
 
 
 class EmployeeModel(db.Model):
@@ -30,6 +21,7 @@ class EmployeeModel(db.Model):
 
     def __repr__(self):
         return f"<User {self.name} + {self.surname}"
+
 
 class MovieModel(db.Model):
     __tablename__ = 'movie'
@@ -107,6 +99,7 @@ class SeatModel(db.Model):
         self.row = row
         self.hall_id = hall_id
 
+
 class TicketModel(db.Model):
     __tablename__ = 'ticket'
 
@@ -122,14 +115,3 @@ class TicketModel(db.Model):
         self.discount = discount
         self.seat_id = seat_id
         self.seance_id = seance_id
-
-
-
-
-
-
-
-
-
-
-
