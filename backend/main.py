@@ -13,6 +13,7 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['SECRET_KEY'] = 'super secret key'
 db.init_app(app)
 ma.init_app(app)
 migrate = Migrate(app, db)

@@ -9,7 +9,7 @@
 `flask db migrate --directory database/migrations`
 
 - Aktualizacja bazy danych: <br>
-`flask db migrate --directory database/migrations`
+`flask db upgrade --directory database/migrations`
 
 - Uruchomienie aplikacji: <br>
 `flask run`
