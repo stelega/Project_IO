@@ -1,15 +1,11 @@
 from flask_restful import Resource
-from flask import Flask, request, jsonify, make_response, redirect, url_for
-from database.app import EmployeeModel
-from database import app
-from database.app import db
-from functools import wraps
 import jwt
 import datetime
+from flask import request, jsonify, make_response, redirect, url_for, current_app
+from database.models import EmployeeModel
+from database.database import db
+from functools import wraps
 from passlib.hash import bcrypt
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'super secret key'
 
 
 def login_required(f):
@@ -24,7 +20,7 @@ def login_required(f):
             return jsonify({'message': 'Token is missing!'})
 
         try:
-            data = jwt.decode(token, app.config['SECRET_KEY'])
+            data = jwt.decode(token, current_app.config['SECRET_KEY'])
             current_user = EmployeeModel.query.filter_by(login=data['login']).first()
         except jwt.ExpiredSignature:
             print("Token expired")
@@ -63,7 +59,6 @@ class EmployeesData(Resource):
 
 class Register(Resource):
     def post(self):
-
         data = request.get_json()
         new_employee = EmployeeModel(name=data.get('name'), surname=data.get('surname'), login=data.get('login'),
                                      password=str(bcrypt.hash(data.get('password'))), is_admin=data.get('is_admin'))
@@ -74,7 +69,6 @@ class Register(Resource):
 
 class Login(Resource):
     def post(self):
-
         auth = request.get_json()
         login = auth.get('login')
         password = auth.get('password')
@@ -85,7 +79,7 @@ class Login(Resource):
         emplo_user = EmployeeModel.query.filter_by(login=login).first()
 
         if emplo_user and bcrypt.verify(password, emplo_user.password):
-            token = jwt.encode({'login': emplo_user.login, 'exp': time}, app.config['SECRET_KEY'])
+            token = jwt.encode({'login': emplo_user.login, 'exp': time}, current_app.config['SECRET_KEY'])
             return jsonify({'token': token.decode('UTF-8')})
 
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
@@ -99,10 +93,8 @@ class Login(Resource):
             return jsonify({"message": "Token missing"})
 
         try:
-            data = jwt.decode(token, app.config['SECRET_KEY'])
+            data = jwt.decode(token, current_app.config['SECRET_KEY'])
             current_user = EmployeeModel.query.filter_by(login=data['login']).first()
             return jsonify({'login': current_user.login, 'is_admin': current_user.is_admin})
         except:
             return jsonify({'message': 'Welcome on login page!'})
-
-
