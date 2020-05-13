@@ -60,12 +60,16 @@ class EmployeesData(Resource):
 class Register(Resource):
     def post(self):
         data = request.get_json()
-        new_employee = EmployeeModel(name=data.get('name'), surname=data.get('surname'), login=data.get('login'),
-                                     password=str(bcrypt.hash(data.get('password'))), is_admin=data.get('is_admin'))
-        db.session.add(new_employee)
-        db.session.commit()
-        return jsonify({'new_employee_name': new_employee.name, 'new_employee_surname': new_employee.surname})
-
+        # check if user already exists
+        employee = EmployeeModel.query.filter_by(login=data.get('login')).first()
+        if not employee:
+            new_employee = EmployeeModel(name=data.get('name'), surname=data.get('surname'), login=data.get('login'),
+                                         password=str(bcrypt.hash(data.get('password'))), is_admin=data.get('is_admin'))
+            db.session.add(new_employee)
+            db.session.commit()
+            return jsonify({'new_employee_name': new_employee.name, 'new_employee_surname': new_employee.surname})
+        else:
+            return jsonify({'message': 'User already exists. You can log in.'})
 
 class Login(Resource):
     def post(self):
