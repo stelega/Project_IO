@@ -9,7 +9,7 @@ from main import create_app
 
 @pytest.fixture(scope='module')
 def new_employee():
-    employee = EmployeeModel(1,"Jan", "Kowalski", "jkowalski", "Passw0rd")
+    employee = EmployeeModel(1,"Jan", "Kowalski", "jkowalski", "Passw0rd", False)
     return employee
 
 @pytest.fixture(scope='module')
@@ -51,6 +51,7 @@ def test_client():
     ctx.pop()
 
 
+# If we want to test one database to all test case switch to scope='module'
 @pytest.fixture(scope='module')
 def init_database():
     db.create_all()

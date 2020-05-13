@@ -84,7 +84,7 @@ class Login(Resource):
 
         if emplo_user and bcrypt.verify(password, emplo_user.password):
             token = jwt.encode({'login': emplo_user.login, 'exp': time}, current_app.config['SECRET_KEY'])
-            return jsonify({'token': token.decode('UTF-8')})
+            return jsonify({'access-token': token.decode('UTF-8')})
 
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
