@@ -26,7 +26,7 @@ def login_method(client, login, password):
 def test_registration(test_client, init_database):
     with test_client:
         response = register_method(test_client, 'Jan', 'Kowalski', 'jkowalski', 'Passw0rd', False)
-        data = json.loads(response.data.decode())
+        data = json.loads(response.data)
         valid_registration_response = dict(new_employee_name="Jan",
                                            new_employee_surname="Kowalski")
         assert response.status_code == 200
@@ -38,14 +38,14 @@ def test_registered_with_already_registered_user(test_client, new_employee, init
     db.session.commit()
     with test_client:
         response = register_method(test_client, 'Jan', 'Kowalski', 'jkowalski', 'Passw0rd', False)
-        data = json.loads(response.data.decode())
+        data = json.loads(response.data)
         assert data['message'] == "User already exists. You can log in."
 
 
 def test_registered_user_login(test_client, init_database):
     with test_client:
         response_register = register_method(test_client, 'Jan', 'Kowalski', 'jkowalski', 'Passw0rd', False)
-        data_register = json.loads(response_register.data.decode())
+        data_register = json.loads(response_register.data)
         response = login_method(test_client, 'jkowalski', 'Passw0rd')
         data = json.loads(response.data.decode())
 
@@ -66,9 +66,9 @@ def test_valid_login_get_without_admin_permission(test_client, init_database):
         login_response = login_method(test_client, 'jkowalski', 'Passw0rd')
         response = test_client.get('/login',
                                    headers=dict(
-                                       json.loads(login_response.data.decode())
+                                       json.loads(login_response.data)
                                    ))
-        data = json.loads(response.data.decode())
+        data = json.loads(response.data)
         valid_login_response = dict(login="jkowalski",
                                     is_admin=False)
 
@@ -82,7 +82,7 @@ def test_valid_login_get_with_admin_permission(test_client, init_database):
         login_response = login_method(test_client, 'pkowalski', 'Passw0rd')
         response = test_client.get('/login',
                                    headers=dict(
-                                       json.loads(login_response.data.decode())
+                                       json.loads(login_response.data)
                                    ))
         data = json.loads(response.data.decode())
         valid_login_response = dict(login="pkowalski",
@@ -98,9 +98,9 @@ def test_get_employee_data_without_admin_status(test_client, init_database):
         login_response = login_method(test_client, 'jkowalski', 'Passw0rd')
         employee_data_response = test_client.get('/test',
                                                  headers=dict(
-                                                     json.loads(login_response.data.decode())
+                                                     json.loads(login_response.data)
                                                  ))
-        data = json.loads(employee_data_response.data.decode())
+        data = json.loads(employee_data_response.data)
 
         assert data['message'] == "No access permission"
 
@@ -111,9 +111,9 @@ def test_get_employee_data_with_admin_status(test_client, init_database):
         login_response = login_method(test_client, 'pkowalski', 'Passw0rd')
         employee_data_response = test_client.get('/test',
                                                  headers=dict(
-                                                     json.loads(login_response.data.decode())
+                                                     json.loads(login_response.data)
                                                  ))
-        data = json.loads(employee_data_response.data.decode())
+        data = json.loads(employee_data_response.data)
         valid_result = {
             "count": 1,
             "employees": [
@@ -134,9 +134,9 @@ def test_get_employee_data_with_admin_status_with_two_user_in_db(test_client, ne
         login_response = login_method(test_client, 'pkowalski', 'Passw0rd')
         employee_data_response = test_client.get('/test',
                                                  headers=dict(
-                                                     json.loads(login_response.data.decode())
+                                                     json.loads(login_response.data)
                                                  ))
-        data = json.loads(employee_data_response.data.decode())
+        data = json.loads(employee_data_response.data)
         valid_result = {
             "count": 2,
             "employees": [

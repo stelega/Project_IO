@@ -140,4 +140,29 @@ def test_delete_added_movie(test_client, init_database):
                                          content_type='application/json')
     assert delete_response.status_code == 200
 
-# Add some more delete tests and put tests
+
+def test_update_valid_movie(test_client, init_database):
+    add_response = add_movie(test_client, 1, 'Film', 'Rezyser', '2020-5-12', '16+', 'Film Akcji', True, 128)
+
+    assert add_response.status_code == 201
+    put_response = test_client.put('/movie',
+                                   data=json.dumps(dict(movie_id=1,
+                                                        title="Poprawiony_Film")),
+                                   content_type='application/json')
+    assert put_response.status_code
+    result = json.loads(put_response.data)
+    assert result['data']['title'] == "Poprawiony_Film"
+
+
+def test_update_non_existing_movie_and_pass_movie_id(test_client, init_database):
+    put_response = test_client.put('/movie',
+                                   data=json.dumps(dict(movie_id=1,
+                                                        title="Poprawiony_Film")),
+                                   content_type='application/json')
+    assert put_response.status_code == 500
+
+
+def test_update_non_existing_movie_without_pass_movie_id(test_client, init_database):
+    put_response = test_client.put('/movie')
+
+    assert put_response.status_code == 404
