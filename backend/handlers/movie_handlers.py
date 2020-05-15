@@ -14,7 +14,7 @@ class MovieData(Resource):
         if args['movie_id'] is not None:
             movie = MovieModel.query.get(args['movie_id'])
             if movie is None:
-                return make_response(jsonify({'error': ApiMessages.RECORD_NOT_FOUND.value}), 404)
+                return make_response(jsonify({'error': 'Record not found'}), 404)
             output = MovieSchema().dump(movie)
         else:
             movies = MovieModel.query.all()
@@ -22,7 +22,7 @@ class MovieData(Resource):
         if output:
             return make_response(jsonify({'data': output}), 200)
         else:
-            return make_response(jsonify({"error": ApiMessages.INTERNAL.value}), 500)
+            return make_response(jsonify({"error": 'Internal error'}), 500)
 
     def post(self):
         args = _parse_movie_args()

@@ -52,7 +52,7 @@ def test_client():
 
 
 # If we want to test one database to all test case switch to scope='module'
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='function')
 def init_database():
     db.create_all()
     db.session.commit()
