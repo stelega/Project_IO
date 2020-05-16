@@ -1,45 +1,14 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
+import { MenuItem, Button, ThemeProvider, TextField } from '@material-ui/core';
 import {
-  MenuItem,
-  Button,
-  createMuiTheme,
-  ThemeProvider,
-} from '@material-ui/core';
-
-const Container = styled.div`
-  margin-left: 10vw;
-  margin-top: 20vh;
-`;
-const Title = styled.div`
-  color: black;
-  font-size: 300%;
-  font-weight: bold;
-`;
-const Input = styled.div`
-  display: block;
-  margin-top: 2vh;
-  width: 50%;
-`;
-const Select = styled.div`
-  display: flex;
-  margin-top: 4vh;
-  width: 50%;
-`;
-const MarginRight = styled.div`
-  margin-right: 2vw;
-`;
-const ButtonMargin = styled.div`
-  margin-top: 4vh;
-`;
-const customTheme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#212121',
-    },
-  },
-});
+  Container,
+  Input,
+  Title,
+  Select,
+  MarginRight,
+  ButtonMargin,
+  customTheme,
+} from './LoginFormStyles';
 
 interface loginType {
   name: string;
