@@ -1,10 +1,12 @@
 from database.database import db
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 
 
 class EmployeeModel(db.Model):
     __tablename__ = 'employee'
 
-    employee_id = db.Column(db.Integer, primary_key=True)
+    employee_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     name = db.Column(db.String(length=80))
     surname = db.Column(db.String(length=80))
     login = db.Column(db.String(length=80))
@@ -26,7 +28,7 @@ class EmployeeModel(db.Model):
 class MovieModel(db.Model):
     __tablename__ = 'movie'
 
-    movie_id = db.Column(db.Integer, primary_key=True)
+    movie_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     title = db.Column(db.String(length=120))
     director = db.Column(db.String(length=80))
     release_date = db.Column(db.Date)
@@ -51,7 +53,7 @@ class MovieModel(db.Model):
 class HallModel(db.Model):
     __tablename__ = 'hall'
 
-    hall_id = db.Column(db.Integer, primary_key=True)
+    hall_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     num_of_seats = db.Column(db.Integer)
     rows = db.Column(db.Integer)
     availability = db.Column(db.Boolean)
@@ -68,11 +70,11 @@ class HallModel(db.Model):
 class SeanceModel(db.Model):
     __tablename__ = 'seance'
 
-    seance_id = db.Column(db.Integer, primary_key=True)
+    seance_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     time = db.Column(db.Time)
     date = db.Column(db.Date)
-    hall_id = db.Column(db.Integer, db.ForeignKey('hall.hall_id'))
-    movie_id = db.Column(db.Integer, db.ForeignKey('movie.movie_id'))
+    hall_id = db.Column(UUID(as_uuid=True), db.ForeignKey('hall.hall_id'))
+    movie_id = db.Column(UUID(as_uuid=True), db.ForeignKey('movie.movie_id'))
     tickets_sold = db.Column(db.Integer)
     tickets = db.relationship("TicketModel", backref="seance")
 
@@ -89,9 +91,9 @@ class SeanceModel(db.Model):
 class SeatModel(db.Model):
     __tablename__ = 'seat'
 
-    seat_id = db.Column(db.Integer, primary_key=True)
+    seat_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     row = db.Column(db.Integer)
-    hall_id = db.Column(db.Integer, db.ForeignKey('hall.hall_id'))
+    hall_id = db.Column(UUID(as_uuid=True), db.ForeignKey('hall.hall_id'))
     tickets = db.relationship("TicketModel", backref="seat")
 
     def __init__(self, _id=None, row=None, hall_id=None):
@@ -103,11 +105,11 @@ class SeatModel(db.Model):
 class TicketModel(db.Model):
     __tablename__ = 'ticket'
 
-    ticket_id = db.Column(db.Integer, primary_key=True)
+    ticket_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     price = db.Column(db.Float)
     discount = db.Column(db.Float)
-    seat_id = db.Column(db.Integer, db.ForeignKey('seat.seat_id'))
-    seance_id = db.Column(db.Integer, db.ForeignKey('seance.seance_id'))
+    seat_id = db.Column(UUID(as_uuid=True), db.ForeignKey('seat.seat_id'))
+    seance_id = db.Column(UUID(as_uuid=True), db.ForeignKey('seance.seance_id'))
 
     def __init__(self, _id=None, price=None, discount=None, seat_id=None, seance_id=None):
         self.id = _id or id

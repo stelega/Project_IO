@@ -19,7 +19,7 @@ class MovieData(Resource):
         else:
             movies = MovieModel.query.all()
             output = MovieSchema(many=True).dump(movies)
-        if output:
+        if output is not None:
             return make_response(jsonify({'data': output}), 200)
         else:
             return make_response(jsonify({"error": ApiMessages.INTERNAL.value}), 500)
@@ -64,7 +64,7 @@ class MovieData(Resource):
 
 def _parse_movie_args():
     parser = reqparse.RequestParser()
-    parser.add_argument('movie_id', type=int)
+    parser.add_argument('movie_id')
     parser.add_argument('title')
     parser.add_argument('director')
     parser.add_argument('release_date')

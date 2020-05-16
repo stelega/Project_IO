@@ -24,7 +24,7 @@ def initialize_extension(app):
     generate_routes(app)
     db.init_app(app)
     ma.init_app(app)
-    migrate = Migrate(app, db)
+    migrate = Migrate(app, db, compare_type=True)
 
 
 app = create_app(database_url)
