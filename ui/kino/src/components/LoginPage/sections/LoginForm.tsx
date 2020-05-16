@@ -10,15 +10,26 @@ import {
   customTheme,
 } from './LoginFormStyles';
 
+enum LogType {
+  Pracownik,
+  Administrator,
+}
+
 interface loginType {
   name: string;
 }
-const loginTypes: loginType[] = [
-  { name: 'Administrator' },
-  { name: 'Pracownik' },
-];
+
+const getLoginTypes = () => {
+  let arr = Object.keys(LogType)
+    .filter((o) => isNaN(parseInt(o)))
+    .map((x) => ({
+      name: x,
+    }));
+  return arr;
+};
 
 const LoginForm = () => {
+  const loginTypes: loginType[] = getLoginTypes();
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [logType, setLogType] = useState('Pracownik');
@@ -31,6 +42,7 @@ const LoginForm = () => {
   const handleLogTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLogType(event.target.value);
   };
+
   const submit = () => {
     console.log(login, password, logType);
   };
