@@ -3,6 +3,7 @@ import sys
 import os
 sys.path.append(os.getcwd())
 from database.database import db
+from database.config import test_database_url
 from database.models import EmployeeModel, MovieModel, HallModel, SeanceModel, SeatModel, TicketModel
 from main import create_app
 
@@ -42,7 +43,7 @@ def new_ticket():
 
 @pytest.fixture(scope='module')
 def test_client():
-    flask_app = create_app()
+    flask_app = create_app(test_database_url)
 
     testing_client = flask_app.test_client()
     ctx = flask_app.app_context()

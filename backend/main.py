@@ -10,10 +10,10 @@ from routes.routes import generate_routes
 from database.database import db, ma
 
 
-def create_app():
+def create_app(database_url_arg):
     app = Flask(__name__)
     app.config['DEBUG'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url_arg
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     app.config['SECRET_KEY'] = 'super secret key'
     initialize_extension(app)
@@ -27,6 +27,7 @@ def initialize_extension(app):
     migrate = Migrate(app, db)
 
 
+app = create_app(database_url)
+
 if __name__ == '__main__':
-    app = create_app()
     app.run(port=5000, debug=True, host='localhost', use_reloader=True)
