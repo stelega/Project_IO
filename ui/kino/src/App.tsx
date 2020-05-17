@@ -2,15 +2,15 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import LoginPage from './components/LoginPage/LoginPage';
-import AdminMainPage from './components/Admin/MainPage';
-import StaffMainPage from './components/Staff/MainPage';
+import AdminMainPage from './components/admin/MainPage';
+import EmployeeMainPage from './components/employee/MainPage';
 
 function App() {
   return (
     <Router>
       <Switch>
         <Route path='/admin' component={AdminMainPage} />
-        <Route path='/staff' component={StaffMainPage} />
+        <Route path='/employee' component={EmployeeMainPage} />
         <Route exact path='/'>
           <LoginPage />
         </Route>

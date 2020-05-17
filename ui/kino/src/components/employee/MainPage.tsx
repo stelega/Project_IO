@@ -1,13 +1,13 @@
 import React from 'react';
 import TopBar from '../TopBar';
 
-const AdminMainPage = () => {
+const EmployeeMainPage = () => {
   return (
     <>
       <TopBar name={'Jan'} surname={'Kowalski'} />
-      Admin Page
+      Emplyee Page
     </>
   );
 };
 
-export default AdminMainPage;
+export default EmployeeMainPage;
