@@ -20,7 +20,7 @@ def new_movie():
 
 @pytest.fixture(scope='module')
 def new_hall():
-    hall = HallModel(1, "A", 40, 5, True)
+    hall = HallModel(1, "A", 5, 8, True)
     return hall
 
 
@@ -32,7 +32,7 @@ def new_seance():
 
 @pytest.fixture(scope='module')
 def new_seat():
-    seat = SeatModel(1, 1, 1)
+    seat = SeatModel(1, 1, 1, 1)
     return seat
 
 @pytest.fixture(scope='module')

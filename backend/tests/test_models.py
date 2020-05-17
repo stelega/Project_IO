@@ -43,6 +43,7 @@ def test_new_seance(new_seance):
 
 def test_new_seat(new_seat):
     assert new_seat.id == 1
+    assert new_seat.number == 1
     assert new_seat.row == 1
     assert new_seat.hall_id == 1
 

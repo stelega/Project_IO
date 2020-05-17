@@ -57,16 +57,18 @@ class HallModel(db.Model):
     name = db.Column(db.String(length=80), unique=True, nullable=True)
     num_of_seats = db.Column(db.Integer)
     rows = db.Column(db.Integer)
+    seats_per_row = db.Column(db.Integer)
     availability = db.Column(db.Boolean)
 
     seances = db.relationship("SeanceModel", backref="hall")
-    seats = db.relationship("SeatModel", backref="hall")
+    seats = db.relationship("SeatModel", backref="hall", cascade="all,delete")
 
-    def __init__(self, _id=None, name=None, num_of_seats=None, rows=None, availability=True):
+    def __init__(self, _id=None, name=None, rows=None, seats_per_row=None, availability=True):
         self.id = _id or id
         self.name = name
-        self.num_of_seats = num_of_seats
+        self.num_of_seats = rows * seats_per_row
         self.rows = rows
+        self.seats_per_row = seats_per_row
         self.availability = availability
 
 
@@ -101,15 +103,18 @@ class SeatModel(db.Model):
     hall_id = db.Column(UUID(as_uuid=True), db.ForeignKey('hall.hall_id'))
     tickets = db.relationship("TicketModel", backref="seat")
 
-    def __init__(self, _id=None, row=None, hall_id=None):
+    def __init__(self, _id=None, number=None, row=None, hall_id=None):
         self.id = _id or id
+        self.number = number
         self.row = row
         self.hall_id = hall_id
 
 
 class TicketModel(db.Model):
     __tablename__ = 'ticket'
-
+    __table_args__ = (
+        db.UniqueConstraint('seat_id', 'seance_id', name='unique_ticket_seat_and_seance'),
+    )
     ticket_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     price = db.Column(db.Float)
     discount = db.Column(db.Float)

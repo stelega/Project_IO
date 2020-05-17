@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask import jsonify, make_response
 
-from database.models import SeanceModel, MovieModel
+from database.models import SeanceModel, MovieModel, HallModel
 from database.schemas import SeanceSchema
 from handlers.messages import ApiMessages
 from database.database import db
@@ -19,7 +19,8 @@ class SeanceData(Resource):
             output = SeanceSchema().dump(seance)
         else:
             try:
-                query = self._search_seances_query(SeanceModel.query)
+                query = self._search_seances_query(SeanceModel.query.join(MovieModel).join(HallModel))
+                args['name'] = args['title'] = ''
                 seances, count = prepare_and_run_query(query, args)
                 output = SeanceSchema(many=True).dump(seances)
             except ValueError as err:

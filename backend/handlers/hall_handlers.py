@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask import jsonify, make_response
 
-from database.models import HallModel
+from database.models import HallModel, SeatModel
 from database.schemas import HallSchema
 from handlers.messages import ApiMessages
 from database.database import db
@@ -40,6 +40,7 @@ class HallData(Resource):
         hall = HallModel(**args)
         db.session.add(hall)
         db.session.commit()
+        self._create_halls_seats(hall)
         output = HallSchema().dump(hall)
         return make_response(jsonify({'data': output}), 201)
 
@@ -83,8 +84,8 @@ class HallData(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('hall_id')
         parser.add_argument('name')
-        parser.add_argument('num_of_seats', type=int)
         parser.add_argument('rows', type=int)
+        parser.add_argument('seats_per_row', type=int)
         parser.add_argument('availability', type=bool)
         return parser.parse_args()
 
@@ -95,3 +96,11 @@ class HallData(Resource):
         if args['search_in_name'] is not None:
             query = query.filter(HallModel.name.ilike('%{}%'.format(args['search_in_name'])))
         return query
+
+    def _create_halls_seats(self, hall):
+        seats = []
+        for row in range(hall.rows):
+            for number in range(hall.seats_per_row):
+                seats.append(SeatModel(number=number, row=row, hall_id=hall.hall_id))
+        db.session.add_all(seats)
+        db.session.commit()
