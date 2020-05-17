@@ -54,6 +54,7 @@ class HallModel(db.Model):
     __tablename__ = 'hall'
 
     hall_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    name = db.Column(db.String(length=80), unique=True, nullable=True)
     num_of_seats = db.Column(db.Integer)
     rows = db.Column(db.Integer)
     availability = db.Column(db.Boolean)
@@ -61,9 +62,11 @@ class HallModel(db.Model):
     seances = db.relationship("SeanceModel", backref="hall")
     seats = db.relationship("SeatModel", backref="hall")
 
-    def __init__(self, _id=None, num_of_seats=None, availability=True):
+    def __init__(self, _id=None, name=None, num_of_seats=None, rows=None, availability=True):
         self.id = _id or id
+        self.name = name
         self.num_of_seats = num_of_seats
+        self.rows = rows
         self.availability = availability
 
 
@@ -92,6 +95,7 @@ class SeatModel(db.Model):
     __tablename__ = 'seat'
 
     seat_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    number = db.Column(db.Integer)
     row = db.Column(db.Integer)
     hall_id = db.Column(UUID(as_uuid=True), db.ForeignKey('hall.hall_id'))
     tickets = db.relationship("TicketModel", backref="seat")
