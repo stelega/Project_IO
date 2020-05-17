@@ -11,7 +11,7 @@ function App() {
       <Switch>
         <Route path='/admin' component={AdminMainPage} />
         <Route path='/employee' component={EmployeeMainPage} />
-        <Route exact path='/'>
+        <Route path='/'>
           <LoginPage />
         </Route>
       </Switch>
