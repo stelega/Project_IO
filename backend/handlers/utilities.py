@@ -5,7 +5,7 @@ from sqlalchemy import desc
 def prepare_and_run_query(query, args):
     paginate = parse_pagination_params()
     query_params = parse_query_params()
-    if query_params['order_by'] not in args.keys():
+    if query_params['order_by'] is not None and query_params['order_by'] not in args.keys():
         raise ValueError('Attempt to order results by not existing column: {}'.format(query_params['order_by']))
     query = order_query(query, query_params['order_by'], query_params['desc'])
     count = query.count()

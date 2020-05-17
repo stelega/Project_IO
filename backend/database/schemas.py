@@ -13,3 +13,15 @@ class MovieSchema(ma.SQLAlchemyAutoSchema):
         model = MovieModel
 
     seances = fields.Nested(SeanceSchema, many=True)
+
+
+class HallSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = HallModel
+
+    seats = fields.Nested(SeanceSchema, many=True)
+
+
+class SeatSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = SeatModel
