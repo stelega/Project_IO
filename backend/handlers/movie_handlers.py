@@ -4,8 +4,8 @@ from flask import jsonify, make_response
 from database.models import MovieModel
 from database.schemas import MovieSchema
 from handlers.messages import ApiMessages
-
 from database.database import db
+from .utilities import prepare_and_run_query
 
 
 class MovieData(Resource):
@@ -14,15 +14,19 @@ class MovieData(Resource):
         if args['movie_id'] is not None:
             movie = MovieModel.query.get(args['movie_id'])
             if movie is None:
-                return make_response(jsonify({'error': ApiMessages.RECORD_NOT_FOUND.value}), 404)
+                return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
+            count = 1
             output = MovieSchema().dump(movie)
         else:
-            movies = MovieModel.query.all()
-            output = MovieSchema(many=True).dump(movies)
+            try:
+                movies, count = prepare_and_run_query(MovieModel.query, args)
+                output = MovieSchema(many=True).dump(movies)
+            except ValueError as err:
+                return make_response(jsonify({'message': str(err)}), 404)
         if output is not None:
-            return make_response(jsonify({'data': output}), 200)
+            return make_response(jsonify({'data': output, 'count': count}), 200)
         else:
-            return make_response(jsonify({"error": ApiMessages.INTERNAL.value}), 500)
+            return make_response(jsonify({"message": ApiMessages.INTERNAL.value}), 500)
 
     def post(self):
         args = _parse_movie_args()
@@ -46,9 +50,9 @@ class MovieData(Resource):
                 output = MovieSchema().dump(movie)
                 return make_response(jsonify({'data': output}), 200)
             else:
-                return make_response(jsonify({"error": ApiMessages.INTERNAL.value}), 500)
+                return make_response(jsonify({"message": ApiMessages.INTERNAL.value}), 500)
         else:
-            return make_response(jsonify({'error': ApiMessages.RECORD_NOT_FOUND.value}), 404)
+            return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
 
     def delete(self):
         args = _parse_movie_args()
@@ -59,7 +63,7 @@ class MovieData(Resource):
             output = MovieSchema().dump(movie)
             return make_response(jsonify({'data': output}), 200)
         else:
-            return make_response(jsonify({'error': ApiMessages.RECORD_NOT_FOUND.value}), 404)
+            return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
 
 
 def _parse_movie_args():

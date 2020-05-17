@@ -1,6 +1,7 @@
 from flask_restful import Api
 from handlers.employee_handlers import EmployeesData, Register, Login
 from handlers.movie_handlers import MovieData
+from handlers.playground import Playground
 
 
 def generate_routes(app):
@@ -10,3 +11,4 @@ def generate_routes(app):
     api.add_resource(Register, '/register', endpoint="register")
     api.add_resource(Login, '/login', endpoint="login")
     api.add_resource(MovieData, '/movie', endpoint="movie")
+    api.add_resource(Playground, '/playground', endpoint="playground")
