@@ -15,12 +15,12 @@ def new_employee():
 
 @pytest.fixture(scope='module')
 def new_movie():
-    movie = MovieModel(1, "Film", "Rezyser", "2020-5-12", "+16", "Film akcji", True, 120)
+    movie = MovieModel(1, "Film", "Rezyser", "2020-5-12", "2020-8-12", "+16", "Film akcji", 120)
     return movie
 
 @pytest.fixture(scope='module')
 def new_hall():
-    hall = HallModel(1, 40, True)
+    hall = HallModel(1, "A", 40, 5, True)
     return hall
 
 

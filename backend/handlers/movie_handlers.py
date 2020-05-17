@@ -45,7 +45,6 @@ class MovieData(Resource):
             for k in remove:
                 del args[k]
             movie = MovieModel.query.filter_by(movie_id=args['movie_id']).update(args)
-            movie.update(args)
             if movie == 1:
                 db.session.commit()
                 movie = MovieModel.query.get(args['movie_id'])
@@ -73,9 +72,9 @@ class MovieData(Resource):
         parser.add_argument('title')
         parser.add_argument('director')
         parser.add_argument('release_date')
+        parser.add_argument('close_date')
         parser.add_argument('age_category')
         parser.add_argument('movie_category')
-        parser.add_argument('availability', type=bool)
         parser.add_argument('duration', type=int)
         return parser.parse_args()
 

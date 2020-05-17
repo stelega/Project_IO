@@ -32,21 +32,21 @@ class MovieModel(db.Model):
     title = db.Column(db.String(length=120))
     director = db.Column(db.String(length=80))
     release_date = db.Column(db.Date)
+    close_date = db.Column(db.Date)
     age_category = db.Column(db.String(length=40))
     movie_category = db.Column(db.String(length=80))
-    availability = db.Column(db.Boolean)
     duration = db.Column(db.Integer)
     seances = db.relationship("SeanceModel", backref="movie")
 
-    def __init__(self, _id=None, title=None, director=None, release_date=None,
-                 age_category=None, movie_category=None, availability=True, duration=None):
+    def __init__(self, _id=None, title=None, director=None, release_date=None, close_date=None,
+                 age_category=None, movie_category=None, duration=None):
         self.id = _id or id
         self.title = title
         self.director = director
         self.release_date = release_date
+        self.close_date = close_date
         self.age_category = age_category
         self.movie_category = movie_category
-        self.availability = availability
         self.duration = duration
 
 
@@ -74,11 +74,12 @@ class SeanceModel(db.Model):
     __tablename__ = 'seance'
 
     seance_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    time = db.Column(db.Time)
-    date = db.Column(db.Date)
+    time = db.Column(db.Time, nullable=False)
+    date = db.Column(db.Date, nullable=False)
     hall_id = db.Column(UUID(as_uuid=True), db.ForeignKey('hall.hall_id'))
     movie_id = db.Column(UUID(as_uuid=True), db.ForeignKey('movie.movie_id'))
-    tickets_sold = db.Column(db.Integer)
+    tickets_sold = db.Column(db.Integer, default=0)
+
     tickets = db.relationship("TicketModel", backref="seance")
 
     def __init__(self, _id=None, time=None, date=None, hall_id=None,
