@@ -6,6 +6,7 @@ from database.database import ma
 class TicketSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TicketModel
+        include_fk = True
 
 
 class SeanceSchema(ma.SQLAlchemyAutoSchema):
@@ -26,8 +27,6 @@ class MovieSchema(ma.SQLAlchemyAutoSchema):
 class HallSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = HallModel
-
-    seats = fields.Nested(SeanceSchema, many=True)
 
 
 class SeatSchema(ma.SQLAlchemyAutoSchema):
