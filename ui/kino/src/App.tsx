@@ -2,16 +2,16 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import LoginPage from './components/LoginPage/LoginPage';
-import SecondPage from './components/SecondPage';
+import AdminMainPage from './components/admin/MainPage';
+import EmployeeMainPage from './components/employee/MainPage';
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path='/second'>
-          <SecondPage />
-        </Route>
-        <Route exact path='/'>
+        <Route path='/admin' component={AdminMainPage} />
+        <Route path='/employee' component={EmployeeMainPage} />
+        <Route path='/'>
           <LoginPage />
         </Route>
       </Switch>
