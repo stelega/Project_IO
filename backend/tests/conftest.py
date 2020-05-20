@@ -3,6 +3,7 @@ import sys
 import os
 sys.path.append(os.getcwd())
 from database.database import db
+from database.config import test_database_url
 from database.models import EmployeeModel, MovieModel, HallModel, SeanceModel, SeatModel, TicketModel
 from main import create_app
 
@@ -14,12 +15,12 @@ def new_employee():
 
 @pytest.fixture(scope='module')
 def new_movie():
-    movie = MovieModel(1, "Film", "Rezyser", "2020-5-12", "+16", "Film akcji", True, 120)
+    movie = MovieModel(1, "Film", "Rezyser", "2020-5-12", "2020-8-12", "+16", "Film akcji", 120)
     return movie
 
 @pytest.fixture(scope='module')
 def new_hall():
-    hall = HallModel(1, 40, True)
+    hall = HallModel(1, "A", 5, 8, True)
     return hall
 
 
@@ -31,7 +32,7 @@ def new_seance():
 
 @pytest.fixture(scope='module')
 def new_seat():
-    seat = SeatModel(1, 1, 1)
+    seat = SeatModel(1, 1, 1, 1)
     return seat
 
 @pytest.fixture(scope='module')
@@ -42,7 +43,7 @@ def new_ticket():
 
 @pytest.fixture(scope='module')
 def test_client():
-    flask_app = create_app()
+    flask_app = create_app(test_database_url)
 
     testing_client = flask_app.test_client()
     ctx = flask_app.app_context()

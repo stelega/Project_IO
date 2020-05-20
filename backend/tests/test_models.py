@@ -18,14 +18,16 @@ def test_new_movie(new_movie):
     assert new_movie.title == "Film"
     assert new_movie.director == "Rezyser"
     assert new_movie.release_date == "2020-5-12"
+    assert new_movie.close_date == "2020-8-12"
     assert new_movie.age_category == "+16"
     assert new_movie.movie_category == "Film akcji"
-    assert new_movie.availability
     assert new_movie.duration == 120
 
 
 def test_new_hall(new_hall):
     assert new_hall.id == 1
+    assert new_hall.name == "A"
+    assert new_hall.rows == 5
     assert new_hall.num_of_seats == 40
     assert new_hall.availability
 
@@ -41,6 +43,7 @@ def test_new_seance(new_seance):
 
 def test_new_seat(new_seat):
     assert new_seat.id == 1
+    assert new_seat.number == 1
     assert new_seat.row == 1
     assert new_seat.hall_id == 1
 
