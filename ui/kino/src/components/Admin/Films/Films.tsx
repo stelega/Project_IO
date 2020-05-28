@@ -9,7 +9,8 @@ import FilmsTableHead, {
 import FilmsTableBody from './tableComponents/FilmsTableBody';
 import FilmsTablePagination from './tableComponents/FilmsTablePagination';
 import { PagedList } from '../../../models/PagedList';
-import { Film } from '../../../models/Films';
+import { Film } from '../../../models/Film';
+import AddButton from './AddButton';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -23,6 +24,10 @@ const Title = styled.div`
   color: black;
   font-size: 150%;
   font-weight: bold;
+`;
+const TopContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Films = () => {
@@ -65,7 +70,10 @@ const Films = () => {
 
   return (
     <Container>
-      <Title>Wszystkie Filmy</Title>
+      <TopContainer>
+        <Title>Wszystkie Filmy</Title>
+        <AddButton />
+      </TopContainer>
       <TableContainer>
         <Table>
           <FilmsTableHead

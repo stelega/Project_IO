@@ -31,5 +31,9 @@ export const customTheme = createMuiTheme({
     primary: {
       main: '#212121',
     },
+    secondary: {
+      main: '#00C896',
+      contrastText: '#FFFFFF',
+    },
   },
 });
