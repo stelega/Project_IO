@@ -9,6 +9,9 @@ import LeftMenu from '../LeftMenu';
 const Container = styled.div`
   display: flex;
 `;
+const Box = styled.div`
+  width: 90vw;
+`;
 
 const options: string[] = ['Filmy', 'Sale', 'Pracownicy'];
 
@@ -27,13 +30,15 @@ const AdminMainPage = () => {
           state={optionsState}
           handleChange={handleChange}
         />
-        {optionsState === 'Filmy' ? (
-          <Films />
-        ) : optionsState === 'Pracownicy' ? (
-          <Employees />
-        ) : (
-          <Halls />
-        )}
+        <Box>
+          {optionsState === 'Filmy' ? (
+            <Films />
+          ) : optionsState === 'Pracownicy' ? (
+            <Employees />
+          ) : (
+            <Halls />
+          )}
+        </Box>
       </Container>
     </>
   );
