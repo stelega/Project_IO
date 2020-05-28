@@ -1,5 +1,5 @@
 import { PagedList } from './../models/PagedList';
-import { Film } from './../models/Films';
+import { Film } from '../models/Film';
 
 export const getFilms = (): PagedList<Film> => {
   return {

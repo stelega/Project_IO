@@ -2,7 +2,7 @@ import React from 'react';
 import { TableBody, TableRow, TableCell, IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { Film } from '../../../../models/Films';
+import { Film } from '../../../../models/Film';
 
 interface FilmsTableBodyProps {
   films: Film[];
