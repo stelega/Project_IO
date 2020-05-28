@@ -14,8 +14,8 @@ const Bold = styled.div`
 export interface FilmListData {
   title: string;
   category: string;
-  release_date: string;
-  close_date: string;
+  releasedate: string;
+  closeDate: string;
 }
 
 interface HeadCell {
@@ -39,13 +39,13 @@ const headCells: HeadCell[] = [
     label: 'Kategoria',
   },
   {
-    id: 'release_date',
+    id: 'releaseDate',
     numeric: false,
     disablePadding: false,
     label: 'Wyświetlane od',
   },
   {
-    id: 'close_date',
+    id: 'closeDate',
     numeric: false,
     disablePadding: false,
     label: 'Wyświetlane do',
