@@ -14,7 +14,7 @@ const Bold = styled.div`
 export interface FilmListData {
   title: string;
   category: string;
-  releasedate: string;
+  releaseDate: string;
   closeDate: string;
 }
 
