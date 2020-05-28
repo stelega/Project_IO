@@ -1,7 +1,94 @@
-import React from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Table } from '@material-ui/core';
+import { getFilms } from '../../../services/FilmService';
+import FilmsTableHead, {
+  Order,
+  FilmListData,
+} from './tableComponents/FilmsTableHead';
+import FilmsTableBody from './tableComponents/FilmsTableBody';
+import FilmsTablePagination from './tableComponents/FilmsTablePagination';
+import { PagedList } from '../../../models/PagedList';
+import { Film } from '../../../models/Films';
+
+const Container = styled.div`
+  margin-top: 4vh;
+  margin-left: 5vw;
+  margin-right: 5vw;
+`;
+const TableContainer = styled.div`
+  margin-top: 2vh;
+`;
+const Title = styled.div`
+  color: black;
+  font-size: 150%;
+  font-weight: bold;
+`;
 
 const Films = () => {
-  return <div>Filmy</div>;
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof FilmListData>('title');
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const handleRequestSort = (
+    event: React.MouseEvent<unknown>,
+    property: keyof FilmListData
+  ) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+  const films: PagedList<Film> = getFilms();
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(Number(event.target.value));
+  };
+
+  const handleEditClick = (
+    event: React.MouseEvent<HTMLElement>,
+    movieId: string
+  ) => {
+    console.log(movieId);
+  };
+
+  const handleDeleteClick = (
+    event: React.MouseEvent<HTMLElement>,
+    movieId: string
+  ) => {
+    console.log(movieId);
+  };
+
+  return (
+    <Container>
+      <Title>Wszystkie Filmy</Title>
+      <TableContainer>
+        <Table>
+          <FilmsTableHead
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+          />
+          <FilmsTableBody
+            films={films.data}
+            handleEditClick={handleEditClick}
+            handleDeleteClick={handleDeleteClick}
+          />
+        </Table>
+        <FilmsTablePagination
+          page={page}
+          totalCount={films.count}
+          rowsPerPage={rowsPerPage}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </TableContainer>
+    </Container>
+  );
 };
 
 export default Films;
