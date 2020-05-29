@@ -11,8 +11,8 @@ from .utilities import prepare_and_run_query
 class HallData(Resource):
     def get(self):
         args = self._parse_hall_args()
-        if args['hall_id'] is not None:
-            hall = HallModel.query.get(args['hall_id'])
+        if args['hallId'] is not None:
+            hall = HallModel.query.get(args['hallId'])
             if hall is None:
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
             count = 1
@@ -31,7 +31,7 @@ class HallData(Resource):
 
     def post(self):
         args = self._parse_hall_args()
-        del args['hall_id']
+        del args['hallId']
         if args['name'] is None:
             return make_response(jsonify({'message': "Name of hall must be specified"}), 404)
         hall = HallModel.query.filter_by(name=args['name']).first()
@@ -46,7 +46,7 @@ class HallData(Resource):
 
     def put(self):
         args = self._parse_hall_args()
-        if args['hall_id'] is not None:
+        if args['hallId'] is not None:
             if args['name'] is not None:
                 hall = HallModel.query.filter_by(name=args['name']).first()
                 if hall is not None:
@@ -56,10 +56,10 @@ class HallData(Resource):
             remove = [k for k in args if args[k] is None]
             for k in remove:
                 del args[k]
-            hall = HallModel.query.filter_by(hall_id=args['hall_id']).update(args)
+            hall = HallModel.query.filter_by(hallId=args['hallId']).update(args)
             if hall == 1:
                 db.session.commit()
-                hall = HallModel.query.get(args['hall_id'])
+                hall = HallModel.query.get(args['hallId'])
                 output = HallSchema().dump(hall)
                 return make_response(jsonify({'data': output}), 200)
             else:
@@ -69,8 +69,8 @@ class HallData(Resource):
 
     def delete(self):
         args = self._parse_hall_args()
-        if args['hall_id'] is not None:
-            hall = HallModel.query.get(args['hall_id'])
+        if args['hallId'] is not None:
+            hall = HallModel.query.get(args['hallId'])
             if hall is None:
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
             db.session.delete(hall)
@@ -82,25 +82,25 @@ class HallData(Resource):
 
     def _parse_hall_args(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('hall_id')
+        parser.add_argument('hallId')
         parser.add_argument('name')
         parser.add_argument('rows', type=int)
-        parser.add_argument('seats_per_row', type=int)
+        parser.add_argument('seatsPerRow', type=int)
         parser.add_argument('availability', type=bool)
         return parser.parse_args()
 
     def _search_halls_query(self, query):
         parser = reqparse.RequestParser()
-        parser.add_argument('search_in_name')
+        parser.add_argument('searchInName')
         args = parser.parse_args()
-        if args['search_in_name'] is not None:
-            query = query.filter(HallModel.name.ilike('%{}%'.format(args['search_in_name'])))
+        if args['searchInName'] is not None:
+            query = query.filter(HallModel.name.ilike('%{}%'.format(args['searchInName'])))
         return query
 
     def _create_halls_seats(self, hall):
         seats = []
         for row in range(hall.rows):
-            for number in range(hall.seats_per_row):
-                seats.append(SeatModel(number=number, row=row, hall_id=hall.hall_id))
+            for number in range(hall.seatsPerRow):
+                seats.append(SeatModel(number=number, row=row, hallId=hall.hallId))
         db.session.add_all(seats)
         db.session.commit()
