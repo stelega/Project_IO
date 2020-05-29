@@ -3,7 +3,7 @@ from flask import jsonify, make_response
 
 from database.models import SeanceModel, MovieModel, HallModel
 from database.schemas import SeanceSchema
-from employee_handlers import login_required
+from .employee_handlers import login_required
 from handlers.messages import ApiMessages
 from database.database import db
 from .utilities import prepare_and_run_query
