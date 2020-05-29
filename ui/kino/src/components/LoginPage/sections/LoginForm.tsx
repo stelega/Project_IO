@@ -9,6 +9,7 @@ import {
   ButtonMargin,
   customTheme,
 } from './LoginFormStyles';
+import { apiLogin } from '../../../api/login';
 
 enum LogType {
   Pracownik,
@@ -44,7 +45,8 @@ const LoginForm = () => {
   };
 
   const submit = () => {
-    console.log(login, password, logType);
+    const response = apiLogin(login, password);
+    console.log(response);
   };
 
   return (
