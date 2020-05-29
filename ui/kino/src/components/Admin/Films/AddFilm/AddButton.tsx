@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, ThemeProvider } from '@material-ui/core';
-import { customTheme } from '../../../../LoginPage/sections/LoginFormStyles';
-import CustomModal from '../../../../CustomModal';
+import { customTheme } from '../../../LoginPage/sections/LoginFormStyles';
+import CustomModal from '../../../CustomModal';
 
 const AddButton = () => {
   const [open, setOpen] = useState<boolean>(false);
