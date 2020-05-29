@@ -10,7 +10,7 @@ import FilmsTableBody from './tableComponents/FilmsTableBody';
 import FilmsTablePagination from './tableComponents/FilmsTablePagination';
 import { PagedList } from '../../../models/PagedList';
 import { Film } from '../../../models/Film';
-import AddButton from './AddButton';
+import AddButton from './tableComponents/AddFilm/AddButton';
 
 const Container = styled.div`
   margin-top: 4vh;
