@@ -1,16 +1,28 @@
+import { BACKEND_URL } from './../config';
+
 interface LoginDto {
   login: string;
   password: string;
 }
 
+export interface Token {
+  token: string;
+  isAdmin: boolean;
+}
+
 export async function apiLogin(login: string, password: string) {
+  const url = '/login';
   const body: LoginDto = {
     login: login,
     password: password,
   };
   const jsonBody = JSON.stringify(body);
-  console.log(jsonBody);
-  const responseJson = await fetch('http://127.0.0.1:5000/login', {
+  return await apiPost<Token>(url, jsonBody);
+}
+
+async function apiPost<T>(uri: string, jsonBody: string, token?: string) {
+  const url = BACKEND_URL + uri;
+  const responseJson = await fetch(url, {
     method: 'POST',
     mode: 'cors',
     headers: {
@@ -18,7 +30,6 @@ export async function apiLogin(login: string, password: string) {
     },
     body: jsonBody,
   });
-  const response = await responseJson.json();
-  console.log(response);
-  return '';
+  const response: T = await responseJson.json();
+  return response;
 }
