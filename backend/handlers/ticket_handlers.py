@@ -4,7 +4,7 @@ from flask_restful import Resource, reqparse
 from database.database import db
 from database.models import TicketModel
 from database.schemas import TicketSchema
-from .employee_handlers import login_required
+from handlers.employee_handlers import login_required
 
 
 class TicketData(Resource):

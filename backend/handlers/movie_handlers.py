@@ -3,10 +3,11 @@ from flask import jsonify, make_response
 
 from database.models import MovieModel
 from database.schemas import MovieSchema
-from .employee_handlers import admin_required
+from database.const_data import Genre, AgeCategory
+from handlers.employee_handlers import admin_required
 from handlers.messages import ApiMessages
 from database.database import db
-from .utilities import prepare_and_run_query
+from handlers.utilities import prepare_and_run_query
 
 
 class MovieData(Resource):
@@ -90,3 +91,17 @@ class MovieData(Resource):
         if args['searchInTitle'] is not None:
             query = query.filter(MovieModel.title.ilike('%{}%'.format(args['searchInTitle'])))
         return query
+
+
+class AgeCategoryData(Resource):
+    def get(self):
+        age_categories = AgeCategory.get_all_list()
+        count = len(age_categories)
+        return make_response(jsonify({'data': age_categories, 'count': count}), 200)
+
+
+class GenreData(Resource):
+    def get(self):
+        genres = Genre.get_all_list()
+        count = len(genres)
+        return make_response(jsonify({'data': genres, 'count': count}), 200)
