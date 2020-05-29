@@ -49,7 +49,7 @@ class EmployeesData(Resource):
             employees = EmployeeModel.query.all()
             results = [
                 {
-                    "employee_id": employee.employee_id,
+                    "employeeId": employee.employee_id,
                     "name": employee.name,
                     "surname": employee.surname,
                 } for employee in employees]
@@ -64,12 +64,13 @@ class Register(Resource):
         employee = EmployeeModel.query.filter_by(login=data.get('login')).first()
         if not employee:
             new_employee = EmployeeModel(name=data.get('name'), surname=data.get('surname'), login=data.get('login'),
-                                         password=str(bcrypt.hash(data.get('password'))), is_admin=data.get('is_admin'))
+                                         password=str(bcrypt.hash(data.get('password'))), isAdmin=data.get('isIdmin'))
             db.session.add(new_employee)
             db.session.commit()
             return jsonify({'new_employee_name': new_employee.name, 'new_employee_surname': new_employee.surname})
         else:
             return jsonify({'message': 'User already exists. You can log in.'})
+
 
 class Login(Resource):
     def post(self):
@@ -99,6 +100,6 @@ class Login(Resource):
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'])
             current_user = EmployeeModel.query.filter_by(login=data['login']).first()
-            return jsonify({'login': current_user.login, 'is_admin': current_user.is_admin})
+            return jsonify({'login': current_user.login, 'isAdmin': current_user.isAdmin})
         except:
             return jsonify({'message': 'Welcome on login page!'})
