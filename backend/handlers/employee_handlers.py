@@ -17,47 +17,72 @@ def login_required(f):
             token = request.headers['access-token']
 
         if not token:
-            return jsonify({'message': 'Token is missing!'})
+            return make_response(jsonify({'message': 'Token is missing'}), 401)
 
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'])
             current_user = EmployeeModel.query.filter_by(login=data['login']).first()
         except jwt.ExpiredSignature:
-            print("Token expired")
-            return redirect(url_for('login'), 302)
+            return make_response(jsonify({'message': 'Token expired'}), 302)
         except Exception as e:
-            return jsonify({"message": repr(e)})
+            return make_response(jsonify({"message": repr(e)}, 500))
 
         try:
-            fun = f(current_user, *args, **kwargs)
+            fun = f(*args, **kwargs)
             return fun
-        except UnboundLocalError:
-            return redirect(url_for('login'))
         except Exception as e:
-            return jsonify({"message": repr(e)})
+            return make_response(jsonify({"message": repr(e)}, 500))
+
+    return wrap
+
+
+def admin_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        token = None
+
+        if 'access-token' in request.headers:
+            token = request.headers['access-token']
+
+        if not token:
+            return make_response(jsonify({'message': 'Token is missing'}), 401)
+
+        try:
+            data = jwt.decode(token, current_app.config['SECRET_KEY'])
+            current_user = EmployeeModel.query.filter_by(login=data['login']).first()
+            if not current_user.isAdmin:
+                return make_response(jsonify({'message': 'No access permission'}), 403)
+        except jwt.ExpiredSignature:
+            print("Token expired")
+            return make_response(jsonify({'message': 'Token expired'}), 302)
+        except Exception as e:
+            return make_response(jsonify({"message": repr(e)}, 500))
+
+        try:
+            fun = f(*args, **kwargs)
+            return fun
+        except Exception as e:
+            return make_response(jsonify({"message": repr(e)}, 500))
 
     return wrap
 
 
 class EmployeesData(Resource):
-    @login_required
-    def get(current_user, self):
+    @admin_required
+    def get(self):
+        employees = EmployeeModel.query.all()
+        results = [
+            {
+                "employeeId": str( employee.employeeId),
+                "name": employee.name,
+                "surname": employee.surname,
+            } for employee in employees]
 
-        if not current_user.is_admin:
-            return jsonify({'message': 'No access permission'})
-        else:
-            employees = EmployeeModel.query.all()
-            results = [
-                {
-                    "employeeId": employee.employee_id,
-                    "name": employee.name,
-                    "surname": employee.surname,
-                } for employee in employees]
-
-            return {"count": len(results), "employees": results}
+        return {"count": len(results), "employees": results}
 
 
 class Register(Resource):
+    @admin_required
     def post(self):
         data = request.get_json()
         # check if user already exists
@@ -69,7 +94,7 @@ class Register(Resource):
             db.session.commit()
             return jsonify({'new_employee_name': new_employee.name, 'new_employee_surname': new_employee.surname})
         else:
-            return jsonify({'message': 'User already exists. You can log in.'})
+            return make_response(jsonify({'message': 'User already exists'}, 409))
 
 
 class Login(Resource):
@@ -85,7 +110,7 @@ class Login(Resource):
 
         if emplo_user and bcrypt.verify(password, emplo_user.password):
             token = jwt.encode({'login': emplo_user.login, 'exp': time}, current_app.config['SECRET_KEY'])
-            return jsonify({'token': token.decode('UTF-8')})
+            return make_response(jsonify({'token': token.decode('UTF-8'), 'asAdmin': emplo_user.isAdmin}), 200)
 
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
@@ -95,7 +120,7 @@ class Login(Resource):
         if 'access-token' in request.headers:
             token = request.headers['access-token']
         if not token:
-            return jsonify({"message": "Token missing"})
+            return make_response(jsonify({'message': 'Token is missing'}), 401)
 
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'])
