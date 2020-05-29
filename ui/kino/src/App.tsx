@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import LoginPage from './components/LoginPage/LoginPage';
-import AdminMainPage from './components/admin/MainPage';
+import AdminMainPage from './components/Admin/MainPage';
 import EmployeeMainPage from './components/employee/MainPage';
 
 function App() {
