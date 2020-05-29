@@ -4,10 +4,11 @@ from flask_restful import Resource, reqparse
 from database.database import db
 from database.models import TicketModel
 from database.schemas import TicketSchema
+from employee_handlers import login_required
 
 
 class TicketData(Resource):
-
+    @login_required
     def post(self):
         args = self._parse_ticket_args()
         del args['ticketId']

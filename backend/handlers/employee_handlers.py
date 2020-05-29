@@ -82,6 +82,7 @@ class EmployeesData(Resource):
 
 
 class Register(Resource):
+    @admin_required
     def post(self):
         data = request.get_json()
         # check if user already exists

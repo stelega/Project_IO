@@ -3,12 +3,14 @@ from flask import jsonify, make_response
 
 from database.models import MovieModel
 from database.schemas import MovieSchema
+from employee_handlers import admin_required
 from handlers.messages import ApiMessages
 from database.database import db
 from .utilities import prepare_and_run_query
 
 
 class MovieData(Resource):
+    @admin_required
     def get(self):
         args = self._parse_movie_args()
         if args['movieId'] is not None:
@@ -29,6 +31,7 @@ class MovieData(Resource):
         else:
             return make_response(jsonify({"message": ApiMessages.INTERNAL.value}), 500)
 
+    @admin_required
     def post(self):
         args = self._parse_movie_args()
         del args['movieId']
@@ -38,6 +41,7 @@ class MovieData(Resource):
         output = MovieSchema().dump(movie)
         return make_response(jsonify({'data': output}), 201)
 
+    @admin_required
     def put(self):
         args = self._parse_movie_args()
         if args['movieId'] is not None:
@@ -55,6 +59,7 @@ class MovieData(Resource):
         else:
             return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 404)
 
+    @admin_required
     def delete(self):
         args = self._parse_movie_args()
         if args['movieId'] is not None:

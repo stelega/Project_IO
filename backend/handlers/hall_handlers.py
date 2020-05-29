@@ -3,12 +3,14 @@ from flask import jsonify, make_response
 
 from database.models import HallModel, SeatModel
 from database.schemas import HallSchema
+from employee_handlers import admin_required
 from handlers.messages import ApiMessages
 from database.database import db
 from .utilities import prepare_and_run_query
 
 
 class HallData(Resource):
+    @admin_required
     def get(self):
         args = self._parse_hall_args()
         if args['hallId'] is not None:
@@ -29,6 +31,7 @@ class HallData(Resource):
         else:
             return make_response(jsonify({"message": ApiMessages.INTERNAL.value}), 500)
 
+    @admin_required
     def post(self):
         args = self._parse_hall_args()
         del args['hallId']
@@ -44,6 +47,7 @@ class HallData(Resource):
         output = HallSchema().dump(hall)
         return make_response(jsonify({'data': output}), 201)
 
+    @admin_required
     def put(self):
         args = self._parse_hall_args()
         if args['hallId'] is not None:
@@ -67,6 +71,7 @@ class HallData(Resource):
         else:
             return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 404)
 
+    @admin_required
     def delete(self):
         args = self._parse_hall_args()
         if args['hallId'] is not None:
