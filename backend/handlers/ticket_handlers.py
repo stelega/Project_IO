@@ -1,18 +1,16 @@
-from flask_restful import Resource, reqparse
 from flask import jsonify, make_response
+from flask_restful import Resource, reqparse
 
+from database.database import db
 from database.models import TicketModel
 from database.schemas import TicketSchema
-from handlers.messages import ApiMessages
-from database.database import db
-from .utilities import prepare_and_run_query
 
 
 class TicketData(Resource):
 
     def post(self):
         args = self._parse_ticket_args()
-        del args['ticket_id']
+        del args['ticketId']
         ticket = TicketModel(**args)
         db.session.add(ticket)
         db.session.commit()
@@ -21,9 +19,9 @@ class TicketData(Resource):
 
     def _parse_ticket_args(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('ticket_id')
+        parser.add_argument('ticketId')
         parser.add_argument('price', type=float)
         parser.add_argument('discount', type=float)
-        parser.add_argument('seat_id')
-        parser.add_argument('seance_id')
+        parser.add_argument('seatId')
+        parser.add_argument('seanceId')
         return parser.parse_args()
