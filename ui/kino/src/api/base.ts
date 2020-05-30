@@ -18,7 +18,6 @@ export async function apiPost<T>(uri: string, jsonBody: string) {
 export async function apiGetAuthorized<T>(uri: string) {
   const url = BACKEND_URL + uri;
   const token = UserContext.getToken();
-  console.log(token);
   const responseJson = await fetch(url, {
     method: 'GET',
     mode: 'cors',
