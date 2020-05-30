@@ -73,6 +73,7 @@ def admin_required(f):
 
 
 class EmployeesData(Resource):
+    @admin_required
     def get(self):
         args = self._parse_employee_args()
         if args['employeeId'] is not None:
@@ -146,6 +147,7 @@ class EmployeesData(Resource):
 
 
 class Register(Resource):
+    @admin_required
     def post(self):
         data = request.get_json()
         # check if user already exists

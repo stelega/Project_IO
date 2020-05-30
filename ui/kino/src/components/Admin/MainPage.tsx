@@ -5,6 +5,8 @@ import Employees from './Employees/Employees';
 import Halls from './Halls/Halls';
 import Films from './Films/Films';
 import LeftMenu from '../LeftMenu';
+import UserContext from '../../services/Seassion';
+import Redirect from '../Redirect';
 
 const Container = styled.div`
   display: flex;
@@ -21,9 +23,9 @@ const AdminMainPage = () => {
     setOptionsState(value);
   };
 
-  return (
+  return UserContext.isLoggedIn() && UserContext.isAdmin() ? (
     <>
-      <TopBar name={'Jan'} surname={'Kowalski'} />
+      <TopBar />
       <Container>
         <LeftMenu
           options={options}
@@ -41,6 +43,8 @@ const AdminMainPage = () => {
         </Box>
       </Container>
     </>
+  ) : (
+    <Redirect to='Login' />
   );
 };
 
