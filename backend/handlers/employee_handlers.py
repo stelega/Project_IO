@@ -168,11 +168,14 @@ class Login(Resource):
         auth = request.get_json()
         login = auth.get('login')
         password = auth.get('password')
-        if not auth or not login or not password:
-            return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+        login_type = auth.get('type')
+        if not auth or not login or not password or not login_type:
+            return make_response({"message": "Missing login type"}, 401, {'WWW-Authenticate': 'Basic realm="Login required"'})
 
-        time = datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
         emplo_user = EmployeeModel.query.filter_by(login=login).first()
+        if login_type != 'employee' and not emplo_user.isAdmin:
+            return make_response(jsonify({'message': 'No access permission'}), 403)
+        time = datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
 
         if emplo_user and bcrypt.verify(password, emplo_user.password):
             token = jwt.encode({'login': emplo_user.login, 'exp': time}, current_app.config['SECRET_KEY'])
