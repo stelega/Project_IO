@@ -1,12 +1,16 @@
 export interface Context {
   token: string | undefined;
   isAdmin: boolean | undefined;
+  name: string | undefined;
+  surname: string | undefined;
 }
 
 const UserContext = (function () {
   let context: Context = {
     token: undefined,
     isAdmin: undefined,
+    name: undefined,
+    surname: undefined,
   };
 
   const getToken = (): string | undefined => {
@@ -25,11 +29,17 @@ const UserContext = (function () {
     return context.token ? true : false;
   };
 
+  const logOut = () => {
+    context.token = undefined;
+    context.isAdmin = undefined;
+  };
+
   return {
     setContext: setContext,
     getToken: getToken,
     isAdmin: isAdmin,
     isLoggedIn: isLogged,
+    logOut: logOut,
   };
 })();
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   AppBar,
   Typography,
@@ -13,6 +13,8 @@ import {
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import styled from 'styled-components';
+import UserContext from '../services/Seassion';
+import Redirect from './Redirect';
 
 const theme = createMuiTheme({
   overrides: {
@@ -49,14 +51,20 @@ export interface topBarProps {
 
 const TopBar = (props: topBarProps) => {
   const { name, surname } = props;
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  const [logOut, setLogOut] = useState(false);
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogOut = () => {
+    UserContext.logOut();
+    setLogOut(true);
   };
 
   return (
@@ -93,12 +101,13 @@ const TopBar = (props: topBarProps) => {
                 }}
                 open={open}
                 onClose={handleClose}>
-                <MenuItem onClick={handleClose}>Wyloguj</MenuItem>
+                <MenuItem onClick={handleLogOut}>Wyloguj</MenuItem>
               </Menu>
             </Box>
           </Toolbar>
         </AppBar>
       </ThemeProvider>
+      {logOut && <Redirect to='Login' />}
     </>
   );
 };
