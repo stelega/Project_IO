@@ -83,8 +83,8 @@ class SeanceData(Resource):
 
     def _search_seances_query(self, query):
         parser = reqparse.RequestParser()
-        parser.add_argument('searchInTitle')
+        parser.add_argument('search')
         args = parser.parse_args()
-        if args['searchInTitle'] is not None:
-            query = query.join(MovieModel).filter(MovieModel.title.ilike('%{}%'.format(args['searchInTitle'])))
+        if args['search'] is not None:
+            query = query.filter(MovieModel.title.ilike('%{}%'.format(args['search'])))
         return query

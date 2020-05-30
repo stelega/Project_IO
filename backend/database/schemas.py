@@ -14,9 +14,8 @@ class SeanceSchema(ma.SQLAlchemyAutoSchema):
         model = SeanceModel
         include_fk = True
 
-    tickets = fields.Nested(TicketSchema, many=True)
-    movie = fields.Nested(lambda: MovieSchema(only=('title',)))
-    hall = fields.Nested(lambda: HallSchema(only=('name',)))
+    movie = fields.Pluck(lambda: MovieSchema, 'title')
+    hall = fields.Pluck(lambda: HallSchema, 'name')
 
 
 class MovieSchema(ma.SQLAlchemyAutoSchema):

@@ -1,12 +1,12 @@
-from flask_restful import Resource, reqparse
 from flask import jsonify, make_response
+from flask_restful import Resource, reqparse
 
+from database.const_data import Genre, AgeCategory
+from database.database import db
 from database.models import MovieModel
 from database.schemas import MovieSchema
-from database.const_data import Genre, AgeCategory
 from handlers.employee_handlers import admin_required
 from handlers.messages import ApiMessages
-from database.database import db
 from handlers.utilities import prepare_and_run_query
 
 
@@ -86,10 +86,10 @@ class MovieData(Resource):
 
     def _search_movies_query(self, query):
         parser = reqparse.RequestParser()
-        parser.add_argument('searchInTitle')
+        parser.add_argument('search')
         args = parser.parse_args()
-        if args['searchInTitle'] is not None:
-            query = query.filter(MovieModel.title.ilike('%{}%'.format(args['searchInTitle'])))
+        if args['search'] is not None:
+            query = query.filter(MovieModel.title.ilike('%{}%'.format(args['search'])))
         return query
 
 

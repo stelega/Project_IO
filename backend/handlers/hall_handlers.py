@@ -96,10 +96,10 @@ class HallData(Resource):
 
     def _search_halls_query(self, query):
         parser = reqparse.RequestParser()
-        parser.add_argument('searchInName')
+        parser.add_argument('search')
         args = parser.parse_args()
-        if args['searchInName'] is not None:
-            query = query.filter(HallModel.name.ilike('%{}%'.format(args['searchInName'])))
+        if args['search'] is not None:
+            query = query.filter(HallModel.name.ilike('%{}%'.format(args['search'])))
         return query
 
     def _create_halls_seats(self, hall):
