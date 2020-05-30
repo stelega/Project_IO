@@ -32,6 +32,8 @@ const UserContext = (function () {
   const logOut = () => {
     context.token = undefined;
     context.isAdmin = undefined;
+    context.name = undefined;
+    context.surname = undefined;
   };
 
   return {
