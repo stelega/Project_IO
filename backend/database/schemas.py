@@ -33,3 +33,9 @@ class SeatSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = SeatModel
         include_fk = True
+
+
+class EmployeeSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = EmployeeModel
+        fields = ("employeeId", "name", "surname", "login")

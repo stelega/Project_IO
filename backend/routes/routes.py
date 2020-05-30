@@ -10,7 +10,7 @@ from handlers.playground import Playground
 def generate_routes(app):
     api = Api(app)
 
-    api.add_resource(EmployeesData, '/test', endpoint="test")
+    api.add_resource(EmployeesData, '/employee', endpoint="test")
     api.add_resource(Register, '/register', endpoint="register")
     api.add_resource(Login, '/login', endpoint="login")
     api.add_resource(MovieData, '/movie', endpoint="movie")
