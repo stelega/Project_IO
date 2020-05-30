@@ -179,9 +179,9 @@ class Login(Resource):
 
         if emplo_user and bcrypt.verify(password, emplo_user.password):
             token = jwt.encode({'login': emplo_user.login, 'exp': time}, current_app.config['SECRET_KEY'])
-            return make_response(jsonify({'token': token.decode('UTF-8'), 'asAdmin': emplo_user.isAdmin}), 200)
+            return make_response(jsonify({'token': token.decode('UTF-8'), 'isAdmin': emplo_user.isAdmin, 'name': emplo_user.name, 'surname': emplo_user.surname}), 200)
 
-        return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+        return make_response({"message": "Could not verify"}, 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
     def get(self):
 
