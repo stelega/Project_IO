@@ -9,7 +9,8 @@ import {
   ButtonMargin,
   customTheme,
 } from './LoginFormStyles';
-import { apiLogin, Token } from '../../../api/login';
+import { apiLogin } from '../../../api/login';
+import UserToken, { Context } from '../../../services/Seassion';
 
 enum LogType {
   Pracownik,
@@ -45,8 +46,9 @@ const LoginForm = () => {
   };
 
   const submit = async () => {
-    const response: Token = await apiLogin(login, password);
+    const response: Context = await apiLogin(login, password);
     console.log(response);
+    console.log(UserToken.getToken());
   };
 
   return (
