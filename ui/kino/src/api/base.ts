@@ -27,9 +27,6 @@ export async function apiGetAuthorized<T>(uri: string) {
       'access-token': token ? token : '',
     },
   });
-  console.log(responseJson);
-  console.log(responseJson.status);
   const response: T = await responseJson.json();
-  console.log(response);
   return response;
 }
