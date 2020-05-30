@@ -10,7 +10,8 @@ import {
   customTheme,
 } from './LoginFormStyles';
 import { apiLogin } from '../../../api/login';
-import UserToken, { Context } from '../../../services/Seassion';
+import UserContext from '../../../services/Seassion';
+import Redirect from './Redirect';
 
 enum LogType {
   Pracownik,
@@ -35,6 +36,7 @@ const LoginForm = () => {
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [logType, setLogType] = useState('Pracownik');
+  const [logged, setLogged] = useState<boolean>(false);
   const handleLoginChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLogin(event.target.value);
   };
@@ -46,53 +48,57 @@ const LoginForm = () => {
   };
 
   const submit = async () => {
-    const response: Context = await apiLogin(login, password);
-    console.log(response);
-    console.log(UserToken.getToken());
+    await apiLogin(login, password, logType);
+    if (UserContext.isLoggedIn()) {
+      setLogged(true);
+    }
   };
 
   return (
-    <Container>
-      <Title>Zaloguj się</Title>
-      <Input>
-        Login
-        <br />
-        <TextField
-          id='login'
-          onChange={handleLoginChange}
-          fullWidth></TextField>
-      </Input>
-      <Input>
-        Hasło
-        <br />
-        <TextField
-          id='password'
-          type='password'
-          onChange={handlePasswordChange}
-          fullWidth></TextField>
-      </Input>
-      <Select>
-        <MarginRight>Zaloguj jako</MarginRight>
-        <TextField
-          id='log-type'
-          select
-          value={logType}
-          onChange={handleLogTypeChange}>
-          {loginTypes.map((option) => (
-            <MenuItem key={option.name} value={option.name}>
-              {option.name}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Select>
-      <ButtonMargin>
-        <ThemeProvider theme={customTheme}>
-          <Button variant='contained' color='primary' onClick={submit}>
-            Zaloguj
-          </Button>
-        </ThemeProvider>
-      </ButtonMargin>
-    </Container>
+    <>
+      <Container>
+        <Title>Zaloguj się</Title>
+        <Input>
+          Login
+          <br />
+          <TextField
+            id='login'
+            onChange={handleLoginChange}
+            fullWidth></TextField>
+        </Input>
+        <Input>
+          Hasło
+          <br />
+          <TextField
+            id='password'
+            type='password'
+            onChange={handlePasswordChange}
+            fullWidth></TextField>
+        </Input>
+        <Select>
+          <MarginRight>Zaloguj jako</MarginRight>
+          <TextField
+            id='log-type'
+            select
+            value={logType}
+            onChange={handleLogTypeChange}>
+            {loginTypes.map((option) => (
+              <MenuItem key={option.name} value={option.name}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Select>
+        <ButtonMargin>
+          <ThemeProvider theme={customTheme}>
+            <Button variant='contained' color='primary' onClick={submit}>
+              Zaloguj
+            </Button>
+          </ThemeProvider>
+        </ButtonMargin>
+      </Container>
+      {logged && <Redirect to={logType} />}
+    </>
   );
 };
 
