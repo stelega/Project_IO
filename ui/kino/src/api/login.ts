@@ -1,13 +1,9 @@
 import { BACKEND_URL } from './../config';
+import UserToken, { Context } from '../services/Seassion';
 
 interface LoginDto {
   login: string;
   password: string;
-}
-
-export interface Token {
-  token: string;
-  isAdmin: boolean;
 }
 
 export async function apiLogin(login: string, password: string) {
@@ -17,7 +13,9 @@ export async function apiLogin(login: string, password: string) {
     password: password,
   };
   const jsonBody = JSON.stringify(body);
-  return await apiPost<Token>(url, jsonBody);
+  const response: Context = await apiPost<Context>(url, jsonBody);
+  UserToken.setContext(response);
+  return response;
 }
 
 async function apiPost<T>(uri: string, jsonBody: string, token?: string) {
