@@ -89,7 +89,7 @@ class Register(Resource):
         employee = EmployeeModel.query.filter_by(login=data.get('login')).first()
         if not employee:
             new_employee = EmployeeModel(name=data.get('name'), surname=data.get('surname'), login=data.get('login'),
-                                         password=str(bcrypt.hash(data.get('password'))), isAdmin=data.get('isIdmin'))
+                                         password=str(bcrypt.hash(data.get('password'))), isAdmin=data.get('isAdmin'))
             db.session.add(new_employee)
             db.session.commit()
             return jsonify({'new_employee_name': new_employee.name, 'new_employee_surname': new_employee.surname})

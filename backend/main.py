@@ -13,7 +13,7 @@ from database.database import db, ma
 
 def create_app(database_url_arg):
     app = Flask(__name__)
-    cors = CORS(app, resources={r"/*": {"origins": origins}})
+    cors = CORS(app, resources={r"/*": {"origins": origins}}, support_credentials=True)
     app.config['DEBUG'] = True
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url_arg
