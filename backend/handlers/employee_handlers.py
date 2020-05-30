@@ -73,7 +73,6 @@ def admin_required(f):
 
 
 class EmployeesData(Resource):
-    @admin_required
     def get(self):
         args = self._parse_employee_args()
         if args['employeeId'] is not None:
@@ -147,7 +146,6 @@ class EmployeesData(Resource):
 
 
 class Register(Resource):
-    @admin_required
     def post(self):
         data = request.get_json()
         # check if user already exists
@@ -160,7 +158,7 @@ class Register(Resource):
             output = EmployeeSchema().dump(new_employee)
             return make_response(jsonify({'data': output}), 201)
         else:
-            return make_response(jsonify({'message': 'User already exists'}, 409))
+            return make_response(jsonify({'message': 'User already exists'}), 409)
 
 
 class Login(Resource):
@@ -170,21 +168,21 @@ class Login(Resource):
         password = auth.get('password')
         login_type = auth.get('type')
         if not auth or not login or not password or not login_type:
-            return make_response({"message": "Missing login type"}, 401,
+            return make_response({"message": "Could not verify"}, 401,
                                  {'WWW-Authenticate': 'Basic realm="Login required"'})
 
         emplo_user = EmployeeModel.query.filter_by(login=login).first()
-        if login_type != 'employee' and not emplo_user.isAdmin:
-            return make_response(jsonify({'message': 'No access permission'}), 403)
-        time = datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
+        time = datetime.datetime.utcnow() + datetime.timedelta(minutes=60)
 
         if emplo_user and bcrypt.verify(password, emplo_user.password):
+            if login_type != 'employee' and not emplo_user.isAdmin:
+                return make_response(jsonify({'message': 'No access permission'}), 403)
             token = jwt.encode({'login': emplo_user.login, 'exp': time}, current_app.config['SECRET_KEY'])
             return make_response(jsonify(
                 {'token': token.decode('UTF-8'), 'isAdmin': emplo_user.isAdmin, 'name': emplo_user.name,
                  'surname': emplo_user.surname}), 200)
 
-        return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+        return make_response(jsonify({"message": "Login or password incorrect"}), 401, {'WWW-Authenticate': 'Basic realm="Login required"'})
 
     def get(self):
 

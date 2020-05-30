@@ -37,4 +37,4 @@ class SeatSchema(ma.SQLAlchemyAutoSchema):
 class EmployeeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = EmployeeModel
-        fields = ("employeeId", "name", "surname", "login")
+        fields = ("employeeId", "name", "surname", "login", "isAdmin")
