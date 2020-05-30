@@ -13,6 +13,8 @@ interface UserContext {
   isAdmin: () => Boolean | undefined;
   isLoggedIn: () => Boolean;
   logOut: () => void;
+  getName: () => string;
+  getSurname: () => string;
 }
 
 const UserContext: UserContext = (() => {
@@ -47,9 +49,21 @@ const UserContext: UserContext = (() => {
     cookies.remove('surname');
   };
 
+  const getName = (): string => {
+    const name = cookies.get('name');
+    return name !== 'undefined' ? name : '';
+  };
+
+  const getSurname = (): string => {
+    const surname = cookies.get('surname');
+    return surname !== 'undefined' ? surname : '';
+  };
+
   return {
     setContext: setContext,
     getToken: getToken,
+    getName: getName,
+    getSurname: getSurname,
     isAdmin: isAdmin,
     isLoggedIn: isLogged,
     logOut: logOut,

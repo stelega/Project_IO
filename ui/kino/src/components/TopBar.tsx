@@ -44,13 +44,10 @@ const Account = styled(Icon)`
   margin-top: auto;
   margin-bottom: auto;
 `;
-export interface topBarProps {
-  name: string;
-  surname: string;
-}
 
-const TopBar = (props: topBarProps) => {
-  const { name, surname } = props;
+const TopBar = () => {
+  const name: string = UserContext.getName();
+  const surname: string = UserContext.getSurname();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {

@@ -25,7 +25,7 @@ const AdminMainPage = () => {
 
   return UserContext.isLoggedIn() && UserContext.isAdmin() ? (
     <>
-      <TopBar name={'Jan'} surname={'Kowalski'} />
+      <TopBar />
       <Container>
         <LeftMenu
           options={options}
