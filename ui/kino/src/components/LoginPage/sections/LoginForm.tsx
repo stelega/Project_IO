@@ -11,7 +11,7 @@ import {
 } from './LoginFormStyles';
 import { apiLogin } from '../../../api/login';
 import UserContext from '../../../services/Seassion';
-import Redirect from './Redirect';
+import Redirect from '../../Redirect';
 
 enum LogType {
   Pracownik,

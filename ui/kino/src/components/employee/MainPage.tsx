@@ -5,7 +5,7 @@ import LeftMenu from '../LeftMenu';
 import Screenings from './Screenings/Screenings';
 import Tickets from './Tickets/Tickets';
 import UserContext from '../../services/Seassion';
-import Redirect from '../LoginPage/sections/Redirect';
+import Redirect from '../Redirect';
 
 const Container = styled.div`
   display: flex;

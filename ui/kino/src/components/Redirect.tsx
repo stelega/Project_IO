@@ -1,5 +1,5 @@
 import React from 'react';
-import UserContext from '../../../services/Seassion';
+import UserContext from '../services/Seassion';
 import { Redirect as ReactRedirect } from 'react-router-dom';
 
 interface RedirectProps {

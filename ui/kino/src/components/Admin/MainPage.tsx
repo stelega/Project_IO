@@ -6,7 +6,7 @@ import Halls from './Halls/Halls';
 import Films from './Films/Films';
 import LeftMenu from '../LeftMenu';
 import UserContext from '../../services/Seassion';
-import Redirect from '../LoginPage/sections/Redirect';
+import Redirect from '../Redirect';
 
 const Container = styled.div`
   display: flex;
