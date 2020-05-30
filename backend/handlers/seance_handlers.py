@@ -3,14 +3,13 @@ from flask import jsonify, make_response
 
 from database.models import SeanceModel, MovieModel, HallModel
 from database.schemas import SeanceSchema
-from .employee_handlers import login_required
+from handlers.employee_handlers import login_required
 from handlers.messages import ApiMessages
 from database.database import db
-from .utilities import prepare_and_run_query
+from handlers.utilities import prepare_and_run_query
 
 
 class SeanceData(Resource):
-    @login_required
     def get(self):
         args = self._parse_seance_args()
         if args['seanceId'] is not None:
