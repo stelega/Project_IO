@@ -17,30 +17,34 @@ interface FilmsTableBodyProps {
 }
 
 const FilmsTableBody = (props: FilmsTableBodyProps) => {
+  const { films } = props;
   return (
     <TableBody>
-      {props.films.map((row) => {
-        return (
-          <TableRow hover tabIndex={-1} key={row.movieId}>
-            <TableCell align='center'>{row.title}</TableCell>
-            <TableCell align='center'>{row.movieCategory}</TableCell>
-            <TableCell align='center'>{row.releaseDate}</TableCell>
-            <TableCell align='center'>{row.closeDate}</TableCell>
-            <TableCell align='right'>
-              <IconButton
-                onClick={(event) => props.handleEditClick(event, row.movieId)}>
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                onClick={(event) =>
-                  props.handleDeleteClick(event, row.movieId)
-                }>
-                <DeleteIcon />
-              </IconButton>
-            </TableCell>
-          </TableRow>
-        );
-      })}
+      {films &&
+        props.films.map((row) => {
+          return (
+            <TableRow hover tabIndex={-1} key={row.movieId}>
+              <TableCell align='center'>{row.title}</TableCell>
+              <TableCell align='center'>{row.movieCategory}</TableCell>
+              <TableCell align='center'>{row.releaseDate}</TableCell>
+              <TableCell align='center'>{row.closeDate}</TableCell>
+              <TableCell align='right'>
+                <IconButton
+                  onClick={(event) =>
+                    props.handleEditClick(event, row.movieId)
+                  }>
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  onClick={(event) =>
+                    props.handleDeleteClick(event, row.movieId)
+                  }>
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          );
+        })}
     </TableBody>
   );
 };

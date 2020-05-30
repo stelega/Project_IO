@@ -13,23 +13,31 @@ from handlers.utilities import prepare_and_run_query
 class MovieData(Resource):
     @admin_required
     def get(self):
+        print('get')
         args = self._parse_movie_args()
+        print('after args')
         if args['movieId'] is not None:
+            print('movieId')
             movie = MovieModel.query.get(args['movieId'])
             if movie is None:
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
             count = 1
             output = MovieSchema().dump(movie)
         else:
+            print('else')
             try:
                 query = self._search_movies_query(MovieModel.query)
                 movies, count = prepare_and_run_query(query, args)
                 output = MovieSchema(many=True).dump(movies)
+                print('after output')
             except ValueError as err:
+                print(404)
                 return make_response(jsonify({'message': str(err)}), 404)
         if output is not None:
+            print(200)
             return make_response(jsonify({'data': output, 'count': count}), 200)
         else:
+            print(500)
             return make_response(jsonify({"message": ApiMessages.INTERNAL.value}), 500)
 
     @admin_required
@@ -74,6 +82,7 @@ class MovieData(Resource):
 
     def _parse_movie_args(self):
         parser = reqparse.RequestParser()
+        print('parser')
         parser.add_argument('movieId')
         parser.add_argument('title')
         parser.add_argument('director')
@@ -82,6 +91,7 @@ class MovieData(Resource):
         parser.add_argument('ageCategory')
         parser.add_argument('movieCategory')
         parser.add_argument('duration', type=int)
+        print('before return')
         return parser.parse_args()
 
     def _search_movies_query(self, query):
