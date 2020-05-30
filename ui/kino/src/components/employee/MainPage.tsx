@@ -20,7 +20,7 @@ const EmployeeMainPage = () => {
   };
   return UserContext.isLoggedIn() ? (
     <>
-      <TopBar name={'Jan'} surname={'Kowalski'} />
+      <TopBar />
       <Container>
         <LeftMenu
           options={options}
