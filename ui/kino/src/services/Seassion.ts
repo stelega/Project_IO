@@ -21,10 +21,15 @@ const UserContext = (function () {
     return context.isAdmin;
   };
 
+  const isLogged = (): Boolean => {
+    return context.token ? true : false;
+  };
+
   return {
     setContext: setContext,
     getToken: getToken,
     isAdmin: isAdmin,
+    isLoggedIn: isLogged,
   };
 })();
 

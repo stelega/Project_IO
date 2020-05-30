@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import LeftMenu from '../LeftMenu';
 import Screenings from './Screenings/Screenings';
 import Tickets from './Tickets/Tickets';
+import UserContext from '../../services/Seassion';
+import Redirect from '../LoginPage/sections/Redirect';
 
 const Container = styled.div`
   display: flex;
@@ -16,7 +18,7 @@ const EmployeeMainPage = () => {
   const handleChange = (value: string) => {
     setOptionsState(value);
   };
-  return (
+  return UserContext.isLoggedIn() ? (
     <>
       <TopBar name={'Jan'} surname={'Kowalski'} />
       <Container>
@@ -28,6 +30,8 @@ const EmployeeMainPage = () => {
         {optionsState === 'Seanse' ? <Screenings /> : <Tickets />}
       </Container>
     </>
+  ) : (
+    <Redirect to='Login' />
   );
 };
 
