@@ -1,3 +1,5 @@
+import Cookies from 'universal-cookie';
+
 export interface Context {
   token: string | undefined;
   isAdmin: boolean | undefined;
@@ -5,35 +7,41 @@ export interface Context {
   surname: string | undefined;
 }
 
-const UserContext = (function () {
-  let context: Context = {
-    token: undefined,
-    isAdmin: undefined,
-    name: undefined,
-    surname: undefined,
-  };
+interface UserContext {
+  setContext: (context: Context) => void;
+  getToken: () => string | undefined;
+  isAdmin: () => Boolean | undefined;
+  isLoggedIn: () => Boolean;
+  logOut: () => void;
+}
+
+const UserContext: UserContext = (() => {
+  const cookies = new Cookies();
 
   const getToken = (): string | undefined => {
-    return context.token;
+    return cookies.get('token');
   };
 
-  const setContext = (cont: Context): void => {
-    context = cont;
+  const setContext = (context: Context): void => {
+    cookies.set('token', context.token, { path: '/' });
+    cookies.set('isAdmin', context.isAdmin, { path: '/' });
+    cookies.set('name', context.name, { path: '/' });
+    cookies.set('surname', context.surname, { path: '/' });
   };
 
   const isAdmin = (): Boolean | undefined => {
-    return context.isAdmin;
+    return cookies.get('isAdmin');
   };
 
   const isLogged = (): Boolean => {
-    return context.token ? true : false;
+    return cookies.get('token') ? true : false;
   };
 
   const logOut = () => {
-    context.token = undefined;
-    context.isAdmin = undefined;
-    context.name = undefined;
-    context.surname = undefined;
+    cookies.remove('token');
+    cookies.remove('isAdmin');
+    cookies.remove('name');
+    cookies.remove('surname');
   };
 
   return {
