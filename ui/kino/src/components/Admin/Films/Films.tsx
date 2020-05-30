@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Table } from '@material-ui/core';
 import { getFilms } from '../../../services/FilmService';
@@ -11,7 +11,6 @@ import FilmsTablePagination from './tableComponents/FilmsTablePagination';
 import { PagedList } from '../../../models/PagedList';
 import { Film } from '../../../models/Film';
 import AddButton from './AddFilm/AddButton';
-
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -36,6 +35,18 @@ const Films = () => {
   const [orderBy, setOrderBy] = useState<keyof FilmListData>('title');
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [films, setFilms] = useState<PagedList<Film>>({ count: 0, data: [] });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getFilms();
+
+      setFilms(result);
+    };
+
+    fetchData();
+  }, []);
+
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof FilmListData
@@ -44,7 +55,6 @@ const Films = () => {
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-  const films: PagedList<Film> = getFilms();
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
