@@ -74,11 +74,12 @@ const FilmsTableHead = (props: FilmsTableHeadProps) => {
   return (
     <TableHead>
       <TableRow>
-        {headCells.map((headCell) => (
+        {headCells.map((headCell, index) => (
           <TableCell
             key={headCell.id}
             align={'center'}
             padding={'default'}
+            size={index === 0 ? 'medium' : 'small'}
             sortDirection={orderBy === headCell.id ? order : false}>
             <TableSortLabel
               active={orderBy === headCell.id}

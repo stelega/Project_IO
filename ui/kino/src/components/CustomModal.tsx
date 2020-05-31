@@ -6,8 +6,10 @@ const Box = styled.div`
   margin-top: 10vh;
   margin-left: 12vw;
   margin-right: 8vw;
-  min-height: 500px;
+  height: 70vh;
+  width: 80vw;
   background-color: white;
+  position: absolute;
 `;
 
 export interface ModalProps {

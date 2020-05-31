@@ -100,7 +100,7 @@ const Films = () => {
         <AddButton />
       </TopContainer>
       <TableContainer>
-        <Table>
+        <Table size='small'>
           <FilmsTableHead
             order={order}
             orderBy={orderBy}

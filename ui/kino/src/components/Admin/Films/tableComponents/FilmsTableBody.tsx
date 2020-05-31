@@ -24,7 +24,9 @@ const FilmsTableBody = (props: FilmsTableBodyProps) => {
         props.films.map((row) => {
           return (
             <TableRow hover tabIndex={-1} key={row.movieId}>
-              <TableCell align='center'>{row.title}</TableCell>
+              <TableCell size='medium' align='center'>
+                {row.title}
+              </TableCell>
               <TableCell align='center'>{row.movieCategory}</TableCell>
               <TableCell align='center'>{row.releaseDate}</TableCell>
               <TableCell align='center'>{row.closeDate}</TableCell>
