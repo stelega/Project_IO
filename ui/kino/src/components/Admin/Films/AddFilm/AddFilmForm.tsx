@@ -16,6 +16,7 @@ import { customTheme } from '../../../LoginPage/sections/LoginFormStyles';
 import {
   getAgeCategories,
   getMovieCategories,
+  addFilm,
 } from '../../../../services/FilmService';
 
 const Container = styled.div`
@@ -43,18 +44,19 @@ const ButtonContainer = styled.div`
 
 interface AddFilmForm {
   handleClose: (event: React.MouseEvent<HTMLElement>) => void;
+  handleAdded: () => void;
 }
-
-const availableOptions = ['Tak', 'Nie'];
 
 const AddForm = (props: AddFilmForm) => {
   const [ageCategories, setAgeCategories] = useState<string[]>();
   const [movieCategories, setMovieCategories] = useState<string[]>();
-  const [ageCategory, setAgeCategory] = useState<string>();
-  const [movieCategory, setMovieCategory] = useState<string>();
-  const [available, setAvailable] = useState('Tak');
+  const [title, setTitle] = useState<string>();
+  const [director, setDirector] = useState<string>();
+  const [ageCategory, setAgeCategory] = useState<string>('');
+  const [movieCategory, setMovieCategory] = useState<string>('');
+  const [duration, setDuration] = useState<number>();
   const [dateStart, setDateStart] = useState(moment());
-  const [dateEnd, setDateEnd] = useState(moment().add('week', 1));
+  const [dateEnd, setDateEnd] = useState(moment().add(1, 'week'));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,10 +68,10 @@ const AddForm = (props: AddFilmForm) => {
   }, []);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
+    setTitle(event.target.value);
   };
   const handleDirectorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
+    setDirector(event.target.value);
   };
   const handleDateStartChange = (date: Moment) => {
     setDateStart(date);
@@ -87,10 +89,30 @@ const AddForm = (props: AddFilmForm) => {
   ) => {
     setMovieCategory(event.target.value);
   };
-  const handleAvailableChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setAvailable(event.target.value);
+  const handleDurationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDuration(Number(event.target.value));
+  };
+  const handleAddClick = async (event: React.MouseEvent<HTMLElement>) => {
+    if (
+      title &&
+      director &&
+      ageCategory &&
+      movieCategory &&
+      duration &&
+      dateStart &&
+      dateEnd
+    ) {
+      await addFilm(
+        title,
+        director,
+        ageCategory,
+        movieCategory,
+        duration,
+        dateStart,
+        dateEnd
+      );
+      props.handleAdded();
+    }
   };
   return (
     <>
@@ -114,12 +136,15 @@ const AddForm = (props: AddFilmForm) => {
                   select
                   value={ageCategory}
                   onChange={handleAgeCategoryChange}>
-                  {ageCategories &&
+                  {ageCategories ? (
                     ageCategories.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
                       </MenuItem>
-                    ))}
+                    ))
+                  ) : (
+                    <MenuItem></MenuItem>
+                  )}
                 </TextField>
               </TableCell>
             </TableRow>
@@ -139,12 +164,15 @@ const AddForm = (props: AddFilmForm) => {
                   select
                   value={movieCategory}
                   onChange={handleMovieCategoryChange}>
-                  {movieCategories &&
+                  {movieCategories ? (
                     movieCategories.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
                       </MenuItem>
-                    ))}
+                    ))
+                  ) : (
+                    <MenuItem></MenuItem>
+                  )}
                 </TextField>
               </TableCell>
             </TableRow>
@@ -160,20 +188,12 @@ const AddForm = (props: AddFilmForm) => {
                 />
               </TableCell>
               <TableCell align='right'>
-                <Text>Dostępny</Text>
+                <Text>Czas trwania</Text>
               </TableCell>
               <TableCell align='left'>
                 <TextField
-                  id='available'
-                  select
-                  value={available}
-                  onChange={handleAvailableChange}>
-                  {availableOptions.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  id='duration'
+                  onChange={handleDurationChange}></TextField>
               </TableCell>
             </TableRow>
             <TableRow>
@@ -200,7 +220,10 @@ const AddForm = (props: AddFilmForm) => {
               onClick={props.handleClose}>
               Wróć
             </Button>
-            <Button variant='contained' color='secondary'>
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={handleAddClick}>
               Dodaj
             </Button>
           </ThemeProvider>

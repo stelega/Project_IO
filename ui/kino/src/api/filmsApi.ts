@@ -1,9 +1,9 @@
-import { Category } from './../models/Film';
+import { Category, NewFilm } from './../models/Film';
 import { PagedList } from '../models/PagedList';
-import { apiGetAuthorized } from './base';
+import { apiGetAuthorized, apiPostAuthorized } from './base';
 import { Film } from '../models/Film';
 
-export interface GetFilmsQuery {
+interface GetFilmsQuery {
   perPage?: number;
   page?: number;
   orderBy?: string;
@@ -28,6 +28,11 @@ export const apiGetFilms = async (
     GetFilmsQuery
   >(url, query);
   return response;
+};
+
+export const apiAddFilm = async (body: NewFilm) => {
+  const url = '/movie';
+  await apiPostAuthorized(url, JSON.stringify(body));
 };
 
 export const apiGetAgeCategories = async () => {

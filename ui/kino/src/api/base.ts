@@ -34,6 +34,22 @@ export async function apiGetAuthorized<ResponseType, QueryParamsType>(
   return response;
 }
 
+export async function apiPostAuthorized<T>(uri: string, jsonBody: string) {
+  const url = BACKEND_URL + uri;
+  const token = UserContext.getToken();
+  const responseJson = await fetch(url, {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': token ? token : '',
+    },
+    body: jsonBody,
+  });
+  const response: T = await responseJson.json();
+  return response;
+}
+
 const queryBuilder = (params: any): string => {
   const esc = encodeURIComponent;
   const query =

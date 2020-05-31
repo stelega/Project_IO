@@ -1,10 +1,12 @@
+import { Moment } from 'moment';
 import {
   apiGetFilms,
   apiGetMovieCategories,
   apiGetAgeCategories,
+  apiAddFilm,
 } from '../api/filmsApi';
 import { PagedList } from '../models/PagedList';
-import { Film, Category } from '../models/Film';
+import { Film, Category, NewFilm } from '../models/Film';
 
 export const getFilms = async (
   rowsPerPage?: number,
@@ -19,6 +21,27 @@ export const getFilms = async (
     order
   );
   return films;
+};
+
+export const addFilm = async (
+  title: string,
+  director: string,
+  ageCategory: string,
+  movieCategory: string,
+  duration: number,
+  dateStart: Moment,
+  dateEnd: Moment
+) => {
+  const body: NewFilm = {
+    ageCategory: ageCategory,
+    director: director,
+    duration: duration,
+    movieCategory: movieCategory,
+    releaseDate: dateStart.format('YYYY-MM-DD').toString(),
+    closeDate: dateEnd.format('YYYY-MM-DD').toString(),
+    title: title,
+  };
+  await apiAddFilm(body);
 };
 
 export const getAgeCategories = async (): Promise<string[]> => {

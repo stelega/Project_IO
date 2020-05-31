@@ -117,11 +117,15 @@ const Films = () => {
     console.log(movieId);
   };
 
+  const handleUpdate = () => {
+    updateFilms(rowsPerPage, page, orderBy, order);
+  };
+
   return (
     <Container>
       <TopContainer>
         <Title>Wszystkie Filmy</Title>
-        <AddButton />
+        <AddButton handleAdded={handleUpdate} />
       </TopContainer>
       <TableContainer>
         <Table size='small'>
