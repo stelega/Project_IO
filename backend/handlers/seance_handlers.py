@@ -1,15 +1,19 @@
-from flask_restful import Resource, reqparse
-from flask import jsonify, make_response
+from datetime import datetime, timedelta
 
+from flask import jsonify, make_response
+from flask_restful import Resource, reqparse
+
+from database.config import close_time, open_time, cleaning_minutes, possible_seance_interval
+from database.database import db
 from database.models import SeanceModel, MovieModel, HallModel
 from database.schemas import SeanceSchema
 from handlers.employee_handlers import login_required
 from handlers.messages import ApiMessages
-from database.database import db
 from handlers.utilities import prepare_and_run_query
 
 
 class SeanceData(Resource):
+    @login_required
     def get(self):
         args = self._parse_seance_args()
         if args['seanceId'] is not None:
@@ -88,3 +92,44 @@ class SeanceData(Resource):
         if args['search'] is not None:
             query = query.filter(MovieModel.title.ilike('%{}%'.format(args['search'])))
         return query
+
+
+class AvailableHoursData(Resource):
+    @login_required
+    def get(self):
+        args = self._parse_args()
+        movie = MovieModel.query.get(args['movieId'])
+        duration = movie.duration + cleaning_minutes
+        picked_date = datetime.strptime(args['date'], "%Y-%m-%d")
+        possible_time = datetime(picked_date.year, picked_date.month, picked_date.day,
+                                 open_time.hour, open_time.minute, open_time.hour)
+        possible_end_time = possible_time + timedelta(0, duration * 60)
+        seances2 = SeanceModel.query.filter(
+            (SeanceModel.date == picked_date) & (SeanceModel.hallId == args['hallId'])).all()
+        seances = [{
+            "start": datetime(picked_date.year, picked_date.month, picked_date.day, seance.time.hour,
+                              seance.time.minute),
+            "end": (datetime(picked_date.year, picked_date.month, picked_date.day, seance.time.hour, seance.time.minute)
+                    + timedelta(0, (seance.movie.duration + cleaning_minutes) * 60))} for seance in seances2]
+        output = []
+        while possible_time <= datetime(picked_date.year, picked_date.month, picked_date.day,
+                                        close_time.hour, close_time.minute, close_time.second):
+            correct = True
+            for seance in seances:
+                if seance["start"] <= possible_end_time <= seance["end"] \
+                        or seance["start"] <= possible_time <= seance["end"] \
+                        or (possible_time <= seance["start"] and possible_end_time >= seance["end"]):
+                    correct = False
+                    break
+            if correct:
+                output.append(possible_time.strftime("%H:%M"))
+            possible_time += timedelta(0, possible_seance_interval)
+            possible_end_time += timedelta(0, possible_seance_interval)
+        return make_response(jsonify({'data': output}), 200)
+
+    def _parse_args(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('movieId')
+        parser.add_argument('hallId')
+        parser.add_argument('date')
+        return parser.parse_args()
