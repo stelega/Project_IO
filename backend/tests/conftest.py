@@ -1,7 +1,11 @@
 import pytest
 import sys
 import os
-sys.path.append(os.getcwd())
+import json
+
+from passlib.hash import bcrypt
+
+sys.path.append("..")
 from database.database import db
 from database.config import test_database_url
 from database.models import EmployeeModel, MovieModel, HallModel, SeanceModel, SeatModel, TicketModel
@@ -10,7 +14,7 @@ from main import create_app
 
 @pytest.fixture(scope='module')
 def new_employee():
-    employee = EmployeeModel(1,"Jan", "Kowalski", "jkowalski", "Passw0rd")
+    employee = EmployeeModel(1, "Jan", "Kowalski", "jkowalski", "Passw0rd")
     return employee
 
 
@@ -38,18 +42,19 @@ def admin_token(test_client, init_database, new_admin):
 
 @pytest.fixture(scope='module')
 def new_movie():
-    movie = MovieModel(1, "Film", "Rezyser", "2020-5-12", "2020-8-12", "+16", "Film akcji", 120)
+    movie = MovieModel(1, "NowyFilm", "NowyRezyser", "2020-7-12", "2020-8-12", "18+", "Film akcji", 130)
     return movie
+
 
 @pytest.fixture(scope='module')
 def new_hall():
-    hall = HallModel(1, "A", 5, 8, True)
+    hall = HallModel(1, 'NewHall', 10, 5, True)
     return hall
 
 
 @pytest.fixture(scope='module')
-def new_seance():
-    seance = SeanceModel(1, "18:00:00", "2020-5-12", 1, 1, 10)
+def new_seance(new_hall, new_movie):
+    seance = SeanceModel(1, "18:00:00", "2020-8-12", str(new_hall.hallId), str(new_movie.movieId), 1)
     return seance
 
 
@@ -58,13 +63,14 @@ def new_seat():
     seat = SeatModel(1, 1, 1, 1)
     return seat
 
+
 @pytest.fixture(scope='module')
 def new_ticket():
     ticket = TicketModel(1, 18.00, 0.00, 1, 1)
     return ticket
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def test_client():
     flask_app = create_app(test_database_url)
 
@@ -75,7 +81,7 @@ def test_client():
     ctx.pop()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def init_database():
     db.create_all()
     db.session.commit()

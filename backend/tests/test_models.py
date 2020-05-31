@@ -15,30 +15,31 @@ def test_new_employee(new_employee):
 
 def test_new_movie(new_movie):
     assert new_movie.id == 1
-    assert new_movie.title == "Film"
-    assert new_movie.director == "Rezyser"
-    assert new_movie.releaseDate == "2020-5-12"
+    assert new_movie.title == "NowyFilm"
+    assert new_movie.director == "NowyRezyser"
+    assert new_movie.releaseDate == "2020-7-12"
     assert new_movie.closeDate == "2020-8-12"
-    assert new_movie.ageCategory == "+16"
+    assert new_movie.ageCategory == "18+"
     assert new_movie.movieCategory == "Film akcji"
-    assert new_movie.duration == 120
+    assert new_movie.duration == 130
 
 
 def test_new_hall(new_hall):
     assert new_hall.id == 1
-    assert new_hall.name == "A"
-    assert new_hall.rows == 5
-    assert new_hall.numOfSeats == 40
+    assert new_hall.name == "NewHall"
+    assert new_hall.rows == 10
+    assert new_hall.seatsPerRow == 5
+    assert new_hall.numOfSeats == 50
     assert new_hall.availability
 
 
-def test_new_seance(new_seance):
+def test_new_seance(new_seance, new_hall, new_movie):
     assert new_seance.id == 1
     assert new_seance.time == "18:00:00"
-    assert new_seance.date == "2020-5-12"
-    assert new_seance.hallId == 1
-    assert new_seance.movieId == 1
-    assert new_seance.ticketsSold == 10
+    assert new_seance.date == "2020-8-12"
+    assert new_seance.hallId == str(new_hall.hallId)
+    assert new_seance.movieId == str(new_movie.movieId)
+    assert new_seance.ticketsSold == 1
 
 
 def test_new_seat(new_seat):
