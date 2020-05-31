@@ -1,6 +1,7 @@
 from marshmallow import fields
-from database.models import *
+
 from database.database import ma
+from database.models import *
 
 
 class TicketSchema(ma.SQLAlchemyAutoSchema):
@@ -31,7 +32,6 @@ class HallSchema(ma.SQLAlchemyAutoSchema):
 class SeatSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = SeatModel
-        include_fk = True
 
 
 class EmployeeSchema(ma.SQLAlchemyAutoSchema):
