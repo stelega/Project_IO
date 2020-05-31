@@ -16,6 +16,9 @@ class TicketData(Resource):
         db.session.add(ticket)
         db.session.commit()
         output = TicketSchema().dump(ticket)
+        seance = ticket.seance
+        seance.ticketsSold += 1
+        db.session.commit()
         return make_response(jsonify({'data': output}), 201)
 
     def _parse_ticket_args(self):

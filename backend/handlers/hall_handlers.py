@@ -92,6 +92,7 @@ class HallData(Resource):
         parser.add_argument('rows', type=int)
         parser.add_argument('seatsPerRow', type=int)
         parser.add_argument('availability', type=inputs.boolean)
+        parser.add_argument('numOfSeats', type=int)
         return parser.parse_args()
 
     def _search_halls_query(self, query):

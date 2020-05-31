@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import jsonify, make_response
 from flask_restful import Resource, reqparse
 
@@ -91,6 +93,24 @@ class MovieData(Resource):
         if args['search'] is not None:
             query = query.filter(MovieModel.title.ilike('%{}%'.format(args['search'])))
         return query
+
+
+class AvailableMoviesData(Resource):
+    def get(self):
+        args = self._parse_args()
+        chosen_date = datetime.strptime(args["date"], "%Y-%m-%d").date()
+        available_movies = MovieModel.query.filter(MovieModel.releaseDate <= chosen_date).filter(
+            MovieModel.closeDate >= chosen_date).all()
+        output = [{
+            "movieId": movie.movieId,
+            "title": movie.title
+        } for movie in available_movies]
+        return make_response(jsonify({"data": output}), 200)
+
+    def _parse_args(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('date')
+        return parser.parse_args()
 
 
 class AgeCategoryData(Resource):
