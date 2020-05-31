@@ -56,23 +56,29 @@ def test_new_ticket(new_ticket):
     assert new_ticket.seanceId == 1
 
 
-def test_registration(test_client, init_database):
+def test_registration(test_client, init_database, admin_token):
     with test_client:
         response = test_client.post('/register',
-                                    data=json.dumps(dict(name='Jan',
-                                                         surname='Kowalski',
-                                                         login='nowylogin',
+                                    data=json.dumps(dict(name='Uzytkownik1',
+                                                         surname='Uzytkownik1',
+                                                         login='uzytkownik',
                                                          password='Passw0rd',
                                                          isAdmin=False)),
+                                    headers={'access-token': admin_token},
                                     content_type='application/json')
-        data = json.loads(response.data.decode())
-        valid_registration_response = dict(new_employee_name="Jan",
-                                           new_employee_surname="Kowalski")
-        assert response.status_code == 200
-        assert data == valid_registration_response
+
+        result = json.loads(response.data.decode())
+        assert response.status_code == 201
+
+        data = result['data']
+
+        assert data['name'] == 'Uzytkownik1'
+        assert data['surname'] == 'Uzytkownik1'
+        assert data['login'] == 'uzytkownik'
+        assert not data['isAdmin']
 
 
-def test_registered_with_already_registered_user(test_client, new_employee, init_database):
+def test_registered_with_already_registered_user(test_client, new_employee, init_database, admin_token):
     db.session.add(new_employee)
     db.session.commit()
     with test_client:
@@ -82,29 +88,32 @@ def test_registered_with_already_registered_user(test_client, new_employee, init
                                                          login='jkowalski',
                                                          password='Passw0rd',
                                                          isAdmin=False)),
+                                    headers={'access-token': admin_token},
                                     content_type='application/json')
         data = json.loads(response.data.decode())
-        assert data['message'] == "User already exists. You can log in."
+        assert data['message'] == "User already exists"
 
 
-def register_method(client):
+def register_method(client, admin_token):
     return client.post('/register',
-                       data=json.dumps(dict(name='Jan',
-                                            surname='Kowalski',
+                       data=json.dumps(dict(name='Piotr',
+                                            surname='Nowak',
                                             login='nowylogin',
                                             password='Passw0rd',
-                                            isAdmin=False)),
+                                            isAdmin=True)),
+                       headers={'access-token': admin_token},
                        content_type='application/json')
 
 
-def test_registered_user_login(test_client, init_database):
+def test_registered_user_login(test_client, init_database, admin_token):
     with test_client:
-        response_register = register_method(test_client)
+        response_register = register_method(test_client, admin_token)
         data_register = json.loads(response_register.data.decode())
 
         response = test_client.post('/login',
                                     data=json.dumps(dict(login='nowylogin',
-                                                         password='Passw0rd')),
+                                                         password='Passw0rd',
+                                                         type='employee')),
                                     content_type='application/json')
         data = json.loads(response.data.decode())
         assert data['token']

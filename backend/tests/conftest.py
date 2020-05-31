@@ -13,6 +13,29 @@ def new_employee():
     employee = EmployeeModel(1,"Jan", "Kowalski", "jkowalski", "Passw0rd")
     return employee
 
+
+@pytest.fixture(scope='module')
+def new_admin():
+    password = 'Passw0rd'
+    admin = EmployeeModel(2, "Admin", "Admin", "admin", str(bcrypt.hash(password)), True)
+    return admin
+
+
+@pytest.fixture(scope='module')
+def admin_token(test_client, init_database, new_admin):
+    db.session.add(new_admin)
+    db.session.commit()
+    with test_client:
+        response = test_client.post('/login',
+                                    data=json.dumps(dict(login='admin',
+                                                         password='Passw0rd',
+                                                         type='admin')),
+                                    content_type='application/json')
+        data = json.loads(response.data)
+        access_token = response.json.get('token', None)
+        return access_token
+
+
 @pytest.fixture(scope='module')
 def new_movie():
     movie = MovieModel(1, "Film", "Rezyser", "2020-5-12", "2020-8-12", "+16", "Film akcji", 120)
