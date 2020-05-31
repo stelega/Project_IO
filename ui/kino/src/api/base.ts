@@ -15,17 +15,31 @@ export async function apiPost<T>(uri: string, jsonBody: string) {
   return response;
 }
 
-export async function apiGetAuthorized<T>(uri: string) {
-  const url = BACKEND_URL + uri;
+export async function apiGetAuthorized<ResponseType, QueryParamsType>(
+  uri: string,
+  query?: QueryParamsType
+) {
+  const url = query
+    ? BACKEND_URL + uri + queryBuilder(query)
+    : BACKEND_URL + uri;
   const token = UserContext.getToken();
   const responseJson = await fetch(url, {
     method: 'GET',
     mode: 'cors',
     headers: {
-      'Content-Type': 'application/json',
       'access-token': token ? token : '',
     },
   });
-  const response: T = await responseJson.json();
+  const response: ResponseType = await responseJson.json();
   return response;
 }
+
+const queryBuilder = (params: any): string => {
+  const esc = encodeURIComponent;
+  const query =
+    '?' +
+    Object.keys(params)
+      .map((k) => esc(k) + '=' + esc(params[k]))
+      .join('&');
+  return query;
+};

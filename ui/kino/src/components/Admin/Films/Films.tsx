@@ -33,36 +33,50 @@ const TopContainer = styled.div`
 const Films = () => {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof FilmListData>('title');
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [films, setFilms] = useState<PagedList<Film>>({ count: 0, data: [] });
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getFilms();
-
+      const result = await getFilms(rowsPerPage, page, orderBy, order);
       setFilms(result);
     };
-
     fetchData();
+    // eslint-disable-next-line
   }, []);
 
-  const handleRequestSort = (
+  const handleRequestSort = async (
     event: React.MouseEvent<unknown>,
-    property: keyof FilmListData
+    newOrderBy: keyof FilmListData
   ) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
+    const isAsc = orderBy === newOrderBy && order === 'asc';
+    const newOrder = isAsc ? 'desc' : 'asc';
+    setOrder(newOrder);
+    setOrderBy(newOrderBy);
+    await updateFilms(rowsPerPage, page, newOrderBy, newOrder);
   };
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = async (event: unknown, newPage: number) => {
     setPage(newPage);
+    await updateFilms(rowsPerPage, newPage, orderBy, order);
   };
 
-  const handleChangeRowsPerPage = (
+  const updateFilms = async (
+    rowsPerPage: number,
+    page: number,
+    orderBy: string,
+    order: 'desc' | 'asc'
+  ) => {
+    const result = await getFilms(rowsPerPage, page, orderBy, order);
+    setFilms(result);
+  };
+
+  const handleChangeRowsPerPage = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setRowsPerPage(Number(event.target.value));
+    const rows: number = Number(event.target.value);
+    setRowsPerPage(rows);
+    await updateFilms(rows, page, orderBy, order);
   };
 
   const handleEditClick = (

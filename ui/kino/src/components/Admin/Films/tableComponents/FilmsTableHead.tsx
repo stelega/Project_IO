@@ -13,7 +13,7 @@ const Bold = styled.div`
 
 export interface FilmListData {
   title: string;
-  category: string;
+  movieCategory: string;
   releaseDate: string;
   closeDate: string;
 }
@@ -33,7 +33,7 @@ const headCells: HeadCell[] = [
     label: 'Tytuł',
   },
   {
-    id: 'category',
+    id: 'movieCategory',
     numeric: false,
     disablePadding: false,
     label: 'Kategoria',
