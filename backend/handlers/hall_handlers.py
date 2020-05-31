@@ -1,4 +1,4 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, inputs
 from flask import jsonify, make_response
 
 from database.models import HallModel, SeatModel
@@ -91,7 +91,7 @@ class HallData(Resource):
         parser.add_argument('name')
         parser.add_argument('rows', type=int)
         parser.add_argument('seatsPerRow', type=int)
-        parser.add_argument('availability', type=bool)
+        parser.add_argument('availability', type=inputs.boolean)
         return parser.parse_args()
 
     def _search_halls_query(self, query):

@@ -1,4 +1,4 @@
-from flask_restful import reqparse
+from flask_restful import reqparse, inputs
 from sqlalchemy import desc
 
 
@@ -28,10 +28,8 @@ def parse_pagination_params():
 def parse_query_params():
     parser = reqparse.RequestParser()
     parser.add_argument('orderBy')
-    parser.add_argument('desc', type=bool)
+    parser.add_argument('desc', type=inputs.boolean)
     args = parser.parse_args()
-    if args['desc'] is None:
-        args['desc'] = False
     return args
 
 
