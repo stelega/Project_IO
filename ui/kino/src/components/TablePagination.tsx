@@ -1,7 +1,7 @@
 import React from 'react';
 import { TablePagination } from '@material-ui/core';
 
-interface FilmsTablePaginationProps {
+interface MyTablePaginationProps {
   page: number;
   totalCount: number;
   rowsPerPage: number;
@@ -9,7 +9,7 @@ interface FilmsTablePaginationProps {
   onChangeRowsPerPage: any;
 }
 
-const FilmsTablePagination = (props: FilmsTablePaginationProps) => {
+const MyTablePagination = (props: MyTablePaginationProps) => {
   const {
     page,
     totalCount,
@@ -34,4 +34,4 @@ const FilmsTablePagination = (props: FilmsTablePaginationProps) => {
   );
 };
 
-export default FilmsTablePagination;
+export default MyTablePagination;
