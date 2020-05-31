@@ -1,3 +1,4 @@
+import { Category } from './../models/Film';
 import { PagedList } from '../models/PagedList';
 import { apiGetAuthorized } from './base';
 import { Film } from '../models/Film';
@@ -26,5 +27,17 @@ export const apiGetFilms = async (
     PagedList<Film>,
     GetFilmsQuery
   >(url, query);
+  return response;
+};
+
+export const apiGetAgeCategories = async () => {
+  const url = '/category/age';
+  const response: Category = await apiGetAuthorized<Category, null>(url);
+  return response;
+};
+
+export const apiGetMovieCategories = async () => {
+  const url = '/category/genre';
+  const response: Category = await apiGetAuthorized<Category, null>(url);
   return response;
 };

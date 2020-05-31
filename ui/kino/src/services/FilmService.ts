@@ -1,6 +1,10 @@
-import { apiGetFilms } from '../api/filmsApi';
+import {
+  apiGetFilms,
+  apiGetMovieCategories,
+  apiGetAgeCategories,
+} from '../api/filmsApi';
 import { PagedList } from '../models/PagedList';
-import { Film } from '../models/Film';
+import { Film, Category } from '../models/Film';
 
 export const getFilms = async (
   rowsPerPage?: number,
@@ -15,4 +19,14 @@ export const getFilms = async (
     order
   );
   return films;
+};
+
+export const getAgeCategories = async (): Promise<string[]> => {
+  const categories: Category = await apiGetAgeCategories();
+  return categories.data;
+};
+
+export const getMovieCategories = async (): Promise<string[]> => {
+  const categories: Category = await apiGetMovieCategories();
+  return categories.data;
 };
