@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, ThemeProvider } from '@material-ui/core';
 import { customTheme } from '../../../LoginPage/sections/LoginFormStyles';
 import CustomModal from '../../../CustomModal';
+import AddForm from './AddFilmForm';
 
 const AddButton = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -11,6 +12,7 @@ const AddButton = () => {
   const handleClose = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
   };
+
   return (
     <>
       <ThemeProvider theme={customTheme}>
@@ -25,7 +27,7 @@ const AddButton = () => {
       <CustomModal
         open={open}
         handleClose={handleClose}
-        body={<div>Formularz dodwania</div>}
+        body={<AddForm handleClose={handleClose} />}
       />
     </>
   );
