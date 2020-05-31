@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   Table,
@@ -13,6 +13,10 @@ import {
 import DatePicker from './DatePicker';
 import moment, { Moment } from 'moment';
 import { customTheme } from '../../../LoginPage/sections/LoginFormStyles';
+import {
+  getAgeCategories,
+  getMovieCategories,
+} from '../../../../services/FilmService';
 
 const Container = styled.div`
   margin: 5%;
@@ -41,16 +45,26 @@ interface AddFilmForm {
   handleClose: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-const ageCategories = ['7+', '16+'];
-const movieCategories = ['Akcja', 'Dramat'];
 const availableOptions = ['Tak', 'Nie'];
 
 const AddForm = (props: AddFilmForm) => {
-  const [ageCategory, setAgeCategory] = useState('7+');
-  const [movieCategory, setMovieCategory] = useState('Dramat');
+  const [ageCategories, setAgeCategories] = useState<string[]>();
+  const [movieCategories, setMovieCategories] = useState<string[]>();
+  const [ageCategory, setAgeCategory] = useState<string>();
+  const [movieCategory, setMovieCategory] = useState<string>();
   const [available, setAvailable] = useState('Tak');
   const [dateStart, setDateStart] = useState(moment());
   const [dateEnd, setDateEnd] = useState(moment().add('week', 1));
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setAgeCategories(await getAgeCategories());
+      setMovieCategories(await getMovieCategories());
+    };
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log(event.target.value);
   };
@@ -100,11 +114,12 @@ const AddForm = (props: AddFilmForm) => {
                   select
                   value={ageCategory}
                   onChange={handleAgeCategoryChange}>
-                  {ageCategories.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
+                  {ageCategories &&
+                    ageCategories.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
                 </TextField>
               </TableCell>
             </TableRow>
@@ -124,11 +139,12 @@ const AddForm = (props: AddFilmForm) => {
                   select
                   value={movieCategory}
                   onChange={handleMovieCategoryChange}>
-                  {movieCategories.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
+                  {movieCategories &&
+                    movieCategories.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
                 </TextField>
               </TableCell>
             </TableRow>

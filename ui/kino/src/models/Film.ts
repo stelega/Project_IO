@@ -1,14 +1,3 @@
-interface FilmDto {
-  age_category: string;
-  director: string;
-  duration: number;
-  movie_category: string;
-  movie_id: string;
-  release_date: string;
-  close_date: string;
-  title: string;
-}
-
 export interface Film {
   ageCategory: string;
   director: string;
@@ -18,4 +7,9 @@ export interface Film {
   releaseDate: string;
   closeDate: string;
   title: string;
+}
+
+export interface Category {
+  count: number;
+  data: string[];
 }
