@@ -4,7 +4,10 @@ import { customTheme } from '../../../LoginPage/sections/LoginFormStyles';
 import CustomModal from '../../../CustomModal';
 import AddForm from './AddFilmForm';
 
-const AddButton = () => {
+interface AddButtonProps {
+  handleAdded: () => void;
+}
+const AddButton = (props: AddButtonProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(true);
@@ -13,6 +16,10 @@ const AddButton = () => {
     setOpen(false);
   };
 
+  const handleAdded = () => {
+    setOpen(false);
+    props.handleAdded();
+  };
   return (
     <>
       <ThemeProvider theme={customTheme}>
@@ -27,7 +34,7 @@ const AddButton = () => {
       <CustomModal
         open={open}
         handleClose={handleClose}
-        body={<AddForm handleClose={handleClose} />}
+        body={<AddForm handleClose={handleClose} handleAdded={handleAdded} />}
       />
     </>
   );
