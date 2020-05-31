@@ -56,6 +56,7 @@ const Films = () => {
     setOrderBy(newOrderBy);
     await updateFilms(rowsPerPage, page, newOrderBy, newOrder);
   };
+
   const handleChangePage = async (event: unknown, newPage: number) => {
     setPage(newPage);
     await updateFilms(rowsPerPage, newPage, orderBy, order);

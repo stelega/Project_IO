@@ -11,65 +11,58 @@ const Bold = styled.div`
   font-weight: bold;
 `;
 
-export interface FilmListData {
-  title: string;
-  movieCategory: string;
-  releaseDate: string;
-  closeDate: string;
+export interface HallListData {
+  name: string;
+  numOfSeats: number;
+  availability: boolean;
 }
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof FilmListData;
+  id: keyof HallListData;
   label: string;
   numeric: boolean;
 }
 
 const headCells: HeadCell[] = [
   {
-    id: 'title',
+    id: 'name',
     numeric: false,
     disablePadding: false,
-    label: 'Tytuł',
+    label: 'Nazwa',
   },
   {
-    id: 'movieCategory',
-    numeric: false,
+    id: 'numOfSeats',
+    numeric: true,
     disablePadding: false,
-    label: 'Kategoria',
+    label: 'Pojemność',
   },
   {
-    id: 'releaseDate',
+    id: 'availability',
     numeric: false,
     disablePadding: false,
-    label: 'Wyświetlane od',
-  },
-  {
-    id: 'closeDate',
-    numeric: false,
-    disablePadding: false,
-    label: 'Wyświetlane do',
-  },
+    label: 'Dostepna',
+  }
 ];
 
 export type Order = 'asc' | 'desc';
 
-interface FilmsTableHeadProps {
+interface HallsTableHeadProps {
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof FilmListData
+    property: keyof HallListData
   ) => void;
   order: Order;
   orderBy: string;
 }
 
-const FilmsTableHead = (props: FilmsTableHeadProps) => {
-  const { order, orderBy, onRequestSort } = props;
-  const createSortHandler = (property: keyof FilmListData) => (
+const HallsTableHead = (props: HallsTableHeadProps) => {
+  const {order, orderBy, onRequestSort} = props;
+  const createSortHandler = (property: keyof HallListData) => (
     event: React.MouseEvent<unknown>
   ) => {
     onRequestSort(event, property);
-  };
+  }
   return (
     <TableHead>
       <TableRow>
@@ -92,4 +85,4 @@ const FilmsTableHead = (props: FilmsTableHeadProps) => {
   );
 };
 
-export default FilmsTableHead;
+export default HallsTableHead;

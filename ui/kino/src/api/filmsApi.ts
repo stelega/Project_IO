@@ -1,4 +1,4 @@
-import { PagedList } from './../models/PagedList';
+import { PagedList } from '../models/PagedList';
 import { apiGetAuthorized } from './base';
 import { Film } from '../models/Film';
 
@@ -20,7 +20,7 @@ export const apiGetFilms = async (
     perPage: rowsPerPage,
     page: page,
     orderBy: orderBy,
-    desc: order === 'desc' ? true : false,
+    desc: order === 'desc',
   };
   const response: PagedList<Film> = await apiGetAuthorized<
     PagedList<Film>,
