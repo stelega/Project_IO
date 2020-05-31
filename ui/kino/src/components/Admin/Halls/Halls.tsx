@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {Table} from '@material-ui/core';
-import {getHalls} from "../../../services/HallService";
-import HallsTableHead, {HallListData, Order} from "./tableComponents/HallsTableHead";
-import HallsTableBody from "./tableComponents/HallsTableBody";
-import MyTablePagination from "../../TablePagination";
-import {PagedList} from "../../../models/PagedList";
-import {Hall} from "../../../models/Hall";
-import AddButton from "./AddButton";
+import { Table } from '@material-ui/core';
+import { getHalls } from '../../../services/HallService';
+import HallsTableBody from './tableComponents/HallsTableBody';
+import MyTablePagination from '../../tableComponents/TablePagination';
+import { PagedList } from '../../../models/PagedList';
+import { Hall } from '../../../models/Hall';
+import AddButton from './AddButton';
+import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -27,12 +27,33 @@ const TopContainer = styled.div`
   justify-content: space-between;
 `;
 
+interface HallListData {
+  name: string;
+  numOfSeats: number;
+  availability: boolean;
+}
+
+const headCells: HeadCell<HallListData>[] = [
+  {
+    id: 'name',
+    label: 'Nazwa',
+  },
+  {
+    id: 'numOfSeats',
+    label: 'Pojemność',
+  },
+  {
+    id: 'availability',
+    label: 'Dostępna',
+  },
+];
+
 const Halls = () => {
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof HallListData>('name')
+  const [orderBy, setOrderBy] = useState<keyof HallListData>('name');
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [halls, setHalls] = useState<PagedList<Hall>>({count: 0, data: []});
+  const [halls, setHalls] = useState<PagedList<Hall>>({ count: 0, data: [] });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,15 +116,16 @@ const Halls = () => {
     <Container>
       <TopContainer>
         <Title>Wszystkie Sale</Title>
-        <AddButton/>
+        <AddButton />
       </TopContainer>
       <TableContainer>
-        <Table>
-          <HallsTableHead
+        <Table size='small'>
+          <MyTableHead
             onRequestSort={handleRequestSort}
             orderBy={orderBy}
             order={order}
-            />
+            headCells={headCells}
+          />
           <HallsTableBody
             halls={halls.data}
             handleEditClick={handleEditClick}
@@ -115,11 +137,11 @@ const Halls = () => {
           totalCount={halls.count}
           rowsPerPage={rowsPerPage}
           onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}/>
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </TableContainer>
     </Container>
-  )
-
+  );
 };
 
 export default Halls;

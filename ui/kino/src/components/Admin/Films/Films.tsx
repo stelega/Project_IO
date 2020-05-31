@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Table } from '@material-ui/core';
 import { getFilms } from '../../../services/FilmService';
-import FilmsTableHead, {
-  Order,
-  FilmListData,
-} from './tableComponents/FilmsTableHead';
+import MyTableHead, { Order, HeadCell } from '../../tableComponents/TableHead';
 import FilmsTableBody from './tableComponents/FilmsTableBody';
 import { PagedList } from '../../../models/PagedList';
 import { Film } from '../../../models/Film';
 import AddButton from './AddFilm/AddButton';
-import MyTablePagination from "../../TablePagination";
+import MyTablePagination from '../../tableComponents/TablePagination';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -29,6 +26,32 @@ const TopContainer = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
+interface FilmListData {
+  title: string;
+  movieCategory: string;
+  releaseDate: string;
+  closeDate: string;
+}
+
+const headCells: HeadCell<FilmListData>[] = [
+  {
+    id: 'title',
+    label: 'Tytuł',
+  },
+  {
+    id: 'movieCategory',
+    label: 'Kategoria',
+  },
+  {
+    id: 'releaseDate',
+    label: 'Wyświetlane od',
+  },
+  {
+    id: 'closeDate',
+    label: 'Wyświetlane do',
+  },
+];
 
 const Films = () => {
   const [order, setOrder] = useState<Order>('asc');
@@ -102,10 +125,11 @@ const Films = () => {
       </TopContainer>
       <TableContainer>
         <Table size='small'>
-          <FilmsTableHead
+          <MyTableHead
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
+            headCells={headCells}
           />
           <FilmsTableBody
             films={films.data}
