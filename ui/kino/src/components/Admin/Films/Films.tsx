@@ -43,6 +43,7 @@ const Films = () => {
       setFilms(result);
     };
     fetchData();
+    // eslint-disable-next-line
   }, []);
 
   const handleRequestSort = async (
