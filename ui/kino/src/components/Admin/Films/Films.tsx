@@ -7,10 +7,10 @@ import FilmsTableHead, {
   FilmListData,
 } from './tableComponents/FilmsTableHead';
 import FilmsTableBody from './tableComponents/FilmsTableBody';
-import FilmsTablePagination from './tableComponents/FilmsTablePagination';
 import { PagedList } from '../../../models/PagedList';
 import { Film } from '../../../models/Film';
 import AddButton from './AddFilm/AddButton';
+import MyTablePagination from "../../TablePagination";
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -113,7 +113,7 @@ const Films = () => {
             handleDeleteClick={handleDeleteClick}
           />
         </Table>
-        <FilmsTablePagination
+        <MyTablePagination
           page={page}
           totalCount={films.count}
           rowsPerPage={rowsPerPage}
