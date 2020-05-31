@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import TopBar from '../TopBar';
 import styled from 'styled-components';
 import LeftMenu from '../LeftMenu';
@@ -11,6 +11,10 @@ const Container = styled.div`
   display: flex;
 `;
 
+const Box = styled.div`
+  width: 90vw;
+`;
+
 const options: string[] = ['Seanse', 'Bilety'];
 
 const EmployeeMainPage = () => {
@@ -20,18 +24,20 @@ const EmployeeMainPage = () => {
   };
   return UserContext.isLoggedIn() ? (
     <>
-      <TopBar />
+      <TopBar/>
       <Container>
         <LeftMenu
           options={options}
           state={optionsState}
           handleChange={handleChange}
         />
-        {optionsState === 'Seanse' ? <Screenings /> : <Tickets />}
+        <Box>
+          {optionsState === 'Seanse' ? <Screenings/> : <Tickets/>}
+        </Box>
       </Container>
     </>
   ) : (
-    <Redirect to='Login' />
+    <Redirect to='Login'/>
   );
 };
 

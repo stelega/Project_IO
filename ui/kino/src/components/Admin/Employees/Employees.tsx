@@ -6,7 +6,7 @@ import EmployeesTableBody from "./tableComponents/EmployeesTableBody";
 import MyTablePagination from '../../tableComponents/TablePagination';
 import { PagedList } from '../../../models/PagedList';
 import {Employee} from "../../../models/Employee";
-import AddButton from './AddButton';
+import AddButton from "./AddEmployee/AddButton"
 import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
 
 const Container = styled.div`
