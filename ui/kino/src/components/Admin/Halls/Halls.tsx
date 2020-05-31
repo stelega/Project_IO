@@ -6,7 +6,7 @@ import HallsTableBody from './tableComponents/HallsTableBody';
 import MyTablePagination from '../../tableComponents/TablePagination';
 import { PagedList } from '../../../models/PagedList';
 import { Hall } from '../../../models/Hall';
-import AddButton from './AddButton';
+import AddButton from './AddHall/AddButton';
 import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
 
 const Container = styled.div`

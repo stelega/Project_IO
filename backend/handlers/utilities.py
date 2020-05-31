@@ -30,6 +30,10 @@ def parse_query_params():
     parser.add_argument('orderBy')
     parser.add_argument('desc', type=inputs.boolean)
     args = parser.parse_args()
+    if args['orderBy'] == 'movie':
+        args['orderBy'] = 'title'
+    if args['orderBy'] == 'hall':
+        args['orderBy'] = 'name'
     return args
 
 
