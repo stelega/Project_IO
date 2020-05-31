@@ -4,7 +4,7 @@ from handlers.employee_handlers import EmployeesData, Register, Login
 from handlers.hall_handlers import HallData
 from handlers.movie_handlers import MovieData, AgeCategoryData, GenreData
 from handlers.playground import Playground
-from handlers.seance_handlers import SeanceData, AvailableHoursData
+from handlers.seance_handlers import SeanceData, AvailableHoursData, SeatsData
 from handlers.ticket_handlers import TicketData
 
 
@@ -21,4 +21,5 @@ def generate_routes(app):
     api.add_resource(AgeCategoryData, '/category/age', endpoint="age_category")
     api.add_resource(GenreData, '/category/genre', endpoint="genre")
     api.add_resource(AvailableHoursData, '/seance/possible_hours', endpoint="possible_hours")
+    api.add_resource(SeatsData, '/seance/seats', endpoint="seats")
     api.add_resource(Playground, '/playground', endpoint="playground")

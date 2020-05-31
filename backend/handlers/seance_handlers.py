@@ -5,8 +5,8 @@ from flask_restful import Resource, reqparse
 
 from database.config import close_time, open_time, cleaning_minutes, possible_seance_interval
 from database.database import db
-from database.models import SeanceModel, MovieModel, HallModel
-from database.schemas import SeanceSchema
+from database.models import SeanceModel, MovieModel, HallModel, SeatModel, TicketModel
+from database.schemas import SeanceSchema, SeatSchema
 from handlers.employee_handlers import login_required
 from handlers.messages import ApiMessages
 from handlers.utilities import prepare_and_run_query
@@ -132,4 +132,23 @@ class AvailableHoursData(Resource):
         parser.add_argument('movieId')
         parser.add_argument('hallId')
         parser.add_argument('date')
+        return parser.parse_args()
+
+
+class SeatsData(Resource):
+    def get(self):
+        args = self._parse_args()
+        seance = SeanceModel.query.get(args["seanceId"])
+        seats = SeatModel.query.filter(SeatModel.hallId == seance.hallId).order_by(SeatModel.row.asc(),
+                                                                                   SeatModel.number.asc()).all()
+        output = SeatSchema(many=True).dump(seats)
+        tickets = TicketModel.query.filter(TicketModel.seanceId == args["seanceId"]).all()
+        taken_seats = [str(ticket.seatId) for ticket in tickets]
+        for seat in output:
+            seat["free"] = not seat["seatId"] in taken_seats
+        return make_response(jsonify({"data": output}), 200)
+
+    def _parse_args(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('seanceId')
         return parser.parse_args()
