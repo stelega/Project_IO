@@ -63,7 +63,7 @@ class HallModel(db.Model):
     seances = db.relationship("SeanceModel", backref="hall")
     seats = db.relationship("SeatModel", backref="hall", cascade="all,delete")
 
-    def __init__(self, _id=None, name=None, rows=None, seatsPerRow=None, availability=True):
+    def __init__(self, _id=None, name=None, rows=None, seatsPerRow=None, availability=True, numOfSeats=None):
         self.id = _id or id
         self.name = name
         self.numOfSeats = rows * seatsPerRow

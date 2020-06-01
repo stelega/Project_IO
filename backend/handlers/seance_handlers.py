@@ -136,6 +136,7 @@ class AvailableHoursData(Resource):
 
 
 class SeatsData(Resource):
+    @login_required
     def get(self):
         args = self._parse_args()
         seance = SeanceModel.query.get(args["seanceId"])

@@ -7,7 +7,7 @@ from database.const_data import Genre, AgeCategory
 from database.database import db
 from database.models import MovieModel
 from database.schemas import MovieSchema
-from handlers.employee_handlers import admin_required
+from handlers.employee_handlers import admin_required, login_required
 from handlers.messages import ApiMessages
 from handlers.utilities import prepare_and_run_query
 
@@ -96,6 +96,7 @@ class MovieData(Resource):
 
 
 class AvailableMoviesData(Resource):
+    @login_required
     def get(self):
         args = self._parse_args()
         chosen_date = datetime.strptime(args["date"], "%Y-%m-%d").date()
@@ -114,6 +115,7 @@ class AvailableMoviesData(Resource):
 
 
 class AgeCategoryData(Resource):
+    @login_required
     def get(self):
         age_categories = AgeCategory.get_all_list()
         count = len(age_categories)
@@ -121,6 +123,7 @@ class AgeCategoryData(Resource):
 
 
 class GenreData(Resource):
+    @login_required
     def get(self):
         genres = Genre.get_all_list()
         count = len(genres)
