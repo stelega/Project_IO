@@ -4,28 +4,31 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Film } from '../../../../models/Film';
 import CustomPopover from '../../../CustomPopover';
+import ConfirmDeletePopover from './ConfirmDeletePopover';
 
 interface FilmsTableBodyProps {
   films: Film[];
-  handleEditClick: (
-    event: React.MouseEvent<HTMLElement>,
-    movieId: string
-  ) => void;
-  handleDeleteClick: (
-    event: React.MouseEvent<HTMLElement>,
-    movieId: string
-  ) => void;
+  handleEdit: (event: React.MouseEvent<HTMLElement>, movieId: string) => void;
+  handleDelete: (event: React.MouseEvent<HTMLElement>, movieId: string) => void;
 }
 
 const FilmsTableBody = (props: FilmsTableBodyProps) => {
   const { films } = props;
   const [anchorEl, setAnchorEl] = useState<Element | null>(null);
+  const [rowToDelete, setRowToDelete] = useState<string | null>(null);
   const handleDeleteClick = (event: any, movieId: string) => {
     setAnchorEl(event.currentTarget);
-    props.handleDeleteClick(event, movieId);
+    setRowToDelete(movieId);
   };
   const handleClose = () => {
     setAnchorEl(null);
+    setRowToDelete(null);
+  };
+  const handleConfirmDelete = (event: React.MouseEvent<HTMLElement>) => {
+    if (rowToDelete) {
+      props.handleDelete(event, rowToDelete);
+      handleClose();
+    }
   };
   return (
     <>
@@ -42,9 +45,7 @@ const FilmsTableBody = (props: FilmsTableBodyProps) => {
                 <TableCell align='center'>{row.closeDate}</TableCell>
                 <TableCell align='right'>
                   <IconButton
-                    onClick={(event) =>
-                      props.handleEditClick(event, row.movieId)
-                    }>
+                    onClick={(event) => props.handleEdit(event, row.movieId)}>
                     <EditIcon />
                   </IconButton>
                   <IconButton
@@ -60,7 +61,12 @@ const FilmsTableBody = (props: FilmsTableBodyProps) => {
         id='delete-popover'
         handleClose={handleClose}
         anchorEl={anchorEl}
-        body={<div>Simple popover</div>}
+        body={
+          <ConfirmDeletePopover
+            onCancel={handleClose}
+            onConfirm={handleConfirmDelete}
+          />
+        }
       />
     </>
   );

@@ -50,6 +50,23 @@ export async function apiPostAuthorized<T>(uri: string, jsonBody: string) {
   return response;
 }
 
+export async function apiDeleteAuthorized<QueryParamsType>(
+  uri: string,
+  query: QueryParamsType
+) {
+  const url = query
+    ? BACKEND_URL + uri + queryBuilder(query)
+    : BACKEND_URL + uri;
+  const token = UserContext.getToken();
+  await fetch(url, {
+    method: 'DELETE',
+    mode: 'cors',
+    headers: {
+      'access-token': token ? token : '',
+    },
+  });
+}
+
 const queryBuilder = (params: any): string => {
   const esc = encodeURIComponent;
   const query =

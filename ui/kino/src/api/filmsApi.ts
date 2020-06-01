@@ -1,6 +1,10 @@
 import { Category, NewFilm } from './../models/Film';
 import { PagedList } from '../models/PagedList';
-import { apiGetAuthorized, apiPostAuthorized } from './base';
+import {
+  apiGetAuthorized,
+  apiPostAuthorized,
+  apiDeleteAuthorized,
+} from './base';
 import { Film } from '../models/Film';
 
 interface GetFilmsQuery {
@@ -8,6 +12,10 @@ interface GetFilmsQuery {
   page?: number;
   orderBy?: string;
   desc?: Boolean;
+}
+
+interface DeleteFilmQuery {
+  movieId: string;
 }
 
 export const apiGetFilms = async (
@@ -45,4 +53,12 @@ export const apiGetMovieCategories = async () => {
   const url = '/category/genre';
   const response: Category = await apiGetAuthorized<Category, null>(url);
   return response;
+};
+
+export const apiDeleteFilm = async (movieId: string) => {
+  const url = '/movie';
+  const query: DeleteFilmQuery = {
+    movieId: movieId,
+  };
+  await apiDeleteAuthorized<DeleteFilmQuery>(url, query);
 };

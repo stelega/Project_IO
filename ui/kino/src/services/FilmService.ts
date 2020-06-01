@@ -4,6 +4,7 @@ import {
   apiGetMovieCategories,
   apiGetAgeCategories,
   apiAddFilm,
+  apiDeleteFilm,
 } from '../api/filmsApi';
 import { PagedList } from '../models/PagedList';
 import { Film, Category, NewFilm } from '../models/Film';
@@ -52,4 +53,8 @@ export const getAgeCategories = async (): Promise<string[]> => {
 export const getMovieCategories = async (): Promise<string[]> => {
   const categories: Category = await apiGetMovieCategories();
   return categories.data;
+};
+
+export const deleteFilm = async (movieId: string) => {
+  await apiDeleteFilm(movieId);
 };
