@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Table } from '@material-ui/core';
-import { getFilms } from '../../../services/FilmService';
+import { getFilms, deleteFilm } from '../../../services/FilmService';
 import MyTableHead, { Order, HeadCell } from '../../tableComponents/TableHead';
 import FilmsTableBody from './tableComponents/FilmsTableBody';
 import { PagedList } from '../../../models/PagedList';
@@ -103,18 +103,19 @@ const Films = () => {
     await updateFilms(rows, page, orderBy, order);
   };
 
-  const handleEditClick = (
+  const handleEdit = (
     event: React.MouseEvent<HTMLElement>,
     movieId: string
   ) => {
     console.log(movieId);
   };
 
-  const handleDeleteClick = (
+  const handleDelete = async (
     event: React.MouseEvent<HTMLElement>,
     movieId: string
   ) => {
-    console.log(movieId);
+    await deleteFilm(movieId);
+    handleUpdate();
   };
 
   const handleUpdate = () => {
@@ -137,8 +138,8 @@ const Films = () => {
           />
           <FilmsTableBody
             films={films.data}
-            handleEditClick={handleEditClick}
-            handleDeleteClick={handleDeleteClick}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
           />
         </Table>
         <MyTablePagination
