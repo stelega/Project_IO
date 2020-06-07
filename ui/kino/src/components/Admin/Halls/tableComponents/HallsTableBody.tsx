@@ -1,9 +1,11 @@
-import React from 'react';
-import { IconButton, TableBody, TableCell, TableRow } from '@material-ui/core';
+import React, {useState} from 'react';
+import {IconButton, TableBody, TableCell, TableRow} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { Hall } from '../../../../models/Hall';
+import {Hall} from '../../../../models/Hall';
 import styled from 'styled-components';
+import CustomPopover from "../../../Popover/CustomPopover";
+import ConfirmDeletePopover from "../../../Popover/ConfirmDeletePopover";
 
 const Text = styled.div`
   font-weight: bold;
@@ -18,21 +20,38 @@ const Red = styled(Text)`
 
 interface HallsTableBodyProps {
   halls: Hall[];
-  handleEditClick: (
+  handleEdit: (
     event: React.MouseEvent<HTMLElement>,
     hallId: string
   ) => void;
-  handleDeleteClick: (
+  handleDelete: (
     event: React.MouseEvent<HTMLElement>,
     hallId: string
   ) => void;
 }
 
 const HallsTableBody = (props: HallsTableBodyProps) => {
-  const { halls } = props;
+  const {halls} = props;
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
+  const [rowToDelete, setRowToDelete] = useState<string | null>(null);
+  const handleDeleteClick = (event: any, hallId: string) => {
+    setAnchorEl(event.currentTarget);
+    setRowToDelete(hallId);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+    setRowToDelete(null);
+  };
+  const handleConfirmDelete = (event: React.MouseEvent<HTMLElement>) => {
+    if (rowToDelete) {
+      props.handleDelete(event, rowToDelete);
+      handleClose();
+    }
+  };
   return (
-    <TableBody>
-      {halls &&
+    <>
+      <TableBody>
+        {halls &&
         props.halls.map((row) => {
           return (
             <TableRow hover tabIndex={-1} key={row.hallId}>
@@ -43,20 +62,30 @@ const HallsTableBody = (props: HallsTableBodyProps) => {
               </TableCell>
               <TableCell align='right'>
                 <IconButton
-                  onClick={(event) => props.handleEditClick(event, row.hallId)}>
-                  <EditIcon />
+                  onClick={(event) => props.handleEdit(event, row.hallId)}>
+                  <EditIcon/>
                 </IconButton>
                 <IconButton
                   onClick={(event) =>
-                    props.handleDeleteClick(event, row.hallId)
+                    handleDeleteClick(event, row.hallId)
                   }>
-                  <DeleteIcon />
+                  <DeleteIcon/>
                 </IconButton>
               </TableCell>
             </TableRow>
           );
         })}
-    </TableBody>
+      </TableBody>
+      <CustomPopover
+        handleClose={handleClose}
+        body={<ConfirmDeletePopover
+          onCancel={handleClose}
+          onConfirm={handleConfirmDelete}
+        />}
+        id={'delete-popover'}
+        anchorEl={anchorEl}
+      />
+    </>
   );
 };
 
