@@ -106,36 +106,44 @@ class AvailableHoursData(Resource):
         movie = MovieModel.query.get(args['movieId'])
         duration = movie.duration + cleaning_minutes
         picked_date = datetime.strptime(args['date'], "%Y-%m-%d")
-        possible_time = datetime(picked_date.year, picked_date.month, picked_date.day,
-                                 open_time.hour, open_time.minute, open_time.hour)
-        possible_end_time = possible_time + timedelta(0, duration * 60)
-        seances2 = SeanceModel.query.filter(
-            (SeanceModel.date == picked_date) & (SeanceModel.hallId == args['hallId'])).all()
-        seances = [{
-            "start": datetime(picked_date.year, picked_date.month, picked_date.day, seance.time.hour,
-                              seance.time.minute),
-            "end": (datetime(picked_date.year, picked_date.month, picked_date.day, seance.time.hour, seance.time.minute)
-                    + timedelta(0, (seance.movie.duration + cleaning_minutes) * 60))} for seance in seances2]
+
+        halls = HallModel.query.filter(HallModel.availability).all()
         output = []
-        while possible_time <= datetime(picked_date.year, picked_date.month, picked_date.day,
-                                        close_time.hour, close_time.minute, close_time.second):
-            correct = True
-            for seance in seances:
-                if seance["start"] <= possible_end_time <= seance["end"] \
-                        or seance["start"] <= possible_time <= seance["end"] \
-                        or (possible_time <= seance["start"] and possible_end_time >= seance["end"]):
-                    correct = False
-                    break
-            if correct:
-                output.append(possible_time.strftime("%H:%M"))
-            possible_time += timedelta(0, possible_seance_interval)
-            possible_end_time += timedelta(0, possible_seance_interval)
+        for hall in halls:
+            temp_output = {"hallId": hall.hallId, "name": hall.name, "hours": []}
+            temp_seances = SeanceModel.query.filter(
+                (SeanceModel.date == picked_date) & (SeanceModel.hallId == hall.hallId)).all()
+            seances = [{
+                "start": datetime(picked_date.year, picked_date.month, picked_date.day, seance.time.hour,
+                                  seance.time.minute),
+                "end": (datetime(picked_date.year, picked_date.month, picked_date.day, seance.time.hour,
+                                 seance.time.minute)
+                        + timedelta(0, (seance.movie.duration + cleaning_minutes) * 60))} for seance in temp_seances]
+
+            possible_time = datetime(picked_date.year, picked_date.month, picked_date.day,
+                                     open_time.hour, open_time.minute, open_time.hour)
+            possible_end_time = possible_time + timedelta(0, duration * 60)
+
+            while possible_time <= datetime(picked_date.year, picked_date.month, picked_date.day,
+                                            close_time.hour, close_time.minute, close_time.second):
+                correct = True
+                for seance in seances:
+                    if seance["start"] <= possible_end_time <= seance["end"] \
+                            or seance["start"] <= possible_time <= seance["end"] \
+                            or (possible_time <= seance["start"] and possible_end_time >= seance["end"]):
+                        correct = False
+                        break
+                if correct:
+                    temp_output["hours"].append(possible_time.strftime("%H:%M"))
+                possible_time += timedelta(0, possible_seance_interval)
+                possible_end_time += timedelta(0, possible_seance_interval)
+            if temp_output["hours"]:
+                output.append(temp_output)
         return make_response(jsonify({'data': output}), 200)
 
     def _parse_args(self):
         parser = reqparse.RequestParser()
         parser.add_argument('movieId')
-        parser.add_argument('hallId')
         parser.add_argument('date')
         return parser.parse_args()
 
