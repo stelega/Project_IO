@@ -1,6 +1,7 @@
-import {PagedList} from "../models/PagedList";
-import {apiGetAuthorized} from "./base";
-import {Hall} from "../models/Hall";
+import { NewHall } from './../models/Hall';
+import { PagedList } from '../models/PagedList';
+import { apiGetAuthorized, apiPostAuthorized } from './base';
+import { Hall } from '../models/Hall';
 
 export interface GetHallsQuery {
   perPage?: number;
@@ -20,9 +21,16 @@ export const apiGetHalls = async (
     perPage: rowsPerPage,
     page: page,
     orderBy: orderBy,
-    desc: order === 'desc'
+    desc: order === 'desc',
   };
-  const response: PagedList<Hall> = await apiGetAuthorized<PagedList<Hall>,
-    GetHallsQuery>(url, query);
+  const response: PagedList<Hall> = await apiGetAuthorized<
+    PagedList<Hall>,
+    GetHallsQuery
+  >(url, query);
   return response;
-}
+};
+
+export const apiAddHall = async (hall: NewHall) => {
+  const url = '/hall';
+  await apiPostAuthorized(url, JSON.stringify(hall));
+};

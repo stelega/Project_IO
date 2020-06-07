@@ -1,6 +1,7 @@
-import {apiGetHalls} from "../api/hallsApi";
-import {PagedList} from "../models/PagedList";
-import {Hall} from "../models/Hall";
+import { NewHall } from './../models/Hall';
+import { apiGetHalls, apiAddHall } from '../api/hallsApi';
+import { PagedList } from '../models/PagedList';
+import { Hall } from '../models/Hall';
 
 export const getHalls = async (
   rowsPerPage?: number,
@@ -15,4 +16,20 @@ export const getHalls = async (
     order
   );
   return halls;
+};
+
+export const addHall = async (
+  name: string,
+  rowsCount: number,
+  seatsPerRow: number,
+  availability: string
+) => {
+  const body: NewHall = {
+    name: name,
+    rows: rowsCount,
+    seatsPerRow: seatsPerRow,
+    availability: availability === 'Tak',
+    numOfSeats: seatsPerRow * rowsCount,
+  };
+  await apiAddHall(body);
 };
