@@ -68,6 +68,11 @@ class SeanceData(Resource):
         args = self._parse_seance_args()
         if args['seanceId'] is not None:
             seance = SeanceModel.query.get(args['seanceId'])
+            if seance is None:
+                return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
+            tickets = TicketModel.query.filter(TicketModel.seanceId == seance.seanceId).all()
+            if tickets:
+                return make_response(jsonify({'message': "Cannot delete seance for which tickets are sold"}), 400)
             output = SeanceSchema().dump(seance)
             db.session.delete(seance)
             db.session.commit()
