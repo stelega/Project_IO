@@ -126,7 +126,7 @@ const Films = () => {
 
   const handleUpdate = () => {
     updateFilms(rowsPerPage, page, orderBy, order);
-    setEditFilmId(undefined);
+    handleEditClose();
   };
 
   return (

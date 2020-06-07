@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   TextField,
@@ -10,6 +10,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { customTheme } from '../../LoginPage/sections/LoginFormStyles';
+import { Hall } from '../../../models/Hall';
 
 const Container = styled.div`
   margin: 5%;
@@ -38,8 +39,6 @@ const ButtonContainer = styled.div`
   margin-right: 5%;
 `;
 
-const options = ['Tak', 'Nie'];
-
 interface HallFormProps {
   handleClose: (event: React.MouseEvent<HTMLElement>) => void;
   handleAction: (
@@ -49,13 +48,31 @@ interface HallFormProps {
     availability: string
   ) => void;
   buttonText: string;
+  editModel?: Hall;
 }
 
 const HallForm = (props: HallFormProps) => {
+  const options = ['Tak', 'Nie'];
   const [name, setName] = useState<string>();
   const [rowsCount, setRowsCount] = useState<number>();
   const [seatsPerRow, setSeatsPerRow] = useState<number>();
-  const [availability, setAvailability] = useState<string>('Tak');
+  const [availability, setAvailability] = useState<string>('');
+
+  useEffect(() => {
+    const edit = (hall: Hall) => {
+      setName(hall.name);
+      setRowsCount(hall.rows);
+      setSeatsPerRow(hall.seatsPerRow);
+      setAvailability('Tak');
+      console.log(hall.availability ? 'Tak' : 'Nie');
+    };
+    if (props.editModel) {
+      edit(props.editModel);
+    } else {
+      setAvailability('Tak');
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -77,7 +94,7 @@ const HallForm = (props: HallFormProps) => {
   };
 
   const handleActionClick = () => {
-    if (name && rowsCount && seatsPerRow) {
+    if (name && rowsCount && seatsPerRow && availability) {
       props.handleAction(name, rowsCount, seatsPerRow, availability);
     }
   };

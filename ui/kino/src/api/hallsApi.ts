@@ -1,8 +1,13 @@
-import {Hall, NewHall} from '../models/Hall';
-import {PagedList} from '../models/PagedList';
-import {apiDeleteAuthorized, apiGetAuthorized, apiPostAuthorized} from './base';
+import { Hall, NewHall } from '../models/Hall';
+import { PagedList } from '../models/PagedList';
+import {
+  apiDeleteAuthorized,
+  apiGetAuthorized,
+  apiPostAuthorized,
+  apiPutAuthorized,
+} from './base';
 
-export interface GetHallsQuery {
+interface GetHallsQuery {
   perPage?: number;
   page?: number;
   orderBy?: string;
@@ -10,6 +15,10 @@ export interface GetHallsQuery {
 }
 
 export interface DeleteHallQuery {
+  hallId: string;
+}
+
+interface GetHallQuery {
   hallId: string;
 }
 
@@ -26,8 +35,7 @@ export const apiGetHalls = async (
     orderBy: orderBy,
     desc: order === 'desc',
   };
-  return await apiGetAuthorized<PagedList<Hall>,
-    GetHallsQuery>(url, query);
+  return await apiGetAuthorized<PagedList<Hall>, GetHallsQuery>(url, query);
 };
 
 export const apiAddHall = async (hall: NewHall) => {
@@ -41,4 +49,21 @@ export const apiDeleteHall = async (hallId: string) => {
     hallId: hallId,
   };
   await apiDeleteAuthorized<DeleteHallQuery>(url, query);
+};
+
+export const apiGetHall = async (hallId: string): Promise<Hall> => {
+  const url = '/hall';
+  const query: GetHallQuery = {
+    hallId: hallId,
+  };
+  const response: PagedList<Hall> = await apiGetAuthorized<
+    PagedList<Hall>,
+    GetHallQuery
+  >(url, query);
+  return response.data[0];
+};
+
+export const apiEditHall = async (body: Hall) => {
+  const url = '/hall';
+  await apiPutAuthorized(url, JSON.stringify(body));
 };
