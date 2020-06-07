@@ -117,13 +117,11 @@ class TicketModel(db.Model):
     )
     ticketId = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     price = db.Column(db.Float)
-    discount = db.Column(db.Float)
     seatId = db.Column(UUID(as_uuid=True), db.ForeignKey('seat.seatId'))
     seanceId = db.Column(UUID(as_uuid=True), db.ForeignKey('seance.seanceId'))
 
-    def __init__(self, _id=None, price=None, discount=None, seatId=None, seanceId=None):
+    def __init__(self, _id=None, price=None, seatId=None, seanceId=None):
         self.id = _id or id
         self.price = price
-        self.discount = discount
         self.seatId = seatId
         self.seanceId = seanceId

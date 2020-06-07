@@ -8,3 +8,5 @@ open_time = datetime.time(10, 0, 0)
 close_time = datetime.time(23, 0, 0)
 cleaning_minutes = 10
 possible_seance_interval = 300
+ticket_price = 14.9
+discount = 0.2

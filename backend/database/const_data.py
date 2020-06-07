@@ -6,6 +6,11 @@ class Genre(Enum):
     DRAMA = "Dramat"
     HORROR = "Horror"
     COMEDY = "Komedia"
+    THRILLER = "Thriller"
+    BIOGRAPHY = "Biograficzny"
+    ANIMATED = "Animowany"
+    MUSICAL = "Musical"
+    ROMANCE = "Romantyczny"
 
     @staticmethod
     def get_all_list():
