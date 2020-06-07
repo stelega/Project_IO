@@ -13,6 +13,9 @@ class TicketData(Resource):
         args = self._parse_ticket_args()
         del args['ticketId']
         ticket = TicketModel(**args)
+        old_tickets = TicketModel.query.filter((TicketModel.seanceId == ticket.seanceId) & (TicketModel.seatId == ticket.seatId)).all()
+        if old_tickets:
+            return make_response(jsonify({'message': "Ticket for given seance and seat already exists"}), 400)
         db.session.add(ticket)
         db.session.commit()
         output = TicketSchema().dump(ticket)
