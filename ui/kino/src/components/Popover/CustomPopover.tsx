@@ -17,7 +17,7 @@ const CustomPopover = (props: CustomPopoverProps) => {
   return (
     <Popover
       id={props.id}
-      open={props.anchorEl ? true : false}
+      open={!!props.anchorEl}
       anchorEl={props.anchorEl}
       onClose={props.handleClose}
       anchorOrigin={{
