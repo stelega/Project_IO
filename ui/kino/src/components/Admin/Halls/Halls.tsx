@@ -8,6 +8,7 @@ import { PagedList } from '../../../models/PagedList';
 import { Hall } from '../../../models/Hall';
 import AddButton from './AddHall/AddButton';
 import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
+import EditHall from './EditHall/EditHall';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -54,6 +55,7 @@ const Halls = () => {
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [halls, setHalls] = useState<PagedList<Hall>>({ count: 0, data: [] });
+  const [editHallId, setEditHallId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,7 +104,7 @@ const Halls = () => {
     event: React.MouseEvent<HTMLElement>,
     hallId: string
   ) => {
-    console.log(hallId);
+    setEditHallId(hallId);
   };
 
   const handleDeleteClick = (
@@ -112,39 +114,53 @@ const Halls = () => {
     console.log(hallId);
   };
 
+  const handleEditClose = () => {
+    setEditHallId(undefined);
+  };
+
   const handleUpdate = () => {
     updateHalls(rowsPerPage, page, orderBy, order);
+    handleEditClose();
   };
 
   return (
-    <Container>
-      <TopContainer>
-        <Title>Wszystkie Sale</Title>
-        <AddButton handleAdded={handleUpdate} />
-      </TopContainer>
-      <TableContainer>
-        <Table size='small'>
-          <MyTableHead
-            onRequestSort={handleRequestSort}
-            orderBy={orderBy}
-            order={order}
-            headCells={headCells}
+    <>
+      <Container>
+        <TopContainer>
+          <Title>Wszystkie Sale</Title>
+          <AddButton handleAdded={handleUpdate} />
+        </TopContainer>
+        <TableContainer>
+          <Table size='small'>
+            <MyTableHead
+              onRequestSort={handleRequestSort}
+              orderBy={orderBy}
+              order={order}
+              headCells={headCells}
+            />
+            <HallsTableBody
+              halls={halls.data}
+              handleEditClick={handleEditClick}
+              handleDeleteClick={handleDeleteClick}
+            />
+          </Table>
+          <MyTablePagination
+            page={page}
+            totalCount={halls.count}
+            rowsPerPage={rowsPerPage}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
           />
-          <HallsTableBody
-            halls={halls.data}
-            handleEditClick={handleEditClick}
-            handleDeleteClick={handleDeleteClick}
-          />
-        </Table>
-        <MyTablePagination
-          page={page}
-          totalCount={halls.count}
-          rowsPerPage={rowsPerPage}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+        </TableContainer>
+      </Container>
+      {editHallId && (
+        <EditHall
+          hallId={editHallId}
+          handleEdited={handleUpdate}
+          handleClose={handleEditClose}
         />
-      </TableContainer>
-    </Container>
+      )}
+    </>
   );
 };
 
