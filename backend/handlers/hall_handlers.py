@@ -52,11 +52,11 @@ class HallData(Resource):
         args = self._parse_hall_args()
         if args['hallId'] is not None:
             if args['name'] is not None:
-                hall = HallModel.query.filter_by(name=args['name']).first()
-                if hall is not None:
+                hall = HallModel.query.filter((HallModel.hallId != args['hallId']) & (HallModel.name == args['name'])).all()
+                if hall:
                     return make_response(
                         jsonify({'message': "Hall with name '{}' already exists".format(args['name'])}),
-                        404)
+                        400)
             remove = [k for k in args if args[k] is None]
             for k in remove:
                 del args[k]
