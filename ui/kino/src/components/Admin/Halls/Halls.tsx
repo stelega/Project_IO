@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Table } from '@material-ui/core';
-import { getHalls } from '../../../services/HallService';
+import { deleteHall, getHalls } from '../../../services/HallService';
 import HallsTableBody from './tableComponents/HallsTableBody';
 import MyTablePagination from '../../tableComponents/TablePagination';
 import { PagedList } from '../../../models/PagedList';
@@ -107,20 +107,20 @@ const Halls = () => {
     setEditHallId(hallId);
   };
 
-  const handleDeleteClick = (
-    event: React.MouseEvent<HTMLElement>,
-    hallId: string
-  ) => {
-    console.log(hallId);
-  };
-
   const handleEditClose = () => {
     setEditHallId(undefined);
   };
 
+  const handleDelete = async (
+    event: React.MouseEvent<HTMLElement>,
+    hallId: string
+  ) => {
+    await deleteHall(hallId);
+    handleUpdate();
+  };
+
   const handleUpdate = () => {
     updateHalls(rowsPerPage, page, orderBy, order);
-    handleEditClose();
   };
 
   return (
@@ -140,8 +140,8 @@ const Halls = () => {
             />
             <HallsTableBody
               halls={halls.data}
-              handleEditClick={handleEditClick}
-              handleDeleteClick={handleDeleteClick}
+              handleEdit={handleEditClick}
+              handleDelete={handleDelete}
             />
           </Table>
           <MyTablePagination

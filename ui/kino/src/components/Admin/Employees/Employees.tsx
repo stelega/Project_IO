@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import { Table } from '@material-ui/core';
-import {getEmployees} from "../../../services/EmployeeService";
+import {Table} from '@material-ui/core';
+import {deleteEmployee, getEmployees} from "../../../services/EmployeeService";
 import EmployeesTableBody from "./tableComponents/EmployeesTableBody";
 import MyTablePagination from '../../tableComponents/TablePagination';
-import { PagedList } from '../../../models/PagedList';
+import {PagedList} from '../../../models/PagedList';
 import {Employee} from "../../../models/Employee";
 import AddButton from "./AddEmployee/AddButton"
-import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
+import MyTableHead, {HeadCell, Order} from '../../tableComponents/TableHead';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -58,7 +58,7 @@ const Employees = () => {
   const [orderBy, setOrderBy] = useState<keyof EmployeeListData>('surname');
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [employees, setEmployees] = useState<PagedList<Employee>>({ count: 0, data: [] });
+  const [employees, setEmployees] = useState<PagedList<Employee>>({count: 0, data: []});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,25 +103,31 @@ const Employees = () => {
     await updateEmployees(rows, page, orderBy, order);
   };
 
-  const handleEditClick = (
+  const handleEdit = (
     event: React.MouseEvent<HTMLElement>,
     employeeId: string
   ) => {
     console.log(employeeId);
   };
 
-  const handleDeleteClick = (
+  const handleDelete = async (
     event: React.MouseEvent<HTMLElement>,
     employeeId: string
   ) => {
-    console.log(employeeId);
+    await deleteEmployee(employeeId);
+    handleUpdate();
   };
+
+  const handleUpdate = () => {
+    updateEmployees(rowsPerPage, page, orderBy, order);
+  };
+
 
   return (
     <Container>
       <TopContainer>
         <Title>Wszyscy Pracownicy</Title>
-        <AddButton />
+        <AddButton/>
       </TopContainer>
       <TableContainer>
         <Table size='small'>
@@ -133,8 +139,8 @@ const Employees = () => {
           />
           <EmployeesTableBody
             employees={employees.data}
-            handleEditClick={handleEditClick}
-            handleDeleteClick={handleDeleteClick}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
           />
         </Table>
         <MyTablePagination

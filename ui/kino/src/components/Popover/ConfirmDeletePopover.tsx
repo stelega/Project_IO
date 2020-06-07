@@ -11,11 +11,11 @@ const LineContainer = styled.div`
   text-align: center;
 `;
 
-interface ConfirDeletePopoverProps {
+interface ConfirmDeletePopoverProps {
   onCancel: () => void;
   onConfirm: (event: React.MouseEvent<HTMLElement>) => void;
 }
-const ConfirmDeletePopover = (props: ConfirDeletePopoverProps) => {
+const ConfirmDeletePopover = (props: ConfirmDeletePopoverProps) => {
   return (
     <Container>
       <LineContainer>Czy na pewno chcesz usunąć?</LineContainer>
