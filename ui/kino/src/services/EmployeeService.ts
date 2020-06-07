@@ -1,4 +1,4 @@
-import {apiGetEmployees} from "../api/employeesApi";
+import {apiDeleteEmployee, apiGetEmployees} from "../api/employeesApi";
 import {PagedList} from "../models/PagedList";
 import {Employee} from "../models/Employee";
 
@@ -8,11 +8,14 @@ export const getEmployees = async (
   orderBy?: string,
   order?: 'asc' | 'desc'
 ): Promise<PagedList<Employee>> => {
-  const employees: PagedList<Employee> = await apiGetEmployees(
+  return await apiGetEmployees(
     rowsPerPage,
     page,
     orderBy,
     order
   );
-  return employees;
+};
+
+export const deleteEmployee = async (employeeId: string) => {
+  await apiDeleteEmployee(employeeId);
 };

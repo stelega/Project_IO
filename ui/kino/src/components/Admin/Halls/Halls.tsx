@@ -98,14 +98,14 @@ const Halls = () => {
     await updateHalls(rows, page, orderBy, order);
   };
 
-  const handleEditClick = (
+  const handleEdit = (
     event: React.MouseEvent<HTMLElement>,
     hallId: string
   ) => {
     console.log(hallId);
   };
 
-  const handleDeleteClick = async (
+  const handleDelete = async (
     event: React.MouseEvent<HTMLElement>,
     hallId: string
   ) => {
@@ -133,8 +133,8 @@ const Halls = () => {
           />
           <HallsTableBody
             halls={halls.data}
-            handleEdit={handleEditClick}
-            handleDelete={handleDeleteClick}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
           />
         </Table>
         <MyTablePagination
