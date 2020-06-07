@@ -5,7 +5,7 @@ from flask_restful import Resource, reqparse
 
 from database.const_data import Genre, AgeCategory
 from database.database import db
-from database.models import MovieModel
+from database.models import MovieModel, SeanceModel
 from database.schemas import MovieSchema
 from handlers.employee_handlers import admin_required, login_required
 from handlers.messages import ApiMessages
@@ -67,6 +67,11 @@ class MovieData(Resource):
         args = self._parse_movie_args()
         if args['movieId'] is not None:
             movie = MovieModel.query.get(args['movieId'])
+            if movie is None:
+                return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
+            seances = SeanceModel.query.filter(SeanceModel.movieId == args['movieId']).all()
+            if seances:
+                return make_response(jsonify({'message': "Cannot delete movie which is assigned to seance"}), 400)
             db.session.delete(movie)
             db.session.commit()
             output = MovieSchema().dump(movie)

@@ -28,7 +28,7 @@ def login_required(f):
             data = jwt.decode(token, current_app.config['SECRET_KEY'])
             current_user = EmployeeModel.query.filter_by(login=data['login']).first()
         except jwt.ExpiredSignature:
-            return make_response(jsonify({'message': 'Token expired'}), 302)
+            return make_response(jsonify({'message': 'Token expired'}), 401)
         except Exception as e:
             return make_response(jsonify({"message": repr(e)}, 500))
 
