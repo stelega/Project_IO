@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse, inputs
 from flask import jsonify, make_response
 
-from database.models import HallModel, SeatModel
+from database.models import HallModel, SeatModel, SeanceModel
 from database.schemas import HallSchema
 from handlers.employee_handlers import admin_required
 from handlers.messages import ApiMessages
@@ -78,6 +78,9 @@ class HallData(Resource):
             hall = HallModel.query.get(args['hallId'])
             if hall is None:
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
+            seances = SeanceModel.query.filter(SeanceModel.hallId == hall.hallId).all()
+            if seances:
+                return make_response(jsonify({'message': "Cannot delete hall which is assigned to seance"}), 400)
             db.session.delete(hall)
             db.session.commit()
             output = HallSchema().dump(hall)
