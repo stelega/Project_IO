@@ -66,7 +66,7 @@ def test_get_movie_with_added_movie(test_client, new_movie, init_database, admin
     with test_client:
         response = get_movie(test_client, str(new_movie.movieId), admin_token)
         assert response.status_code == 200
-        valid_result = {
+        valid_result = [{
 
             "movieId": str(new_movie.movieId),
             "title": "NowyFilm",
@@ -76,7 +76,7 @@ def test_get_movie_with_added_movie(test_client, new_movie, init_database, admin
             "ageCategory": "18+",
             "movieCategory": "Film akcji",
             "duration": 130
-        }
+        }]
         data = json.loads(response.data)
         assert data['data'] == valid_result
 

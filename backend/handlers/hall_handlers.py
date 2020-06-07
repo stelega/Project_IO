@@ -14,11 +14,11 @@ class HallData(Resource):
     def get(self):
         args = self._parse_hall_args()
         if args['hallId'] is not None:
-            hall = HallModel.query.get(args['hallId'])
-            if hall is None:
+            hall = HallModel.query.filter(HallModel.hallId == args['hallId']).all()
+            count = len(hall)
+            if not count:
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
-            count = 1
-            output = HallSchema().dump(hall)
+            output = HallSchema(many=True).dump(hall)
         else:
             try:
                 query = self._search_halls_query(HallModel.query)

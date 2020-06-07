@@ -17,11 +17,11 @@ class MovieData(Resource):
     def get(self):
         args = self._parse_movie_args()
         if args['movieId'] is not None:
-            movie = MovieModel.query.get(args['movieId'])
-            if movie is None:
+            movie = MovieModel.query.filter(MovieModel.movieId == args['movieId']).all()
+            count = len(movie)
+            if not count:
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
-            count = 1
-            output = MovieSchema().dump(movie)
+            output = MovieSchema(many=True).dump(movie)
         else:
             try:
                 query = self._search_movies_query(MovieModel.query)

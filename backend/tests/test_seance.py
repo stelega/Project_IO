@@ -67,7 +67,8 @@ def test_get_seance(test_client, new_seance, init_database, admin_token):
         response = get_seance(test_client, str(new_seance.seanceId), admin_token)
         assert response.status_code == 200
         result = json.loads(response.data)
-        data = result['data']
+        print(result)
+        data = result['data'][0]
 
         assert data['time'] == str(new_seance.time)
         assert data['date'] == str(new_seance.date)

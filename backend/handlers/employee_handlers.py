@@ -77,11 +77,11 @@ class EmployeesData(Resource):
     def get(self):
         args = self._parse_employee_args()
         if args['employeeId'] is not None:
-            employee = EmployeeModel.query.get(args['employeeId'])
-            if employee is None:
+            employee = EmployeeModel.query.filter(EmployeeModel.employeeId == args['employeeId']).all()
+            count = len(employee)
+            if not count:
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
-            count = 1
-            output = EmployeeSchema().dump(employee)
+            output = EmployeeSchema(many=True).dump(employee)
         else:
             try:
                 query = self._search_employees_query(EmployeeModel.query)

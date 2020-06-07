@@ -17,11 +17,11 @@ class SeanceData(Resource):
     def get(self):
         args = self._parse_seance_args()
         if args['seanceId'] is not None:
-            seance = SeanceModel.query.get(args['seanceId'])
-            if seance is None:
+            seance = SeanceModel.query.filter(SeanceModel.seanceId == args['seanceId']).all()
+            count = len(seance)
+            if not count:
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
-            count = 1
-            output = SeanceSchema().dump(seance)
+            output = SeanceSchema(many=True).dump(seance)
         else:
             try:
                 query = self._search_seances_query(SeanceModel.query.join(MovieModel).join(HallModel))

@@ -96,7 +96,7 @@ def test_get_hall(test_client, new_hall, init_database, admin_token):
         assert response.status_code == 200
 
         result = json.loads(response.data)
-        data = result['data']
+        data = result['data'][0]
 
         assert data['name'] == new_hall.name
         assert data['numOfSeats'] == new_hall.numOfSeats
