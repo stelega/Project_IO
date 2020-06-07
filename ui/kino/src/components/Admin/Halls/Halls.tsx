@@ -112,11 +112,15 @@ const Halls = () => {
     console.log(hallId);
   };
 
+  const handleUpdate = () => {
+    updateHalls(rowsPerPage, page, orderBy, order);
+  };
+
   return (
     <Container>
       <TopContainer>
         <Title>Wszystkie Sale</Title>
-        <AddButton />
+        <AddButton handleAdded={handleUpdate} />
       </TopContainer>
       <TableContainer>
         <Table size='small'>

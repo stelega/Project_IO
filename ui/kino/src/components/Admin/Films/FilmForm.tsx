@@ -117,7 +117,7 @@ const FilmForm = (props: FilmFormProps) => {
   const handleDurationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDuration(Number(event.target.value));
   };
-  const handleAddClick = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleActionClick = async (event: React.MouseEvent<HTMLElement>) => {
     if (
       title &&
       director &&
@@ -257,7 +257,7 @@ const FilmForm = (props: FilmFormProps) => {
             <Button
               variant='contained'
               color='secondary'
-              onClick={handleAddClick}>
+              onClick={handleActionClick}>
               {props.buttonText}
             </Button>
           </ThemeProvider>
