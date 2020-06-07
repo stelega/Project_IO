@@ -8,6 +8,7 @@ import { PagedList } from '../../../models/PagedList';
 import { Film } from '../../../models/Film';
 import AddButton from './AddFilm/AddButton';
 import MyTablePagination from '../../tableComponents/TablePagination';
+import EditFilm from './EditFilm/EditFilm';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -59,6 +60,7 @@ const Films = () => {
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [films, setFilms] = useState<PagedList<Film>>({ count: 0, data: [] });
+  const [editFilmId, setEditFilmId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,7 +109,11 @@ const Films = () => {
     event: React.MouseEvent<HTMLElement>,
     movieId: string
   ) => {
-    console.log(movieId);
+    setEditFilmId(movieId);
+  };
+
+  const handleEditClose = () => {
+    setEditFilmId(undefined);
   };
 
   const handleDelete = async (
@@ -120,37 +126,47 @@ const Films = () => {
 
   const handleUpdate = () => {
     updateFilms(rowsPerPage, page, orderBy, order);
+    setEditFilmId(undefined);
   };
 
   return (
-    <Container>
-      <TopContainer>
-        <Title>Wszystkie Filmy</Title>
-        <AddButton handleAdded={handleUpdate} />
-      </TopContainer>
-      <TableContainer>
-        <Table size='small'>
-          <MyTableHead
-            order={order}
-            orderBy={orderBy}
-            onRequestSort={handleRequestSort}
-            headCells={headCells}
+    <>
+      <Container>
+        <TopContainer>
+          <Title>Wszystkie Filmy</Title>
+          <AddButton handleAdded={handleUpdate} />
+        </TopContainer>
+        <TableContainer>
+          <Table size='small'>
+            <MyTableHead
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              headCells={headCells}
+            />
+            <FilmsTableBody
+              films={films.data}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+          </Table>
+          <MyTablePagination
+            page={page}
+            totalCount={films.count}
+            rowsPerPage={rowsPerPage}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
           />
-          <FilmsTableBody
-            films={films.data}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-          />
-        </Table>
-        <MyTablePagination
-          page={page}
-          totalCount={films.count}
-          rowsPerPage={rowsPerPage}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+        </TableContainer>
+      </Container>
+      {editFilmId && (
+        <EditFilm
+          movieId={editFilmId}
+          handleEdited={handleUpdate}
+          handleClose={handleEditClose}
         />
-      </TableContainer>
-    </Container>
+      )}
+    </>
   );
 };
 
