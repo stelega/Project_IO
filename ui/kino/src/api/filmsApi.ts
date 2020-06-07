@@ -4,6 +4,7 @@ import {
   apiGetAuthorized,
   apiPostAuthorized,
   apiDeleteAuthorized,
+  apiPutAuthorized,
 } from './base';
 import { Film } from '../models/Film';
 
@@ -15,6 +16,10 @@ interface GetFilmsQuery {
 }
 
 interface DeleteFilmQuery {
+  movieId: string;
+}
+
+interface GetFilmQuery {
   movieId: string;
 }
 
@@ -61,4 +66,21 @@ export const apiDeleteFilm = async (movieId: string) => {
     movieId: movieId,
   };
   await apiDeleteAuthorized<DeleteFilmQuery>(url, query);
+};
+
+export const apiGetFilm = async (movieId: string): Promise<Film> => {
+  const url = '/movie';
+  const query: GetFilmQuery = {
+    movieId: movieId,
+  };
+  const response: PagedList<Film> = await apiGetAuthorized<
+    PagedList<Film>,
+    GetFilmQuery
+  >(url, query);
+  return response.data[0];
+};
+
+export const apiEditFilm = async (body: Film) => {
+  const url = '/movie';
+  await apiPutAuthorized(url, JSON.stringify(body));
 };

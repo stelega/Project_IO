@@ -5,6 +5,8 @@ import {
   apiGetAgeCategories,
   apiAddFilm,
   apiDeleteFilm,
+  apiGetFilm,
+  apiEditFilm,
 } from '../api/filmsApi';
 import { PagedList } from '../models/PagedList';
 import { Film, Category, NewFilm } from '../models/Film';
@@ -57,4 +59,32 @@ export const getMovieCategories = async (): Promise<string[]> => {
 
 export const deleteFilm = async (movieId: string) => {
   await apiDeleteFilm(movieId);
+};
+
+export const getFilm = async (movieId: string): Promise<Film> => {
+  const film: Film = await apiGetFilm(movieId);
+  return film;
+};
+
+export const editFilm = async (
+  movieId: string,
+  title: string,
+  director: string,
+  ageCategory: string,
+  movieCategory: string,
+  duration: number,
+  dateStart: Moment,
+  dateEnd: Moment
+) => {
+  const body: Film = {
+    movieId: movieId,
+    ageCategory: ageCategory,
+    director: director,
+    duration: duration,
+    movieCategory: movieCategory,
+    releaseDate: dateStart.format('YYYY-MM-DD').toString(),
+    closeDate: dateEnd.format('YYYY-MM-DD').toString(),
+    title: title,
+  };
+  await apiEditFilm(body);
 };

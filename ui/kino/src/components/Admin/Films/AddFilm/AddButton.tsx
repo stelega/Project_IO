@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Button, ThemeProvider } from '@material-ui/core';
 import { customTheme } from '../../../LoginPage/sections/LoginFormStyles';
 import CustomModal from '../../../CustomModal';
-import AddForm from './AddFilmForm';
+import FilmForm from '../FilmForm';
+import { Moment } from 'moment';
+import { addFilm } from '../../../../services/FilmService';
 
 interface AddButtonProps {
   handleAdded: () => void;
@@ -16,7 +18,24 @@ const AddButton = (props: AddButtonProps) => {
     setOpen(false);
   };
 
-  const handleAdded = () => {
+  const handleAdd = async (
+    title: string,
+    director: string,
+    ageCategory: string,
+    movieCategory: string,
+    duration: number,
+    dateStart: Moment,
+    dateEnd: Moment
+  ) => {
+    await addFilm(
+      title,
+      director,
+      ageCategory,
+      movieCategory,
+      duration,
+      dateStart,
+      dateEnd
+    );
     setOpen(false);
     props.handleAdded();
   };
@@ -34,7 +53,13 @@ const AddButton = (props: AddButtonProps) => {
       <CustomModal
         open={open}
         handleClose={handleClose}
-        body={<AddForm handleClose={handleClose} handleAdded={handleAdded} />}
+        body={
+          <FilmForm
+            handleClose={handleClose}
+            handleAction={handleAdd}
+            buttonText='Dodaj'
+          />
+        }
       />
     </>
   );

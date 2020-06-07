@@ -10,14 +10,14 @@ import {
   Button,
   ThemeProvider,
 } from '@material-ui/core';
-import DatePicker from './DatePicker';
+import DatePicker from '../../DatePicker';
 import moment, { Moment } from 'moment';
-import { customTheme } from '../../../LoginPage/sections/LoginFormStyles';
+import { customTheme } from '../../LoginPage/sections/LoginFormStyles';
 import {
   getAgeCategories,
   getMovieCategories,
-  addFilm,
-} from '../../../../services/FilmService';
+} from '../../../services/FilmService';
+import { Film } from '../../../models/Film';
 
 const Container = styled.div`
   margin: 5%;
@@ -42,12 +42,22 @@ const ButtonContainer = styled.div`
   margin-right: 5%;
 `;
 
-interface AddFilmForm {
+interface FilmFormProps {
   handleClose: (event: React.MouseEvent<HTMLElement>) => void;
-  handleAdded: () => void;
+  handleAction: (
+    title: string,
+    director: string,
+    ageCategory: string,
+    movieCategory: string,
+    duration: number,
+    dateStart: Moment,
+    dateEnd: Moment
+  ) => void;
+  editModel?: Film;
+  buttonText: string;
 }
 
-const AddForm = (props: AddFilmForm) => {
+const FilmForm = (props: FilmFormProps) => {
   const [ageCategories, setAgeCategories] = useState<string[]>();
   const [movieCategories, setMovieCategories] = useState<string[]>();
   const [title, setTitle] = useState<string>();
@@ -55,15 +65,30 @@ const AddForm = (props: AddFilmForm) => {
   const [ageCategory, setAgeCategory] = useState<string>('');
   const [movieCategory, setMovieCategory] = useState<string>('');
   const [duration, setDuration] = useState<number>();
-  const [dateStart, setDateStart] = useState(moment());
-  const [dateEnd, setDateEnd] = useState(moment().add(1, 'week'));
+  const [dateStart, setDateStart] = useState<Moment>();
+  const [dateEnd, setDateEnd] = useState<Moment>();
 
   useEffect(() => {
     const fetchData = async () => {
       setAgeCategories(await getAgeCategories());
       setMovieCategories(await getMovieCategories());
     };
+    const edit = (film: Film) => {
+      setTitle(film.title);
+      setDirector(film.director);
+      setAgeCategory(film.ageCategory);
+      setMovieCategory(film.movieCategory);
+      setDuration(film.duration);
+      setDateStart(moment(film.releaseDate));
+      setDateEnd(moment(film.closeDate));
+    };
     fetchData();
+    if (props.editModel) {
+      edit(props.editModel);
+    } else {
+      setDateStart(moment());
+      setDateEnd(moment().add(1, 'week'));
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -102,7 +127,7 @@ const AddForm = (props: AddFilmForm) => {
       dateStart &&
       dateEnd
     ) {
-      await addFilm(
+      props.handleAction(
         title,
         director,
         ageCategory,
@@ -111,7 +136,6 @@ const AddForm = (props: AddFilmForm) => {
         dateStart,
         dateEnd
       );
-      props.handleAdded();
     }
   };
   return (
@@ -125,7 +149,11 @@ const AddForm = (props: AddFilmForm) => {
                 <Text>Tytuł</Text>
               </TableCell>
               <TableCell align='left'>
-                <TextField id={'title'} onChange={handleTitleChange} />
+                <TextField
+                  id={'title'}
+                  onChange={handleTitleChange}
+                  value={title}
+                />
               </TableCell>
               <TableCell align='right'>
                 <Text>Kategoria wiekowa</Text>
@@ -153,7 +181,11 @@ const AddForm = (props: AddFilmForm) => {
                 <Text>Reżyser</Text>
               </TableCell>
               <TableCell align='left'>
-                <TextField id={'director'} onChange={handleDirectorChange} />
+                <TextField
+                  id={'director'}
+                  onChange={handleDirectorChange}
+                  value={director}
+                />
               </TableCell>
               <TableCell align='right'>
                 <Text>Kategoria filmu</Text>
@@ -184,7 +216,7 @@ const AddForm = (props: AddFilmForm) => {
                 <DatePicker
                   id='start-time'
                   onChange={handleDateStartChange}
-                  value={dateStart}
+                  value={dateStart ? dateStart : moment()}
                 />
               </TableCell>
               <TableCell align='right'>
@@ -193,7 +225,9 @@ const AddForm = (props: AddFilmForm) => {
               <TableCell align='left'>
                 <TextField
                   id='duration'
-                  onChange={handleDurationChange}></TextField>
+                  onChange={handleDurationChange}
+                  value={duration}
+                />
               </TableCell>
             </TableRow>
             <TableRow>
@@ -204,7 +238,7 @@ const AddForm = (props: AddFilmForm) => {
                 <DatePicker
                   id='end-time'
                   onChange={handleDateEndChange}
-                  value={dateEnd}
+                  value={dateEnd ? dateEnd : moment().add(1, 'week')}
                 />
               </TableCell>
               <TableCell align='right'></TableCell>
@@ -224,7 +258,7 @@ const AddForm = (props: AddFilmForm) => {
               variant='contained'
               color='secondary'
               onClick={handleAddClick}>
-              Dodaj
+              {props.buttonText}
             </Button>
           </ThemeProvider>
         </ButtonContainer>
@@ -233,4 +267,4 @@ const AddForm = (props: AddFilmForm) => {
   );
 };
 
-export default AddForm;
+export default FilmForm;

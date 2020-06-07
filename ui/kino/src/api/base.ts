@@ -50,6 +50,20 @@ export async function apiPostAuthorized<T>(uri: string, jsonBody: string) {
   return response;
 }
 
+export async function apiPutAuthorized(uri: string, jsonBody: string) {
+  const url = BACKEND_URL + uri;
+  const token = UserContext.getToken();
+  await fetch(url, {
+    method: 'PUT',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+      'access-token': token ? token : '',
+    },
+    body: jsonBody,
+  });
+}
+
 export async function apiDeleteAuthorized<QueryParamsType>(
   uri: string,
   query: QueryParamsType
