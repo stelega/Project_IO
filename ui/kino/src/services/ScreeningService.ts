@@ -6,13 +6,15 @@ export const getScreenings = async (
   rowsPerPage?: number,
   page?: number,
   orderBy?: string,
-  order?: 'asc' | 'desc'
+  order?: 'asc' | 'desc',
+  search?: string
 ): Promise<PagedList<Screening>> => {
   return await apiGetScreenings(
     rowsPerPage,
     page,
     orderBy,
-    order
+    order,
+    search
   );
 };
 
