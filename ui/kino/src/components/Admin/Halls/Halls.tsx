@@ -121,6 +121,7 @@ const Halls = () => {
 
   const handleUpdate = () => {
     updateHalls(rowsPerPage, page, orderBy, order);
+    setEditHallId(undefined);
   };
 
   return (

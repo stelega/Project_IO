@@ -49,6 +49,7 @@ interface HallFormProps {
   ) => void;
   buttonText: string;
   editModel?: Hall;
+  formTitle: string;
 }
 
 const HallForm = (props: HallFormProps) => {
@@ -101,7 +102,7 @@ const HallForm = (props: HallFormProps) => {
 
   return (
     <Container>
-      <Title>Dodaj salę</Title>
+      <Title>{props.formTitle}</Title>
       <TableContainer>
         <Table>
           <TableRow>

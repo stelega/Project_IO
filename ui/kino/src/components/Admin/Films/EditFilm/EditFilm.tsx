@@ -63,6 +63,7 @@ const EditFilm = (props: EditFilmProps) => {
               handleAction={handleEdit}
               editModel={film}
               buttonText='Edytuj'
+              formTitle='Edytuj film'
             />
           }
         />

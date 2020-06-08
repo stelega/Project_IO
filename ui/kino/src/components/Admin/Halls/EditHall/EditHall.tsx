@@ -51,6 +51,7 @@ const EditHall = (props: EditHallProps) => {
               handleAction={handleEdit}
               editModel={hall}
               buttonText='Edytuj'
+              formTitle='Edytuj salę'
             />
           }
         />

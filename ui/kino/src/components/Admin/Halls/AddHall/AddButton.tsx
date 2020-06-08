@@ -46,6 +46,7 @@ const AddButton = (props: AddHallButtonProps) => {
             buttonText='Dodaj'
             handleClose={handleClose}
             handleAction={handleAdd}
+            formTitle='Dodaj salę'
           />
         }
       />
