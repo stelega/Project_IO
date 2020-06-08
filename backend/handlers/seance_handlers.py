@@ -166,3 +166,20 @@ class SeatsData(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('seanceId')
         return parser.parse_args()
+
+
+class FutureMovieSeancesData(Resource):
+    @login_required
+    def get(self):
+        movie_id = self._parse_args()['movieId']
+        today = datetime.now().date()
+        if movie_id is None:
+            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 404)
+        seances = SeanceModel.query.filter(SeanceModel.date >= today).filter(SeanceModel.movieId == movie_id).all()
+        output = SeanceSchema(many=True).dump(seances)
+        return make_response(jsonify({"data": output}), 200)
+
+    def _parse_args(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('movieId')
+        return parser.parse_args()

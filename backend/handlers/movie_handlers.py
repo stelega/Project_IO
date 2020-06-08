@@ -119,6 +119,24 @@ class AvailableMoviesData(Resource):
         return parser.parse_args()
 
 
+class FutureMoviesData(Resource):
+    @login_required
+    def get(self):
+        today = datetime.now().date()
+        movies = MovieModel.query.filter(MovieModel.closeDate >= today).all()
+        output = MovieSchema(many=True).dump(movies)
+        return make_response(jsonify({"data": output}), 200)
+
+
+class FutureMoviesWithSeancesData(Resource):
+    @login_required
+    def get(self):
+        today = datetime.now().date()
+        movies = MovieModel.query.join(SeanceModel).filter(MovieModel.closeDate >= today).filter(SeanceModel.date >= today).all()
+        output = MovieSchema(many=True).dump(movies)
+        return make_response(jsonify({"data": output}), 200)
+
+
 class AgeCategoryData(Resource):
     @login_required
     def get(self):
