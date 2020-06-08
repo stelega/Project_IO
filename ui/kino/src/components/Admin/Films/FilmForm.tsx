@@ -55,6 +55,7 @@ interface FilmFormProps {
   ) => void;
   editModel?: Film;
   buttonText: string;
+  formTitle: string;
 }
 
 const FilmForm = (props: FilmFormProps) => {
@@ -141,7 +142,7 @@ const FilmForm = (props: FilmFormProps) => {
   return (
     <>
       <Container>
-        <Title>Dodaj film</Title>
+        <Title>{props.formTitle}</Title>
         <Table>
           <TableBody>
             <TableRow>

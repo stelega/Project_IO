@@ -58,6 +58,7 @@ const AddButton = (props: AddButtonProps) => {
             handleClose={handleClose}
             handleAction={handleAdd}
             buttonText='Dodaj'
+            formTitle='Dodaj film'
           />
         }
       />
