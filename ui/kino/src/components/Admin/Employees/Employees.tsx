@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import { Table } from '@material-ui/core';
-import {
-  deleteEmployee,
-  getEmployees,
-} from '../../../services/EmployeeService';
+import {Table} from '@material-ui/core';
+import {deleteEmployee, getEmployees,} from '../../../services/EmployeeService';
 import EmployeesTableBody from './tableComponents/EmployeesTableBody';
 import MyTablePagination from '../../tableComponents/TablePagination';
-import { PagedList } from '../../../models/PagedList';
-import { Employee } from '../../../models/Employee';
+import {PagedList} from '../../../models/PagedList';
+import {Employee} from '../../../models/Employee';
 import AddButton from './AddEmployee/AddButton';
-import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
+import MyTableHead, {HeadCell, Order} from '../../tableComponents/TableHead';
+import SearchField from "../../SearchField";
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -28,6 +26,10 @@ const Title = styled.div`
 const TopContainer = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const RightSideContainer = styled.div`
+  display: flex;
 `;
 
 interface EmployeeListData {
@@ -65,10 +67,12 @@ const Employees = () => {
     count: 0,
     data: [],
   });
+  const [search, setSearch] = useState<string>('')
+  const [typingTimeout, setTypingTimeout] = useState<number>(0)
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getEmployees(rowsPerPage, page, orderBy, order);
+      const result = await getEmployees(rowsPerPage, page, orderBy, order, search);
       setEmployees(result);
     };
     fetchData();
@@ -83,21 +87,22 @@ const Employees = () => {
     const newOrder = isAsc ? 'desc' : 'asc';
     setOrder(newOrder);
     setOrderBy(newOrderBy);
-    await updateEmployees(rowsPerPage, page, newOrderBy, newOrder);
+    await updateEmployees(rowsPerPage, page, newOrderBy, newOrder, search);
   };
 
   const handleChangePage = async (event: unknown, newPage: number) => {
     setPage(newPage);
-    await updateEmployees(rowsPerPage, newPage, orderBy, order);
+    await updateEmployees(rowsPerPage, newPage, orderBy, order, search);
   };
 
   const updateEmployees = async (
     rowsPerPage: number,
     page: number,
     orderBy: string,
-    order: 'desc' | 'asc'
+    order: 'desc' | 'asc',
+    search: string
   ) => {
-    const result = await getEmployees(rowsPerPage, page, orderBy, order);
+    const result = await getEmployees(rowsPerPage, page, orderBy, order, search);
     setEmployees(result);
   };
 
@@ -106,7 +111,7 @@ const Employees = () => {
   ) => {
     const rows: number = Number(event.target.value);
     setRowsPerPage(rows);
-    await updateEmployees(rows, page, orderBy, order);
+    await updateEmployees(rows, page, orderBy, order, search);
   };
 
   const handleEdit = (
@@ -125,14 +130,28 @@ const Employees = () => {
   };
 
   const handleUpdate = () => {
-    updateEmployees(rowsPerPage, page, orderBy, order);
+    updateEmployees(rowsPerPage, page, orderBy, order, search);
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let text = event.target.value
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    setTypingTimeout(setTimeout(() => {
+      setSearch(text);
+      updateEmployees(rowsPerPage, page, orderBy, order, text);
+    }, 300));
   };
 
   return (
     <Container>
       <TopContainer>
         <Title>Wszyscy Pracownicy</Title>
-        <AddButton handleAdded={handleUpdate} />
+        <RightSideContainer>
+          <SearchField handleSearch={handleSearch}/>
+          <AddButton handleAdded={handleUpdate}/>
+        </RightSideContainer>
       </TopContainer>
       <TableContainer>
         <Table size='small'>

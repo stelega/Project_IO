@@ -10,9 +10,10 @@ export const getEmployees = async (
   rowsPerPage?: number,
   page?: number,
   orderBy?: string,
-  order?: 'asc' | 'desc'
+  order?: 'asc' | 'desc',
+  search?: string
 ): Promise<PagedList<Employee>> => {
-  return await apiGetEmployees(rowsPerPage, page, orderBy, order);
+  return await apiGetEmployees(rowsPerPage, page, orderBy, order, search);
 };
 
 export const deleteEmployee = async (employeeId: string) => {

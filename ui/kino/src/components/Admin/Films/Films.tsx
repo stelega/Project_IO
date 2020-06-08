@@ -66,7 +66,7 @@ const Films = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [films, setFilms] = useState<PagedList<Film>>({count: 0, data: []});
   const [editFilmId, setEditFilmId] = useState<string | undefined>(undefined);
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string>('');
   const [typingTimeout, setTypingTimeout] = useState<number>(0);
 
   useEffect(() => {
