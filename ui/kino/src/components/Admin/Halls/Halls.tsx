@@ -9,6 +9,7 @@ import { Hall } from '../../../models/Hall';
 import AddButton from './AddHall/AddButton';
 import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
 import EditHall from './EditHall/EditHall';
+import SearchField from "../../SearchField";
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -26,6 +27,10 @@ const Title = styled.div`
 const TopContainer = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const RightSideContainer = styled.div`
+  display: flex;
 `;
 
 interface HallListData {
@@ -56,10 +61,12 @@ const Halls = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [halls, setHalls] = useState<PagedList<Hall>>({ count: 0, data: [] });
   const [editHallId, setEditHallId] = useState<string | undefined>(undefined);
+  const [search, setSearch] = useState<string>('');
+  const [typingTimeout, setTypingTimeout] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getHalls(rowsPerPage, page, orderBy, order);
+      const result = await getHalls(rowsPerPage, page, orderBy, order, search);
       setHalls(result);
     };
     fetchData();
@@ -74,21 +81,22 @@ const Halls = () => {
     const newOrder = isAsc ? 'desc' : 'asc';
     setOrder(newOrder);
     setOrderBy(newOrderBy);
-    await updateHalls(rowsPerPage, page, newOrderBy, newOrder);
+    await updateHalls(rowsPerPage, page, newOrderBy, newOrder, search);
   };
 
   const handleChangePage = async (event: unknown, newPage: number) => {
     setPage(newPage);
-    await updateHalls(rowsPerPage, newPage, orderBy, order);
+    await updateHalls(rowsPerPage, newPage, orderBy, order, search);
   };
 
   const updateHalls = async (
     rowsPerPage: number,
     page: number,
     orderBy: string,
-    order: 'desc' | 'asc'
+    order: 'desc' | 'asc',
+    search: string
   ) => {
-    const result = await getHalls(rowsPerPage, page, orderBy, order);
+    const result = await getHalls(rowsPerPage, page, orderBy, order, search);
     setHalls(result);
   };
 
@@ -97,7 +105,7 @@ const Halls = () => {
   ) => {
     const rows: number = Number(event.target.value);
     setRowsPerPage(rows);
-    await updateHalls(rows, page, orderBy, order);
+    await updateHalls(rows, page, orderBy, order, search);
   };
 
   const handleEditClick = (
@@ -120,8 +128,19 @@ const Halls = () => {
   };
 
   const handleUpdate = () => {
-    updateHalls(rowsPerPage, page, orderBy, order);
+    updateHalls(rowsPerPage, page, orderBy, order, search);
     setEditHallId(undefined);
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let text = event.target.value
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    setTypingTimeout(setTimeout(() => {
+      setSearch(text);
+      updateHalls(rowsPerPage, page, orderBy, order, text);
+    }, 300));
   };
 
   return (
@@ -129,7 +148,10 @@ const Halls = () => {
       <Container>
         <TopContainer>
           <Title>Wszystkie Sale</Title>
-          <AddButton handleAdded={handleUpdate} />
+          <RightSideContainer>
+            <SearchField handleSearch={handleSearch}/>
+            <AddButton handleAdded={handleUpdate} />
+          </RightSideContainer>
         </TopContainer>
         <TableContainer>
           <Table size='small'>

@@ -12,6 +12,7 @@ interface GetHallsQuery {
   page?: number;
   orderBy?: string;
   desc?: Boolean;
+  search?: string;
 }
 
 export interface DeleteHallQuery {
@@ -26,7 +27,8 @@ export const apiGetHalls = async (
   rowsPerPage?: number,
   page?: number,
   orderBy?: string,
-  order?: 'desc' | 'asc'
+  order?: 'desc' | 'asc',
+  search?: string
 ) => {
   const url = '/hall';
   const query: GetHallsQuery = {
@@ -34,6 +36,7 @@ export const apiGetHalls = async (
     page: page,
     orderBy: orderBy,
     desc: order === 'desc',
+    search: search
   };
   return await apiGetAuthorized<PagedList<Hall>, GetHallsQuery>(url, query);
 };
