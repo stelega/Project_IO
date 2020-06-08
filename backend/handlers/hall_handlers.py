@@ -1,11 +1,13 @@
-from flask_restful import Resource, reqparse, inputs
-from flask import jsonify, make_response
+from datetime import datetime
 
-from database.models import HallModel, SeatModel, SeanceModel
+from flask import jsonify, make_response
+from flask_restful import Resource, reqparse, inputs
+
+from database.database import db
+from database.models import HallModel, SeatModel, SeanceModel, TicketModel
 from database.schemas import HallSchema
 from handlers.employee_handlers import admin_required
 from handlers.messages import ApiMessages
-from database.database import db
 from handlers.utilities import prepare_and_run_query
 
 
@@ -52,7 +54,8 @@ class HallData(Resource):
         args = self._parse_hall_args()
         if args['hallId'] is not None:
             if args['name'] is not None:
-                hall = HallModel.query.filter((HallModel.hallId != args['hallId']) & (HallModel.name == args['name'])).all()
+                hall = HallModel.query.filter(
+                    (HallModel.hallId != args['hallId']) & (HallModel.name == args['name'])).all()
                 if hall:
                     return make_response(
                         jsonify({'message': "Hall with name '{}' already exists".format(args['name'])}),
@@ -60,10 +63,20 @@ class HallData(Resource):
             remove = [k for k in args if args[k] is None]
             for k in remove:
                 del args[k]
-            hall = HallModel.query.filter_by(hallId=args['hallId']).update(args)
-            if hall == 1:
+            query = HallModel.query.filter_by(hallId=args['hallId'])
+            old_hall = query.all()
+            if old_hall:
+                old_rows = old_hall[0].rows
+                old_per_row = old_hall[0].seatsPerRow
+                if not self._adjust_seats(args["hallId"], old_rows, old_per_row, args["rows"], args["seatsPerRow"]):
+                    return make_response(jsonify(
+                        {'message': 'Cannot lower rows/seats - future seances with sold tickets in this hall exist'}),
+                                         400)
+                query.update(args)
                 db.session.commit()
                 hall = HallModel.query.get(args['hallId'])
+                hall.numOfSeats = hall.rows * hall.seatsPerRow
+                db.session.commit()
                 output = HallSchema().dump(hall)
                 return make_response(jsonify({'data': output}), 200)
             else:
@@ -113,3 +126,32 @@ class HallData(Resource):
                 seats.append(SeatModel(number=number, row=row, hallId=hall.hallId))
         db.session.add_all(seats)
         db.session.commit()
+
+    def _adjust_seats(self, hall_id, old_rows, old_per_row, new_rows, new_per_row):
+        today = datetime.now().date()
+        has_tickets = len(TicketModel.query.join(SeanceModel).filter(SeanceModel.date >= today).filter(
+            SeanceModel.hallId == hall_id).all()) != 0
+        if old_rows == new_rows and old_per_row == new_per_row:
+            return True
+        elif has_tickets and (new_rows < old_rows or new_per_row < old_per_row):
+            return False
+        elif (not has_tickets) and (new_rows < old_rows or new_per_row < old_per_row):
+            deleted_count = SeatModel.query.filter(SeatModel.hallId == hall_id).delete()
+            seats = []
+            for row in range(new_rows):
+                for number in range(new_per_row):
+                    seats.append(SeatModel(number=number, row=row, hallId=hall_id))
+            db.session.add_all(seats)
+            db.session.commit()
+            return True
+        elif new_rows > old_rows or new_per_row > old_per_row:
+            seats = []
+            for row in range(old_rows):
+                for number in range(old_per_row, new_per_row):
+                    seats.append(SeatModel(number=number, row=row, hallId=hall_id))
+            for row in range(old_rows, new_rows):
+                for number in range(new_per_row):
+                    seats.append(SeatModel(number=number, row=row, hallId=hall_id))
+            db.session.add_all(seats)
+            db.session.commit()
+            return True
