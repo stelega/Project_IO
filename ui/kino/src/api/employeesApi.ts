@@ -1,6 +1,10 @@
-import {PagedList} from "../models/PagedList";
-import {apiDeleteAuthorized, apiGetAuthorized} from "./base";
-import {Employee} from "../models/Employee";
+import { Employee, NewEmployee } from './../models/Employee';
+import { PagedList } from '../models/PagedList';
+import {
+  apiDeleteAuthorized,
+  apiGetAuthorized,
+  apiPostAuthorized,
+} from './base';
 
 export interface GetEmployeesQuery {
   perPage?: number;
@@ -24,11 +28,13 @@ export const apiGetEmployees = async (
     perPage: rowsPerPage,
     page: page,
     orderBy: orderBy,
-    desc: order === 'desc'
+    desc: order === 'desc',
   };
-  return await apiGetAuthorized<PagedList<Employee>,
-    GetEmployeesQuery>(url, query);
-}
+  return await apiGetAuthorized<PagedList<Employee>, GetEmployeesQuery>(
+    url,
+    query
+  );
+};
 
 export const apiDeleteEmployee = async (employeeId: string) => {
   const url = '/employee';
@@ -36,4 +42,9 @@ export const apiDeleteEmployee = async (employeeId: string) => {
     employeeId: employeeId,
   };
   await apiDeleteAuthorized<DeleteEmployeeQuery>(url, query);
+};
+
+export const apiAddEmployee = async (employee: NewEmployee) => {
+  const url = '/register';
+  await apiPostAuthorized(url, JSON.stringify(employee));
 };
