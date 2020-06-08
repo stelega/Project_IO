@@ -1,4 +1,4 @@
-import {apiGetScreenings} from "../api/screeningsApi";
+import {apiDeleteScreening, apiGetScreenings} from "../api/screeningsApi";
 import {PagedList} from "../models/PagedList";
 import {Screening} from "../models/Screening";
 
@@ -8,11 +8,14 @@ export const getScreenings = async (
   orderBy?: string,
   order?: 'asc' | 'desc'
 ): Promise<PagedList<Screening>> => {
-  const screenings: PagedList<Screening> = await apiGetScreenings(
+  return await apiGetScreenings(
     rowsPerPage,
     page,
     orderBy,
     order
   );
-  return screenings;
+};
+
+export const deleteScreening = async (seanceId: string) => {
+  await apiDeleteScreening(seanceId);
 };

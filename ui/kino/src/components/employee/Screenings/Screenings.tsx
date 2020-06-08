@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import { Table } from '@material-ui/core';
-import {getScreenings} from "../../../services/ScreeningService";
+import {Table} from '@material-ui/core';
+import {deleteScreening, getScreenings} from "../../../services/ScreeningService";
 import ScreeningsTableBody from "./tableComponents/ScreeningsTableBody";
 import MyTablePagination from '../../tableComponents/TablePagination';
-import { PagedList } from '../../../models/PagedList';
+import {PagedList} from '../../../models/PagedList';
 import {Screening} from "../../../models/Screening";
 import AddButton from "./AddScreening/AddButton";
-import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
+import MyTableHead, {HeadCell, Order} from '../../tableComponents/TableHead';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -63,7 +63,8 @@ const Screenings = () => {
   const [orderBy, setOrderBy] = useState<keyof ScreeningListData>('movie');
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [screenings, setScreenings] = useState<PagedList<Screening>>({ count: 0, data: [] });
+  const [screenings, setScreenings] = useState<PagedList<Screening>>({count: 0, data: []});
+  const [editScreeningId, setEditScreeningId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,25 +109,35 @@ const Screenings = () => {
     await updateScreenings(rows, page, orderBy, order);
   };
 
-  const handleEditClick = (
+  const handleEdit = (
     event: React.MouseEvent<HTMLElement>,
     seanceId: string
   ) => {
     console.log(seanceId);
   };
 
-  const handleDeleteClick = (
+  const handleEditClose = () => {
+    setEditScreeningId(undefined);
+  };
+
+  const handleDelete = async (
     event: React.MouseEvent<HTMLElement>,
     seanceId: string
   ) => {
-    console.log(seanceId);
+    await deleteScreening(seanceId);
+    handleUpdate();
+  };
+
+  const handleUpdate = () => {
+    updateScreenings(rowsPerPage, page, orderBy, order);
+    handleEditClose();
   };
 
   return (
     <Container>
       <TopContainer>
         <Title>Wszystkie Seanse</Title>
-        <AddButton />
+        <AddButton/>
       </TopContainer>
       <TableContainer>
         <Table size='small'>
@@ -138,8 +149,8 @@ const Screenings = () => {
           />
           <ScreeningsTableBody
             screenings={screenings.data}
-            handleEditClick={handleEditClick}
-            handleDeleteClick={handleDeleteClick}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
           />
         </Table>
         <MyTablePagination

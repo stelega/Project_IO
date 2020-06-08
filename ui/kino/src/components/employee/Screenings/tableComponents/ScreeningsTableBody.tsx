@@ -1,16 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {IconButton, TableBody, TableCell, TableRow} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {Screening} from "../../../../models/Screening";
+import CustomPopover from "../../../Popover/CustomPopover";
+import ConfirmDeletePopover from "../../../Popover/ConfirmDeletePopover";
 
 interface ScreeningsTableBodyProps {
   screenings: Screening[];
-  handleEditClick: (
+  handleEdit: (
     event: React.MouseEvent<HTMLElement>,
     seanceId: string
   ) => void;
-  handleDeleteClick: (
+  handleDelete: (
     event: React.MouseEvent<HTMLElement>,
     seanceId: string
   ) => void;
@@ -18,7 +20,24 @@ interface ScreeningsTableBodyProps {
 
 const ScreeningsTableBody = (props: ScreeningsTableBodyProps) => {
   const {screenings} = props;
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
+  const [rowToDelete, setRowToDelete] = useState<string | null>(null);
+  const handleDeleteClick = (event: any, seanceId: string) => {
+    setAnchorEl(event.currentTarget);
+    setRowToDelete(seanceId);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+    setRowToDelete(null);
+  };
+  const handleConfirmDelete = (event: React.MouseEvent<HTMLElement>) => {
+    if (rowToDelete) {
+      props.handleDelete(event, rowToDelete);
+      handleClose();
+    }
+  };
   return (
+    <>
     <TableBody>
       {screenings &&
       props.screenings.map((row) => {
@@ -31,12 +50,12 @@ const ScreeningsTableBody = (props: ScreeningsTableBodyProps) => {
             <TableCell align='center'>{row.ticketsSold}</TableCell>
             <TableCell align='right'>
               <IconButton
-                onClick={(event) => props.handleEditClick(event, row.seanceId)}>
+                onClick={(event) => props.handleEdit(event, row.seanceId)}>
                 <EditIcon/>
               </IconButton>
               <IconButton
                 onClick={(event) =>
-                  props.handleDeleteClick(event, row.seanceId)
+                  handleDeleteClick(event, row.seanceId)
                 }>
                 <DeleteIcon/>
               </IconButton>
@@ -45,6 +64,18 @@ const ScreeningsTableBody = (props: ScreeningsTableBodyProps) => {
         );
       })}
     </TableBody>
+      <CustomPopover
+        id='delete-popover'
+        handleClose={handleClose}
+        anchorEl={anchorEl}
+        body={
+          <ConfirmDeletePopover
+            onCancel={handleClose}
+            onConfirm={handleConfirmDelete}
+          />
+        }
+      />
+      </>
   );
 };
 

@@ -1,5 +1,5 @@
 import {PagedList} from "../models/PagedList";
-import {apiGetAuthorized} from "./base";
+import {apiDeleteAuthorized, apiGetAuthorized} from "./base";
 import {Screening} from "../models/Screening";
 
 export interface GetScreeningsQuery {
@@ -7,6 +7,10 @@ export interface GetScreeningsQuery {
   page?: number;
   orderBy?: string;
   desc?: Boolean;
+}
+
+export interface DeleteScreeningQuery {
+  seanceId: string;
 }
 
 export const apiGetScreenings = async (
@@ -22,7 +26,14 @@ export const apiGetScreenings = async (
     orderBy: orderBy,
     desc: order === 'desc'
   };
-  const response: PagedList<Screening> = await apiGetAuthorized<PagedList<Screening>,
+  return await apiGetAuthorized<PagedList<Screening>,
     GetScreeningsQuery>(url, query);
-  return response;
 }
+
+export const apiDeleteScreening = async (seanceId: string) => {
+  const url = '/seance';
+  const query: DeleteScreeningQuery = {
+    seanceId: seanceId,
+  };
+  await apiDeleteAuthorized<DeleteScreeningQuery>(url, query);
+};
