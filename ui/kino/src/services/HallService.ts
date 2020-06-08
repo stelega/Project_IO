@@ -1,20 +1,15 @@
-import { Hall, NewHall } from '../models/Hall';
-import {
-  apiGetHalls,
-  apiAddHall,
-  apiGetHall,
-  apiEditHall,
-  apiDeleteHall,
-} from '../api/hallsApi';
-import { PagedList } from '../models/PagedList';
+import {Hall, NewHall} from '../models/Hall';
+import {apiAddHall, apiDeleteHall, apiEditHall, apiGetHall, apiGetHalls,} from '../api/hallsApi';
+import {PagedList} from '../models/PagedList';
 
 export const getHalls = async (
   rowsPerPage?: number,
   page?: number,
   orderBy?: string,
-  order?: 'asc' | 'desc'
+  order?: 'asc' | 'desc',
+  search?: string
 ): Promise<PagedList<Hall>> => {
-  return await apiGetHalls(rowsPerPage, page, orderBy, order);
+  return await apiGetHalls(rowsPerPage, page, orderBy, order, search);
 };
 
 export const addHall = async (
@@ -38,8 +33,7 @@ export const deleteHall = async (hallId: string) => {
 };
 
 export const getHall = async (hallId: string): Promise<Hall> => {
-  const hall: Hall = await apiGetHall(hallId);
-  return hall;
+  return await apiGetHall(hallId);
 };
 
 export const editHall = async (
