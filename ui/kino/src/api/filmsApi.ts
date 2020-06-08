@@ -1,18 +1,13 @@
-import { Category, NewFilm } from './../models/Film';
-import { PagedList } from '../models/PagedList';
-import {
-  apiGetAuthorized,
-  apiPostAuthorized,
-  apiDeleteAuthorized,
-  apiPutAuthorized,
-} from './base';
-import { Film } from '../models/Film';
+import {Category, Film, NewFilm} from '../models/Film';
+import {PagedList} from '../models/PagedList';
+import {apiDeleteAuthorized, apiGetAuthorized, apiPostAuthorized, apiPutAuthorized,} from './base';
 
 interface GetFilmsQuery {
   perPage?: number;
   page?: number;
   orderBy?: string;
   desc?: Boolean;
+  search?: string;
 }
 
 interface DeleteFilmQuery {
@@ -27,7 +22,8 @@ export const apiGetFilms = async (
   rowsPerPage?: number,
   page?: number,
   orderBy?: string,
-  order?: 'desc' | 'asc'
+  order?: 'desc' | 'asc',
+  search?: string
 ) => {
   const url = '/movie';
   const query: GetFilmsQuery = {
@@ -35,12 +31,10 @@ export const apiGetFilms = async (
     page: page,
     orderBy: orderBy,
     desc: order === 'desc',
+    search: search
   };
-  const response: PagedList<Film> = await apiGetAuthorized<
-    PagedList<Film>,
-    GetFilmsQuery
-  >(url, query);
-  return response;
+  return await apiGetAuthorized<PagedList<Film>,
+    GetFilmsQuery>(url, query);
 };
 
 export const apiAddFilm = async (body: NewFilm) => {
@@ -50,14 +44,12 @@ export const apiAddFilm = async (body: NewFilm) => {
 
 export const apiGetAgeCategories = async () => {
   const url = '/category/age';
-  const response: Category = await apiGetAuthorized<Category, null>(url);
-  return response;
+  return await apiGetAuthorized<Category, null>(url);
 };
 
 export const apiGetMovieCategories = async () => {
   const url = '/category/genre';
-  const response: Category = await apiGetAuthorized<Category, null>(url);
-  return response;
+  return await apiGetAuthorized<Category, null>(url);
 };
 
 export const apiDeleteFilm = async (movieId: string) => {
