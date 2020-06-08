@@ -7,6 +7,7 @@ export interface GetScreeningsQuery {
   page?: number;
   orderBy?: string;
   desc?: Boolean;
+  search?: string;
 }
 
 export interface DeleteScreeningQuery {
@@ -17,14 +18,16 @@ export const apiGetScreenings = async (
   rowsPerPage?: number,
   page?: number,
   orderBy?: string,
-  order?: 'desc' | 'asc'
+  order?: 'desc' | 'asc',
+  search?: string
 ) => {
   const url = '/seance';
   const query: GetScreeningsQuery = {
     perPage: rowsPerPage,
     page: page,
     orderBy: orderBy,
-    desc: order === 'desc'
+    desc: order === 'desc',
+    search: search
   };
   return await apiGetAuthorized<PagedList<Screening>,
     GetScreeningsQuery>(url, query);
