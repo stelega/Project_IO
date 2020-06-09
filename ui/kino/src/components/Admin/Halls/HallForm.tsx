@@ -65,7 +65,6 @@ const HallForm = (props: HallFormProps) => {
       setRowsCount(hall.rows);
       setSeatsPerRow(hall.seatsPerRow);
       setAvailability('Tak');
-      console.log(hall.availability ? 'Tak' : 'Nie');
     };
     if (props.editModel) {
       edit(props.editModel);

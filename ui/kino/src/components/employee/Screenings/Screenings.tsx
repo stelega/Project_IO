@@ -1,14 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {Table} from '@material-ui/core';
-import {deleteScreening, getScreenings} from "../../../services/ScreeningService";
-import ScreeningsTableBody from "./tableComponents/ScreeningsTableBody";
+import { Table } from '@material-ui/core';
+import {
+  deleteScreening,
+  getScreenings,
+} from '../../../services/ScreeningService';
+import ScreeningsTableBody from './tableComponents/ScreeningsTableBody';
 import MyTablePagination from '../../tableComponents/TablePagination';
-import {PagedList} from '../../../models/PagedList';
-import {Screening} from "../../../models/Screening";
-import AddButton from "./AddScreening/AddButton";
-import MyTableHead, {HeadCell, Order} from '../../tableComponents/TableHead';
-import SearchField from "../../SearchField";
+import { PagedList } from '../../../models/PagedList';
+import { Screening } from '../../../models/Screening';
+import AddButton from './AddScreening/AddButton';
+import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
+import SearchField from '../../SearchField';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -60,7 +63,7 @@ const headCells: HeadCell<ScreeningListData>[] = [
   {
     id: 'ticketsSold',
     label: 'Sprzedane bilety',
-  }
+  },
 ];
 
 const Screenings = () => {
@@ -68,14 +71,22 @@ const Screenings = () => {
   const [orderBy, setOrderBy] = useState<keyof ScreeningListData>('movie');
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [screenings, setScreenings] = useState<PagedList<Screening>>({count: 0, data: []});
-  const [editScreeningId, setEditScreeningId] = useState<string | undefined>(undefined);
+  const [screenings, setScreenings] = useState<PagedList<Screening>>({
+    count: 0,
+    data: [],
+  });
   const [search, setSearch] = useState<string>('');
   const [typingTimeout, setTypingTimeout] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getScreenings(rowsPerPage, page, orderBy, order, search);
+      const result = await getScreenings(
+        rowsPerPage,
+        page,
+        orderBy,
+        order,
+        search
+      );
       setScreenings(result);
     };
     fetchData();
@@ -105,7 +116,13 @@ const Screenings = () => {
     order: 'desc' | 'asc',
     search: string
   ) => {
-    const result = await getScreenings(rowsPerPage, page, orderBy, order, search);
+    const result = await getScreenings(
+      rowsPerPage,
+      page,
+      orderBy,
+      order,
+      search
+    );
     setScreenings(result);
   };
 
@@ -124,10 +141,6 @@ const Screenings = () => {
     console.log(seanceId);
   };
 
-  const handleEditClose = () => {
-    setEditScreeningId(undefined);
-  };
-
   const handleDelete = async (
     event: React.MouseEvent<HTMLElement>,
     seanceId: string
@@ -138,18 +151,19 @@ const Screenings = () => {
 
   const handleUpdate = () => {
     updateScreenings(rowsPerPage, page, orderBy, order, search);
-    handleEditClose();
   };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let text = event.target.value
+    let text = event.target.value;
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
-    setTypingTimeout(setTimeout(() => {
-      setSearch(text);
-      updateScreenings(rowsPerPage, page, orderBy, order, text);
-    }, 300));
+    setTypingTimeout(
+      setTimeout(() => {
+        setSearch(text);
+        updateScreenings(rowsPerPage, page, orderBy, order, text);
+      }, 300)
+    );
   };
 
   return (
@@ -157,8 +171,8 @@ const Screenings = () => {
       <TopContainer>
         <Title>Wszystkie Seanse</Title>
         <RightSideContainer>
-          <SearchField handleSearch={handleSearch}/>
-          <AddButton/>
+          <SearchField handleSearch={handleSearch} />
+          <AddButton handleAdded={handleUpdate} />
         </RightSideContainer>
       </TopContainer>
       <TableContainer>

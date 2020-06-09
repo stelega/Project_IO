@@ -16,3 +16,7 @@ export interface Category {
   count: number;
   data: string[];
 }
+
+export interface FutureFilms {
+  data: Film[];
+}

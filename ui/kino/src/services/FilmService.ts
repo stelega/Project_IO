@@ -1,4 +1,4 @@
-import {Moment} from 'moment';
+import { Moment } from 'moment';
 import {
   apiAddFilm,
   apiDeleteFilm,
@@ -7,9 +7,10 @@ import {
   apiGetFilm,
   apiGetFilms,
   apiGetMovieCategories,
+  apiGetFutureFilms,
 } from '../api/filmsApi';
-import {PagedList} from '../models/PagedList';
-import {Category, Film, NewFilm} from '../models/Film';
+import { PagedList } from '../models/PagedList';
+import { Category, Film, NewFilm } from '../models/Film';
 
 export const getFilms = async (
   rowsPerPage?: number,
@@ -18,13 +19,7 @@ export const getFilms = async (
   order?: 'asc' | 'desc',
   search?: string
 ): Promise<PagedList<Film>> => {
-  return await apiGetFilms(
-    rowsPerPage,
-    page,
-    orderBy,
-    order,
-    search
-  );
+  return await apiGetFilms(rowsPerPage, page, orderBy, order, search);
 };
 
 export const addFilm = async (
@@ -87,4 +82,8 @@ export const editFilm = async (
     title: title,
   };
   await apiEditFilm(body);
+};
+
+export const getFutureFilms = async (): Promise<Film[]> => {
+  return await apiGetFutureFilms();
 };

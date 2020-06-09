@@ -1,15 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {Table} from '@material-ui/core';
-import {getFilms, deleteFilm} from '../../../services/FilmService';
-import MyTableHead, {Order, HeadCell} from '../../tableComponents/TableHead';
+import { Table, ThemeProvider } from '@material-ui/core';
+import { getFilms, deleteFilm } from '../../../services/FilmService';
+import MyTableHead, { Order, HeadCell } from '../../tableComponents/TableHead';
 import FilmsTableBody from './tableComponents/FilmsTableBody';
-import {PagedList} from '../../../models/PagedList';
-import {Film} from '../../../models/Film';
+import { PagedList } from '../../../models/PagedList';
+import { Film } from '../../../models/Film';
 import AddButton from './AddFilm/AddButton';
 import MyTablePagination from '../../tableComponents/TablePagination';
 import EditFilm from './EditFilm/EditFilm';
-import SearchField from "../../SearchField";
+import SearchField from '../../SearchField';
+import { customTheme } from '../../LoginPage/sections/LoginFormStyles';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -64,7 +65,7 @@ const Films = () => {
   const [orderBy, setOrderBy] = useState<keyof FilmListData>('title');
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [films, setFilms] = useState<PagedList<Film>>({count: 0, data: []});
+  const [films, setFilms] = useState<PagedList<Film>>({ count: 0, data: [] });
   const [editFilmId, setEditFilmId] = useState<string | undefined>(undefined);
   const [search, setSearch] = useState<string>('');
   const [typingTimeout, setTypingTimeout] = useState<number>(0);
@@ -138,24 +139,26 @@ const Films = () => {
   };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let text = event.target.value
+    let text = event.target.value;
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
-    setTypingTimeout(setTimeout(() => {
-      setSearch(text);
-      updateFilms(rowsPerPage, page, orderBy, order, text);
-    }, 300));
+    setTypingTimeout(
+      setTimeout(() => {
+        setSearch(text);
+        updateFilms(rowsPerPage, page, orderBy, order, text);
+      }, 300)
+    );
   };
 
   return (
-    <>
+    <ThemeProvider theme={customTheme}>
       <Container>
         <TopContainer>
           <Title>Wszystkie Filmy</Title>
           <RightSideContainer>
-            <SearchField handleSearch={handleSearch}/>
-            <AddButton handleAdded={handleUpdate}/>
+            <SearchField handleSearch={handleSearch} />
+            <AddButton handleAdded={handleUpdate} />
           </RightSideContainer>
         </TopContainer>
         <TableContainer>
@@ -188,7 +191,7 @@ const Films = () => {
           handleClose={handleEditClose}
         />
       )}
-    </>
+    </ThemeProvider>
   );
 };
 

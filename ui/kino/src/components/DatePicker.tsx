@@ -12,6 +12,9 @@ interface DatePickerProps {
   id: string;
   onChange: (date: Moment) => void;
   value: Moment;
+  min?: Moment;
+  max?: Moment;
+  disable?: boolean;
 }
 
 const DatePicker = (props: DatePickerProps) => {
@@ -27,6 +30,9 @@ const DatePicker = (props: DatePickerProps) => {
         value={props.value}
         format='DD-MM-YYYY'
         cancelLabel='Anuluj'
+        minDate={props.min}
+        maxDate={props.max}
+        disabled={props.disable}
       />
     </MuiPickersUtilsProvider>
   );

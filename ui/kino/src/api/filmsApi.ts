@@ -1,6 +1,12 @@
-import {Category, Film, NewFilm} from '../models/Film';
-import {PagedList} from '../models/PagedList';
-import {apiDeleteAuthorized, apiGetAuthorized, apiPostAuthorized, apiPutAuthorized,} from './base';
+import { FutureFilms } from './../models/Film';
+import { Category, Film, NewFilm } from '../models/Film';
+import { PagedList } from '../models/PagedList';
+import {
+  apiDeleteAuthorized,
+  apiGetAuthorized,
+  apiPostAuthorized,
+  apiPutAuthorized,
+} from './base';
 
 interface GetFilmsQuery {
   perPage?: number;
@@ -31,10 +37,9 @@ export const apiGetFilms = async (
     page: page,
     orderBy: orderBy,
     desc: order === 'desc',
-    search: search
+    search: search,
   };
-  return await apiGetAuthorized<PagedList<Film>,
-    GetFilmsQuery>(url, query);
+  return await apiGetAuthorized<PagedList<Film>, GetFilmsQuery>(url, query);
 };
 
 export const apiAddFilm = async (body: NewFilm) => {
@@ -75,4 +80,10 @@ export const apiGetFilm = async (movieId: string): Promise<Film> => {
 export const apiEditFilm = async (body: Film) => {
   const url = '/movie';
   await apiPutAuthorized(url, JSON.stringify(body));
+};
+
+export const apiGetFutureFilms = async (): Promise<Film[]> => {
+  const url = '/movie/future/all';
+  const response = await apiGetAuthorized<FutureFilms, null>(url);
+  return response.data;
 };
