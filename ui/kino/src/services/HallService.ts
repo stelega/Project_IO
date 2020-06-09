@@ -1,6 +1,14 @@
-import {Hall, NewHall} from '../models/Hall';
-import {apiAddHall, apiDeleteHall, apiEditHall, apiGetHall, apiGetHalls,} from '../api/hallsApi';
-import {PagedList} from '../models/PagedList';
+import { Moment } from 'moment';
+import { Hall, NewHall, HallWithHours } from '../models/Hall';
+import {
+  apiAddHall,
+  apiDeleteHall,
+  apiEditHall,
+  apiGetHall,
+  apiGetHalls,
+  apiGetHallsWithHours,
+} from '../api/hallsApi';
+import { PagedList } from '../models/PagedList';
 
 export const getHalls = async (
   rowsPerPage?: number,
@@ -52,4 +60,12 @@ export const editHall = async (
     numOfSeats: seatsPerRow * rowsCount,
   };
   await apiEditHall(hall);
+};
+
+export const getHallsWithHours = async (
+  movieId: string,
+  date: Moment
+): Promise<HallWithHours[]> => {
+  const dateString = date.format('YYYY-MM-DD').toString();
+  return await apiGetHallsWithHours(movieId, dateString);
 };

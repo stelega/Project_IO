@@ -9,3 +9,13 @@ export interface NewHall {
 export interface Hall extends NewHall {
   hallId: string;
 }
+
+export interface HallWithHours {
+  hallId: string;
+  name: string;
+  hours: string[];
+}
+
+export interface HallWithHoursDto {
+  data: HallWithHours[];
+}
