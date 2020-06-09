@@ -1,6 +1,11 @@
-import {PagedList} from "../models/PagedList";
-import {apiDeleteAuthorized, apiGetAuthorized} from "./base";
-import {Screening} from "../models/Screening";
+import { NewScreening } from './../models/Screening';
+import { PagedList } from '../models/PagedList';
+import {
+  apiDeleteAuthorized,
+  apiGetAuthorized,
+  apiPostAuthorized,
+} from './base';
+import { Screening } from '../models/Screening';
 
 export interface GetScreeningsQuery {
   perPage?: number;
@@ -27,11 +32,13 @@ export const apiGetScreenings = async (
     page: page,
     orderBy: orderBy,
     desc: order === 'desc',
-    search: search
+    search: search,
   };
-  return await apiGetAuthorized<PagedList<Screening>,
-    GetScreeningsQuery>(url, query);
-}
+  return await apiGetAuthorized<PagedList<Screening>, GetScreeningsQuery>(
+    url,
+    query
+  );
+};
 
 export const apiDeleteScreening = async (seanceId: string) => {
   const url = '/seance';
@@ -39,4 +46,9 @@ export const apiDeleteScreening = async (seanceId: string) => {
     seanceId: seanceId,
   };
   await apiDeleteAuthorized<DeleteScreeningQuery>(url, query);
+};
+
+export const apiAddScreening = async (screening: NewScreening) => {
+  const url = '/seance';
+  await apiPostAuthorized(url, JSON.stringify(screening));
 };

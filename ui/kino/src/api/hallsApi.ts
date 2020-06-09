@@ -1,3 +1,4 @@
+import { HallWithHoursDto } from './../models/Hall';
 import { Hall, NewHall } from '../models/Hall';
 import { PagedList } from '../models/PagedList';
 import {
@@ -23,6 +24,11 @@ interface GetHallQuery {
   hallId: string;
 }
 
+interface GetHallsWithHoursQuery {
+  movieId: string;
+  date: string;
+}
+
 export const apiGetHalls = async (
   rowsPerPage?: number,
   page?: number,
@@ -36,7 +42,7 @@ export const apiGetHalls = async (
     page: page,
     orderBy: orderBy,
     desc: order === 'desc',
-    search: search
+    search: search,
   };
   return await apiGetAuthorized<PagedList<Hall>, GetHallsQuery>(url, query);
 };
@@ -69,4 +75,17 @@ export const apiGetHall = async (hallId: string): Promise<Hall> => {
 export const apiEditHall = async (body: Hall) => {
   const url = '/hall';
   await apiPutAuthorized(url, JSON.stringify(body));
+};
+
+export const apiGetHallsWithHours = async (movieId: string, date: string) => {
+  const url = '/seance/possible_hours';
+  const query: GetHallsWithHoursQuery = {
+    movieId: movieId,
+    date: date,
+  };
+  const response = await apiGetAuthorized<
+    HallWithHoursDto,
+    GetHallsWithHoursQuery
+  >(url, query);
+  return response.data;
 };
