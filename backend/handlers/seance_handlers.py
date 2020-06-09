@@ -155,11 +155,12 @@ class SeatsData(Resource):
         seance = SeanceModel.query.get(args["seanceId"])
         seats = SeatModel.query.filter(SeatModel.hallId == seance.hallId).order_by(SeatModel.row.asc(),
                                                                                    SeatModel.number.asc()).all()
-        output = SeatSchema(many=True).dump(seats)
+        temp_output = SeatSchema(many=True).dump(seats)
         tickets = TicketModel.query.filter(TicketModel.seanceId == args["seanceId"]).all()
         taken_seats = [str(ticket.seatId) for ticket in tickets]
-        for seat in output:
+        for seat in temp_output:
             seat["free"] = not seat["seatId"] in taken_seats
+        output = [[seat for seat in temp_output if seat["row"] == row] for row in range(seance.hall.rows)]
         return make_response(jsonify({"data": output}), 200)
 
     def _parse_args(self):
