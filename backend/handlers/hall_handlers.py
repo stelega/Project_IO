@@ -38,10 +38,10 @@ class HallData(Resource):
         args = self._parse_hall_args()
         del args['hallId']
         if args['name'] is None:
-            return make_response(jsonify({'message': "Name of hall must be specified"}), 404)
+            return make_response(jsonify({'message': ApiMessages.HALL_NEEDS_NAME}), 400)
         hall = HallModel.query.filter_by(name=args['name']).first()
         if hall is not None:
-            return make_response(jsonify({'message': "Hall with name '{}' already exists".format(args['name'])}), 404)
+            return make_response(jsonify({'message': ApiMessages.HALL_EXISTS.value + args['name']}), 400)
         hall = HallModel(**args)
         db.session.add(hall)
         db.session.commit()
@@ -58,7 +58,7 @@ class HallData(Resource):
                     (HallModel.hallId != args['hallId']) & (HallModel.name == args['name'])).all()
                 if hall:
                     return make_response(
-                        jsonify({'message': "Hall with name '{}' already exists".format(args['name'])}),
+                        jsonify({'message': ApiMessages.HALL_EXISTS.value + args['name']}),
                         400)
             remove = [k for k in args if args[k] is None]
             for k in remove:
@@ -70,8 +70,8 @@ class HallData(Resource):
                 old_per_row = old_hall[0].seatsPerRow
                 if not self._adjust_seats(args["hallId"], old_rows, old_per_row, args["rows"], args["seatsPerRow"]):
                     return make_response(jsonify(
-                        {'message': 'Cannot lower rows/seats - future seances with sold tickets in this hall exist'}),
-                                         400)
+                        {'message': ApiMessages.CANNOT_REMOVE_SEATS.value}),
+                        400)
                 query.update(args)
                 db.session.commit()
                 hall = HallModel.query.get(args['hallId'])
@@ -82,7 +82,7 @@ class HallData(Resource):
             else:
                 return make_response(jsonify({"message": ApiMessages.RECORD_NOT_FOUND.value}), 500)
         else:
-            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 404)
+            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 400)
 
     @admin_required
     def delete(self):
@@ -91,9 +91,10 @@ class HallData(Resource):
             hall = HallModel.query.get(args['hallId'])
             if hall is None:
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
-            seances = SeanceModel.query.filter(SeanceModel.hallId == hall.hallId).all()
+            seances = SeanceModel.query.filter(SeanceModel.hallId == hall.hallId).filter(
+                SeanceModel.date >= datetime.now().date()).all()
             if seances:
-                return make_response(jsonify({'message': "Cannot delete hall which is assigned to seance"}), 400)
+                return make_response(jsonify({'message': ApiMessages.CANNOT_REMOVE_HALL.value}), 400)
             db.session.delete(hall)
             db.session.commit()
             output = HallSchema().dump(hall)
