@@ -1,12 +1,14 @@
 from flask_restful import reqparse, inputs
 from sqlalchemy import desc
 
+from handlers.messages import ApiMessages
+
 
 def prepare_and_run_query(query, args):
     paginate = parse_pagination_params()
     query_params = parse_query_params()
     if query_params['orderBy'] is not None and query_params['orderBy'] not in args.keys():
-        raise ValueError('Attempt to order results by not existing column: {}'.format(query_params['orderBy']))
+        raise ValueError('{}{}'.format(ApiMessages.NOT_EXISTING_COLUMN_SORT.value, query_params['orderBy']))
     if query_params['orderBy'] is not None:
         query = order_query(query, query_params['orderBy'], query_params['desc'])
     count = query.count()

@@ -22,13 +22,13 @@ def login_required(f):
             token = request.headers['access-token']
 
         if not token:
-            return make_response(jsonify({'message': 'Token is missing'}), 401)
+            return make_response(jsonify({'message': ApiMessages.TOKEN_MISSING.value}), 401)
 
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'])
             current_user = EmployeeModel.query.filter_by(login=data['login']).first()
         except jwt.ExpiredSignature:
-            return make_response(jsonify({'message': 'Token expired'}), 401)
+            return make_response(jsonify({'message': ApiMessages.TOKEN_EXPIRED.value}), 401)
         except Exception as e:
             return make_response(jsonify({"message": repr(e)}, 500))
 
@@ -50,16 +50,16 @@ def admin_required(f):
             token = request.headers['access-token']
 
         if not token:
-            return make_response(jsonify({'message': 'Token is missing'}), 401)
+            return make_response(jsonify({'message': ApiMessages.TOKEN_MISSING.value}), 401)
 
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'])
             current_user = EmployeeModel.query.filter_by(login=data['login']).first()
             if not current_user.isAdmin:
-                return make_response(jsonify({'message': 'No access permission'}), 403)
+                return make_response(jsonify({'message': ApiMessages.NO_ACCESS_PERMISSION.value}), 403)
         except jwt.ExpiredSignature:
             print("Token expired")
-            return make_response(jsonify({'message': 'Token expired'}), 302)
+            return make_response(jsonify({'message': ApiMessages.TOKEN_EXPIRED.value}), 302)
         except Exception as e:
             return make_response(jsonify({"message": repr(e)}, 500))
 
@@ -161,7 +161,7 @@ class Register(Resource):
             output = EmployeeSchema().dump(new_employee)
             return make_response(jsonify({'data': output}), 201)
         else:
-            return make_response(jsonify({'message': 'User already exists'}), 409)
+            return make_response(jsonify({'message': ApiMessages.USER_ALREADY_EXISTS.value}), 400)
 
 
 class Login(Resource):
@@ -171,7 +171,7 @@ class Login(Resource):
         password = auth.get('password')
         login_type = auth.get('type')
         if not auth or not login or not password or not login_type:
-            return make_response({"message": "Could not verify"}, 401,
+            return make_response({"message": ApiMessages.COULD_NOT_VERIFY.value}, 401,
                                  {'WWW-Authenticate': 'Basic realm="Login required"'})
 
         emplo_user = EmployeeModel.query.filter_by(login=login).first()
@@ -179,13 +179,14 @@ class Login(Resource):
 
         if emplo_user and bcrypt.verify(password, emplo_user.password):
             if login_type != 'employee' and not emplo_user.isAdmin:
-                return make_response(jsonify({'message': 'No access permission'}), 403)
+                return make_response(jsonify({'message': ApiMessages.NO_ACCESS_PERMISSION.value}), 403)
             token = jwt.encode({'login': emplo_user.login, 'exp': time}, current_app.config['SECRET_KEY'])
             return make_response(jsonify(
                 {'token': token.decode('UTF-8'), 'isAdmin': emplo_user.isAdmin, 'name': emplo_user.name,
                  'surname': emplo_user.surname}), 200)
 
-        return make_response(jsonify({"message": "Login or password incorrect"}), 401, {'WWW-Authenticate': 'Basic realm="Login required"'})
+        return make_response(jsonify({"message": ApiMessages.LOGIN_OR_PASSWORD_INCORRECT.value}), 401,
+                             {'WWW-Authenticate': 'Basic realm="Login required"'})
 
     def get(self):
 
@@ -193,11 +194,11 @@ class Login(Resource):
         if 'access-token' in request.headers:
             token = request.headers['access-token']
         if not token:
-            return make_response(jsonify({'message': 'Token is missing'}), 401)
+            return make_response(jsonify({'message': ApiMessages.TOKEN_MISSING.value}), 401)
 
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'])
             current_user = EmployeeModel.query.filter_by(login=data['login']).first()
             return make_response(jsonify({'login': current_user.login, 'isAdmin': current_user.isAdmin}), 200)
         except:
-            return make_response({'message': ApiMessages.INTERNAL}, 500)
+            return make_response({'message': ApiMessages.INTERNAL.value}, 500)

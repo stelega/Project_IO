@@ -60,7 +60,7 @@ class MovieData(Resource):
             else:
                 return make_response(jsonify({"message": ApiMessages.RECORD_NOT_FOUND.value}), 500)
         else:
-            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 404)
+            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 400)
 
     @admin_required
     def delete(self):
@@ -69,15 +69,16 @@ class MovieData(Resource):
             movie = MovieModel.query.get(args['movieId'])
             if movie is None:
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
-            seances = SeanceModel.query.filter(SeanceModel.movieId == args['movieId']).all()
+            seances = SeanceModel.query.filter(SeanceModel.movieId == args['movieId']).filter(
+                SeanceModel.date >= datetime.now().date()).all()
             if seances:
-                return make_response(jsonify({'message': "Cannot delete movie which is assigned to seance"}), 400)
+                return make_response(jsonify({'message': ApiMessages.CANNOT_REMOVE_MOVIE_WITH_FUTURE_SEANCES}), 400)
             db.session.delete(movie)
             db.session.commit()
             output = MovieSchema().dump(movie)
             return make_response(jsonify({'data': output}), 200)
         else:
-            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 404)
+            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 400)
 
     def _parse_movie_args(self):
         parser = reqparse.RequestParser()
@@ -132,7 +133,8 @@ class FutureMoviesWithSeancesData(Resource):
     @login_required
     def get(self):
         today = datetime.now().date()
-        movies = MovieModel.query.join(SeanceModel).filter(MovieModel.closeDate >= today).filter(SeanceModel.date >= today).all()
+        movies = MovieModel.query.join(SeanceModel).filter(MovieModel.closeDate >= today).filter(
+            SeanceModel.date >= today).all()
         output = MovieSchema(many=True).dump(movies)
         return make_response(jsonify({"data": output}), 200)
 

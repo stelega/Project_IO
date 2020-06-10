@@ -1,11 +1,12 @@
 from flask import jsonify, make_response, request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
+from database.config import discount, ticket_price
 from database.database import db
 from database.models import TicketModel
 from database.schemas import TicketSchema
-from database.config import discount, ticket_price
 from handlers.employee_handlers import login_required
+from handlers.messages import ApiMessages
 
 
 class TicketData(Resource):
@@ -23,7 +24,7 @@ class TicketData(Resource):
             old_tickets = TicketModel.query.filter(
                 (TicketModel.seanceId == ticket.seanceId) & (TicketModel.seatId == ticket.seatId)).all()
             if old_tickets:
-                return make_response(jsonify({'message': "Ticket for given seance and seat already exists"}), 400)
+                return make_response(jsonify({'message': ApiMessages.TICKET_ALREADY_EXIST.value}), 400)
             db.session.add(ticket)
             new_tickets.append(ticket)
         for seance in set([ticket.seance for ticket in new_tickets]):

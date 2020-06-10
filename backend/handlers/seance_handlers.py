@@ -61,7 +61,7 @@ class SeanceData(Resource):
             else:
                 return make_response(jsonify({"message": ApiMessages.RECORD_NOT_FOUND.value}), 500)
         else:
-            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 404)
+            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 400)
 
     @login_required
     def delete(self):
@@ -72,13 +72,13 @@ class SeanceData(Resource):
                 return make_response(jsonify({'message': ApiMessages.RECORD_NOT_FOUND.value}), 404)
             tickets = TicketModel.query.filter(TicketModel.seanceId == seance.seanceId).all()
             if tickets:
-                return make_response(jsonify({'message': "Cannot delete seance for which tickets are sold"}), 400)
+                return make_response(jsonify({'message': ApiMessages.CANNOT_REMOVE_SEANCE_WITH_TICKETS.value}), 400)
             output = SeanceSchema().dump(seance)
             db.session.delete(seance)
             db.session.commit()
             return make_response(jsonify({'data': output}), 200)
         else:
-            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 404)
+            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 400)
 
     def _parse_seance_args(self):
         parser = reqparse.RequestParser()
@@ -175,7 +175,7 @@ class FutureMovieSeancesData(Resource):
         movie_id = self._parse_args()['movieId']
         today = datetime.now().date()
         if movie_id is None:
-            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 404)
+            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 400)
         seances = SeanceModel.query.filter(SeanceModel.date >= today).filter(SeanceModel.movieId == movie_id).all()
         output = SeanceSchema(many=True).dump(seances)
         return make_response(jsonify({"data": output}), 200)
