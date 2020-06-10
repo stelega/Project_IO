@@ -27,6 +27,7 @@ class TicketData(Resource):
                 return make_response(jsonify({'message': ApiMessages.TICKET_ALREADY_EXIST.value}), 400)
             db.session.add(ticket)
             new_tickets.append(ticket)
+        db.session.commit()
         for seance in set([ticket.seance for ticket in new_tickets]):
             count = TicketModel.query.filter(TicketModel.seanceId == seance.seanceId).count()
             seance.ticketsSold = count

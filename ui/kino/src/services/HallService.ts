@@ -1,5 +1,5 @@
 import { Moment } from 'moment';
-import { Hall, NewHall, HallWithHours } from '../models/Hall';
+import { Hall, NewHall, HallWithHours, HallWithSeats } from '../models/Hall';
 import {
   apiAddHall,
   apiDeleteHall,
@@ -9,6 +9,7 @@ import {
   apiGetHallsWithHours,
 } from '../api/hallsApi';
 import { PagedList } from '../models/PagedList';
+import { apiGetHallSeats } from '../api/screeningsApi';
 
 export const getHalls = async (
   rowsPerPage?: number,
@@ -68,4 +69,10 @@ export const getHallsWithHours = async (
 ): Promise<HallWithHours[]> => {
   const dateString = date.format('YYYY-MM-DD').toString();
   return await apiGetHallsWithHours(movieId, dateString);
+};
+
+export const getHallSeats = async (
+  screeningId: string
+): Promise<HallWithSeats> => {
+  return await apiGetHallSeats(screeningId);
 };

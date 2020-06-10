@@ -19,3 +19,14 @@ export interface HallWithHours {
 export interface HallWithHoursDto {
   data: HallWithHours[];
 }
+
+export interface Seat {
+  seatId: string;
+  row: number;
+  number: number;
+  free: boolean;
+}
+
+export interface HallWithSeats {
+  data: Seat[][];
+}
