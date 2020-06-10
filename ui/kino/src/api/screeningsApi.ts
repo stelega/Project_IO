@@ -1,3 +1,4 @@
+import { HallWithSeats } from './../models/Hall';
 import { NewScreening } from './../models/Screening';
 import { PagedList } from '../models/PagedList';
 import {
@@ -16,6 +17,10 @@ export interface GetScreeningsQuery {
 }
 
 export interface DeleteScreeningQuery {
+  seanceId: string;
+}
+
+interface GetHallSeatsQuery {
   seanceId: string;
 }
 
@@ -51,4 +56,14 @@ export const apiDeleteScreening = async (seanceId: string) => {
 export const apiAddScreening = async (screening: NewScreening) => {
   const url = '/seance';
   await apiPostAuthorized(url, JSON.stringify(screening));
+};
+
+export const apiGetHallSeats = async (
+  screeningId: string
+): Promise<HallWithSeats> => {
+  const url = '/seance/seats';
+  const query: GetHallSeatsQuery = {
+    seanceId: screeningId,
+  };
+  return await apiGetAuthorized<HallWithSeats, GetHallSeatsQuery>(url, query);
 };

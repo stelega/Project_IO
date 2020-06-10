@@ -76,13 +76,12 @@ const ScreeningForm = (props: ScreeningFormProps) => {
     const fetchHalls = async () => {
       if (filmId && date) {
         const hallsData = await getHallsWithHours(filmId, date);
-        console.log(hallsData);
         setHallsData(hallsData);
       }
     };
     fetchHalls();
     // eslint-disable-next-line
-  }, [filmId]);
+  }, [filmId, date]);
 
   const handleFilmChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilmId(event.target.value);

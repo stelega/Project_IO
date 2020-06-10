@@ -12,6 +12,7 @@ import { Screening } from '../../../models/Screening';
 import AddButton from './AddScreening/AddButton';
 import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
 import SearchField from '../../SearchField';
+import AddTicket from './AddTicket/AddTicket';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -77,6 +78,7 @@ const Screenings = () => {
   });
   const [search, setSearch] = useState<string>('');
   const [typingTimeout, setTypingTimeout] = useState<number>(0);
+  const [screeningId, setScreeningId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,11 +136,14 @@ const Screenings = () => {
     await updateScreenings(rows, page, orderBy, order, search);
   };
 
-  const handleEdit = (
+  const handleTicketClose = () => {
+    setScreeningId(undefined);
+  };
+  const handleTicket = (
     event: React.MouseEvent<HTMLElement>,
     seanceId: string
   ) => {
-    console.log(seanceId);
+    setScreeningId(seanceId);
   };
 
   const handleDelete = async (
@@ -167,37 +172,47 @@ const Screenings = () => {
   };
 
   return (
-    <Container>
-      <TopContainer>
-        <Title>Wszystkie Seanse</Title>
-        <RightSideContainer>
-          <SearchField handleSearch={handleSearch} />
-          <AddButton handleAdded={handleUpdate} />
-        </RightSideContainer>
-      </TopContainer>
-      <TableContainer>
-        <Table size='small'>
-          <MyTableHead
-            onRequestSort={handleRequestSort}
-            orderBy={orderBy}
-            order={order}
-            headCells={headCells}
+    <>
+      <Container>
+        <TopContainer>
+          <Title>Wszystkie Seanse</Title>
+          <RightSideContainer>
+            <SearchField handleSearch={handleSearch} />
+            <AddButton handleAdded={handleUpdate} />
+          </RightSideContainer>
+        </TopContainer>
+        <TableContainer>
+          <Table size='small'>
+            <MyTableHead
+              onRequestSort={handleRequestSort}
+              orderBy={orderBy}
+              order={order}
+              headCells={headCells}
+            />
+            <ScreeningsTableBody
+              screenings={screenings.data}
+              handleTicket={handleTicket}
+              handleDelete={handleDelete}
+            />
+          </Table>
+          <MyTablePagination
+            page={page}
+            totalCount={screenings.count}
+            rowsPerPage={rowsPerPage}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
           />
-          <ScreeningsTableBody
-            screenings={screenings.data}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-          />
-        </Table>
-        <MyTablePagination
-          page={page}
-          totalCount={screenings.count}
-          rowsPerPage={rowsPerPage}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+        </TableContainer>
+      </Container>
+      {screeningId && (
+        <AddTicket
+          handleClose={handleTicketClose}
+          handleAdded={handleUpdate}
+          open={screeningId !== undefined}
+          screeningId={screeningId}
         />
-      </TableContainer>
-    </Container>
+      )}
+    </>
   );
 };
 
