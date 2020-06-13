@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+import { Redirect as ReactRedirect } from 'react-router-dom';
 import {
   AppBar,
-  Typography,
-  Toolbar,
+  createMuiTheme,
+  Icon,
   IconButton,
   Menu,
   MenuItem,
-  createMuiTheme,
   ThemeProvider,
-  Icon,
+  Toolbar,
+  Typography,
 } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
@@ -48,12 +49,14 @@ const Account = styled(Icon)`
 const TopBar = () => {
   const name: string = UserContext.getName();
   const surname: string = UserContext.getSurname();
+  const isAdmin: Boolean | undefined = UserContext.isAdmin();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const [logOut, setLogOut] = useState(false);
+  const [changeMenu, setChangeMenu] = useState(false);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -63,6 +66,21 @@ const TopBar = () => {
     UserContext.logOut();
     setLogOut(true);
   };
+
+  const getMenuRedirectUrl = () => {
+    const location : string = window.location.pathname;
+    if (location === '/admin') {
+      return '/employee';
+    } else if (location === '/employee') {
+      return '/admin';
+    } else {
+      return location;
+    }
+  }
+
+  const handleChangeMenu = () => {
+    setChangeMenu(true);
+  }
 
   return (
     <>
@@ -99,12 +117,16 @@ const TopBar = () => {
                 open={open}
                 onClose={handleClose}>
                 <MenuItem onClick={handleLogOut}>Wyloguj</MenuItem>
+                { isAdmin &&
+                  <MenuItem onClick={handleChangeMenu}>Zmień menu</MenuItem>
+                }
               </Menu>
             </Box>
           </Toolbar>
         </AppBar>
       </ThemeProvider>
       {logOut && <Redirect to='Login' />}
+      {changeMenu && <ReactRedirect to={getMenuRedirectUrl()} />}
     </>
   );
 };
