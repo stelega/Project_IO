@@ -125,3 +125,25 @@ class TicketModel(db.Model):
         self.price = price
         self.seatId = seatId
         self.seanceId = seanceId
+
+
+class GenreModel(db.Model):
+    __tablename__ = 'genre'
+
+    genreId = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    name = db.Column(db.String(length=80), unique=True, nullable=False)
+
+    def __init__(self, _id=None, name=None):
+        self.id = _id
+        self.name = name
+
+
+class AgeCategoryModel(db.Model):
+    __tablename__ = 'age_category'
+
+    ageCategoryId = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    name = db.Column(db.String(length=80), unique=True, nullable=False)
+
+    def __init__(self, _id=None, name=None):
+        self.id = _id
+        self.name = name

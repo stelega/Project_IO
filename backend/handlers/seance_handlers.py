@@ -122,6 +122,11 @@ class AvailableHoursData(Resource):
 
             possible_time = datetime(picked_date.year, picked_date.month, picked_date.day,
                                      open_time.hour, open_time.minute, open_time.hour)
+            now = datetime.now()
+            if possible_time < now:
+                diff = now.timestamp() % possible_seance_interval
+                possible_time = datetime.fromtimestamp(now.timestamp() + (possible_seance_interval - diff))
+
             possible_end_time = possible_time + timedelta(0, duration * 60)
 
             while possible_time <= datetime(picked_date.year, picked_date.month, picked_date.day,
