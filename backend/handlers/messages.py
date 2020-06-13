@@ -20,6 +20,7 @@ class ApiMessages(Enum):
     TICKET_ALREADY_EXIST = "Bilet na to miejsce na ten seans już istnieje"
     CANNOT_REMOVE_SEANCE_WITH_TICKETS = "Nie można usunąć seansu na który sprzedane zostały bilety"
     CANNOT_REMOVE_MOVIE_WITH_FUTURE_SEANCES = "Nie można usunąć seansu, który ma zaplanowane seanse"
+    QUERY_PARAMS_NOT_PROVIDED = "Nie podano wszystkich parametrów wyszukiwania biletów"
 
 
 if __name__ == '__main__':

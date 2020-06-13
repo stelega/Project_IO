@@ -3,13 +3,34 @@ from flask_restful import Resource, reqparse
 
 from database.config import discount, ticket_price
 from database.database import db
-from database.models import TicketModel
+from database.models import TicketModel, SeanceModel, MovieModel, HallModel, SeatModel
 from database.schemas import TicketSchema
 from handlers.employee_handlers import login_required
 from handlers.messages import ApiMessages
+from handlers.utilities import prepare_and_run_query
 
 
 class TicketData(Resource):
+    @login_required
+    def get(self):
+        args = self._parse_args()
+        if None in [args["movie"], args["hall"], args["time"], args["date"]]:
+            return make_response(jsonify({'message': ApiMessages.QUERY_PARAMS_NOT_PROVIDED.value}), 400)
+        query = TicketModel.query.join(SeatModel).join(SeanceModel).join(HallModel).join(MovieModel).filter(
+            MovieModel.title == args["movie"]).filter(SeanceModel.date == args["date"]).filter(
+            SeanceModel.time == args["time"]).filter(HallModel.name == args["hall"])
+        if args["filterRow"] is not None:
+            query = query.filter(SeatModel.row == args["filterRow"])
+        if args["filterNumber"] is not None:
+            query = query.filter(SeatModel.number == args["filterNumber"])
+        tickets, count = prepare_and_run_query(query, args={"row": "", "number": "", "price": ""})
+        output = []
+        for ticket in tickets:
+            output_elem = TicketSchema().dump(ticket)
+            output_elem.update(row=ticket.seat.row, number=ticket.seat.number)
+            output.append(output_elem)
+        return make_response(jsonify({'data': output, 'count': count}), 200)
+
     @login_required
     def post(self):
         data = request.get_json()
@@ -52,4 +73,10 @@ class TicketData(Resource):
     def _parse_args(self):
         parser = reqparse.RequestParser()
         parser.add_argument('ticketId')
+        parser.add_argument('movie')
+        parser.add_argument('date')
+        parser.add_argument('time')
+        parser.add_argument('hall')
+        parser.add_argument('filterRow')
+        parser.add_argument('filterNumber')
         return parser.parse_args()
