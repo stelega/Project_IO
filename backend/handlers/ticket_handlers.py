@@ -1,5 +1,5 @@
 from flask import jsonify, make_response, request
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 from database.config import discount, ticket_price
 from database.database import db
@@ -35,3 +35,21 @@ class TicketData(Resource):
         total_price = sum([ticket.price for ticket in new_tickets])
         output = TicketSchema(many=True).dump(new_tickets)
         return make_response(jsonify({'totalPrice': total_price, 'data': output}))
+
+    @login_required
+    def delete(self):
+        args = self._parse_args()
+        if args['ticketId'] is None:
+            return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 400)
+        ticket = TicketModel.query.get(args['ticketId'])
+        if ticket is None:
+            return make_response(jsonify({"message": ApiMessages.RECORD_NOT_FOUND.value}), 404)
+        db.session.delete(ticket)
+        db.session.commit()
+        output = TicketSchema().dump(ticket)
+        return make_response(jsonify({'data': output}), 200)
+
+    def _parse_args(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('ticketId')
+        return parser.parse_args()

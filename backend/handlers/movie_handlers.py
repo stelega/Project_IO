@@ -58,7 +58,7 @@ class MovieData(Resource):
                 output = MovieSchema().dump(movie)
                 return make_response(jsonify({'data': output}), 200)
             else:
-                return make_response(jsonify({"message": ApiMessages.RECORD_NOT_FOUND.value}), 500)
+                return make_response(jsonify({"message": ApiMessages.RECORD_NOT_FOUND.value}), 400)
         else:
             return make_response(jsonify({'message': ApiMessages.ID_NOT_PROVIDED.value}), 400)
 
