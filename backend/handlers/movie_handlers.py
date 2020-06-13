@@ -3,9 +3,8 @@ from datetime import datetime
 from flask import jsonify, make_response
 from flask_restful import Resource, reqparse
 
-from database.const_data import Genre, AgeCategory
 from database.database import db
-from database.models import MovieModel, SeanceModel
+from database.models import MovieModel, SeanceModel, AgeCategoryModel, GenreModel
 from database.schemas import MovieSchema
 from handlers.employee_handlers import admin_required, login_required
 from handlers.messages import ApiMessages
@@ -142,7 +141,7 @@ class FutureMoviesWithSeancesTitles(Resource):
 class AgeCategoryData(Resource):
     @login_required
     def get(self):
-        age_categories = AgeCategory.get_all_list()
+        age_categories = [category.name for category in AgeCategoryModel.query.all()]
         count = len(age_categories)
         return make_response(jsonify({'data': age_categories, 'count': count}), 200)
 
@@ -150,6 +149,6 @@ class AgeCategoryData(Resource):
 class GenreData(Resource):
     @login_required
     def get(self):
-        genres = Genre.get_all_list()
+        genres = [genre.name for genre in GenreModel.query.all()]
         count = len(genres)
         return make_response(jsonify({'data': genres, 'count': count}), 200)
