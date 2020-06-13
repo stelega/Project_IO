@@ -1,5 +1,6 @@
-import { Ticket, NewTicket } from './../models/Ticket';
-import { apiAddTickets } from '../api/ticketApi';
+import { Ticket, NewTicket, TicketList } from './../models/Ticket';
+import { apiAddTickets, apiGetTickets } from '../api/ticketApi';
+import { Moment } from 'moment';
 
 export const addTickets = async (tickets: Ticket[]) => {
   const newTickets: NewTicket[] = [];
@@ -11,4 +12,16 @@ export const addTickets = async (tickets: Ticket[]) => {
     });
   });
   await apiAddTickets(newTickets);
+};
+
+export const getTickets = async (
+  filmTitle: string,
+  hallName: string,
+  date: Moment,
+  hour: string,
+  minute: string
+): Promise<TicketList> => {
+  const dateFormated = date.format('YYYY-MM-DD').toString();
+  const time = hour + ':' + minute + '00';
+  return await apiGetTickets(filmTitle, hallName, dateFormated, time);
 };

@@ -1,3 +1,4 @@
+import { FilmsTitles } from './../models/Film';
 import { Moment } from 'moment';
 import {
   apiAddFilm,
@@ -8,6 +9,7 @@ import {
   apiGetFilms,
   apiGetMovieCategories,
   apiGetFutureFilms,
+  apiGetFutuerFilmsTitles,
 } from '../api/filmsApi';
 import { PagedList } from '../models/PagedList';
 import { Category, Film, NewFilm } from '../models/Film';
@@ -86,4 +88,8 @@ export const editFilm = async (
 
 export const getFutureFilms = async (): Promise<Film[]> => {
   return await apiGetFutureFilms();
+};
+
+export const getFutereFilmsTitles = async (): Promise<FilmsTitles> => {
+  return await apiGetFutuerFilmsTitles();
 };

@@ -1,5 +1,6 @@
+import { TicketList } from './../models/Ticket';
 import { NewTicket } from '../models/Ticket';
-import { apiPostAuthorized } from './base';
+import { apiPostAuthorized, apiGetAuthorized } from './base';
 
 interface NewTicketQuery {
   seanceId: string;
@@ -8,6 +9,12 @@ interface NewTicketQuery {
 }
 interface NewTicketsQuery {
   tickets: NewTicketQuery[];
+}
+interface GetTicketsQuery {
+  movie: string;
+  date: string;
+  time: string;
+  hall: string;
 }
 
 export const apiAddTickets = async (tickets: NewTicket[]) => {
@@ -24,4 +31,20 @@ export const apiAddTickets = async (tickets: NewTicket[]) => {
     tickets: query,
   };
   await apiPostAuthorized(url, JSON.stringify(ticketsQuery));
+};
+
+export const apiGetTickets = async (
+  filmTitle: string,
+  hallName: string,
+  date: string,
+  time: string
+): Promise<TicketList> => {
+  const url = '/ticket';
+  const query: GetTicketsQuery = {
+    movie: filmTitle,
+    date: date,
+    time: time,
+    hall: hallName,
+  };
+  return apiGetAuthorized<TicketList, GetTicketsQuery>(url, query);
 };

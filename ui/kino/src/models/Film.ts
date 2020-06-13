@@ -20,3 +20,7 @@ export interface Category {
 export interface FutureFilms {
   data: Film[];
 }
+
+export interface FilmsTitles {
+  data: string[];
+}

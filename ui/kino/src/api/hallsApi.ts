@@ -29,6 +29,10 @@ interface GetHallsWithHoursQuery {
   date: string;
 }
 
+interface GetAllHallsQuery {
+  orderBy: string;
+}
+
 export const apiGetHalls = async (
   rowsPerPage?: number,
   page?: number,
@@ -45,6 +49,18 @@ export const apiGetHalls = async (
     search: search,
   };
   return await apiGetAuthorized<PagedList<Hall>, GetHallsQuery>(url, query);
+};
+
+export const apiGetAllHalls = async (): Promise<Hall[]> => {
+  const url = '/hall';
+  const query: GetAllHallsQuery = {
+    orderBy: 'name',
+  };
+  const response: PagedList<Hall> = await apiGetAuthorized<
+    PagedList<Hall>,
+    GetHallsQuery
+  >(url, query);
+  return response.data;
 };
 
 export const apiAddHall = async (hall: NewHall) => {

@@ -11,3 +11,17 @@ export interface NewTicket {
   seatId: string;
   discount: boolean;
 }
+
+export interface TicketDto {
+  ticketId: string;
+  row: number;
+  number: number;
+  price: number;
+  seatId: string;
+  seanceId: string;
+}
+
+export interface TicketList {
+  count: number;
+  data: TicketDto[];
+}
