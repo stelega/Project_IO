@@ -115,9 +115,9 @@ const HallForm = (props: HallFormProps) => {
     if (!name) {
       return 'Podaj nazwę sali';
     } else if (!rowsCount || Math.floor(rowsCount) !== rowsCount) {
-      return 'Podaj poprawną ilość rzędów'
+      return 'Podaj poprawną ilość rzędów';
     } else if (!seatsPerRow || Math.floor(seatsPerRow) !== seatsPerRow) {
-      return 'Podaj poprawną ilość miejsc w rzędzie'
+      return 'Podaj poprawną ilość miejsc w rzędzie';
     } else {
       return 'Correct';
     }
