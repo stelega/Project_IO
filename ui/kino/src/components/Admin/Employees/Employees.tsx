@@ -1,14 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {Table} from '@material-ui/core';
-import {deleteEmployee, getEmployees,} from '../../../services/EmployeeService';
+import { Table } from '@material-ui/core';
+import {
+  deleteEmployee,
+  getEmployees,
+} from '../../../services/EmployeeService';
 import EmployeesTableBody from './tableComponents/EmployeesTableBody';
 import MyTablePagination from '../../tableComponents/TablePagination';
-import {PagedList} from '../../../models/PagedList';
-import {Employee} from '../../../models/Employee';
+import { PagedList } from '../../../models/PagedList';
+import { Employee } from '../../../models/Employee';
 import AddButton from './AddEmployee/AddButton';
-import MyTableHead, {HeadCell, Order} from '../../tableComponents/TableHead';
-import SearchField from "../../SearchField";
+import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
+import SearchField from '../../SearchField';
+import EditEmployee from './EditEmployee/EditEmployee';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -67,12 +71,19 @@ const Employees = () => {
     count: 0,
     data: [],
   });
-  const [search, setSearch] = useState<string>('')
-  const [typingTimeout, setTypingTimeout] = useState<number>(0)
+  const [search, setSearch] = useState<string>('');
+  const [typingTimeout, setTypingTimeout] = useState<number>(0);
+  const [editEmployeeId, setEditEdmployeeId] = useState<string | undefined>();
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getEmployees(rowsPerPage, page, orderBy, order, search);
+      const result = await getEmployees(
+        rowsPerPage,
+        page,
+        orderBy,
+        order,
+        search
+      );
       setEmployees(result);
     };
     fetchData();
@@ -102,7 +113,13 @@ const Employees = () => {
     order: 'desc' | 'asc',
     search: string
   ) => {
-    const result = await getEmployees(rowsPerPage, page, orderBy, order, search);
+    const result = await getEmployees(
+      rowsPerPage,
+      page,
+      orderBy,
+      order,
+      search
+    );
     setEmployees(result);
   };
 
@@ -118,7 +135,7 @@ const Employees = () => {
     event: React.MouseEvent<HTMLElement>,
     employeeId: string
   ) => {
-    console.log(employeeId);
+    setEditEdmployeeId(employeeId);
   };
 
   const handleDelete = async (
@@ -131,51 +148,67 @@ const Employees = () => {
 
   const handleUpdate = () => {
     updateEmployees(rowsPerPage, page, orderBy, order, search);
+    handleEditClose();
+  };
+
+  const handleEditClose = () => {
+    setEditEdmployeeId(undefined);
   };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let text = event.target.value
+    let text = event.target.value;
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
-    setTypingTimeout(setTimeout(() => {
-      setSearch(text);
-      updateEmployees(rowsPerPage, page, orderBy, order, text);
-    }, 300));
+    setTypingTimeout(
+      setTimeout(() => {
+        setSearch(text);
+        updateEmployees(rowsPerPage, page, orderBy, order, text);
+      }, 300)
+    );
   };
 
   return (
-    <Container>
-      <TopContainer>
-        <Title>Wszyscy Pracownicy</Title>
-        <RightSideContainer>
-          <SearchField handleSearch={handleSearch}/>
-          <AddButton handleAdded={handleUpdate}/>
-        </RightSideContainer>
-      </TopContainer>
-      <TableContainer>
-        <Table size='small'>
-          <MyTableHead
-            onRequestSort={handleRequestSort}
-            orderBy={orderBy}
-            order={order}
-            headCells={headCells}
+    <>
+      <Container>
+        <TopContainer>
+          <Title>Wszyscy Pracownicy</Title>
+          <RightSideContainer>
+            <SearchField handleSearch={handleSearch} />
+            <AddButton handleAdded={handleUpdate} />
+          </RightSideContainer>
+        </TopContainer>
+        <TableContainer>
+          <Table size='small'>
+            <MyTableHead
+              onRequestSort={handleRequestSort}
+              orderBy={orderBy}
+              order={order}
+              headCells={headCells}
+            />
+            <EmployeesTableBody
+              employees={employees.data}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+          </Table>
+          <MyTablePagination
+            page={page}
+            totalCount={employees.count}
+            rowsPerPage={rowsPerPage}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
           />
-          <EmployeesTableBody
-            employees={employees.data}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-          />
-        </Table>
-        <MyTablePagination
-          page={page}
-          totalCount={employees.count}
-          rowsPerPage={rowsPerPage}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+        </TableContainer>
+      </Container>
+      {editEmployeeId && (
+        <EditEmployee
+          employeeId={editEmployeeId}
+          handleClose={handleEditClose}
+          handleEdited={handleUpdate}
         />
-      </TableContainer>
-    </Container>
+      )}
+    </>
   );
 };
 
