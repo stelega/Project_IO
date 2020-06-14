@@ -2,6 +2,8 @@ import {
   apiDeleteEmployee,
   apiGetEmployees,
   apiAddEmployee,
+  apiGetEmployee,
+  apiEditEmployee,
 } from '../api/employeesApi';
 import { PagedList } from '../models/PagedList';
 import { Employee, NewEmployee } from '../models/Employee';
@@ -35,4 +37,19 @@ export const addEmployee = async (
     isAdmin: isAdmin,
   };
   await apiAddEmployee(employee);
+};
+
+export const getEmployee = async (employeeId: string): Promise<Employee> => {
+  return await apiGetEmployee(employeeId);
+};
+
+export const editEmployee = async (
+  employeeId: string,
+  name: string,
+  surname: string,
+  login: string,
+  isAdmin: boolean,
+  password?: string
+) => {
+  await apiEditEmployee(employeeId, name, surname, login, isAdmin, password);
 };
