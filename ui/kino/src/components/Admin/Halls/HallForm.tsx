@@ -39,6 +39,10 @@ const ButtonContainer = styled.div`
   margin-right: 5%;
 `;
 
+const Red = styled.div`
+  color: red;
+`;
+
 interface HallFormProps {
   handleClose: (event: React.MouseEvent<HTMLElement>) => void;
   handleAction: (
@@ -58,6 +62,7 @@ const HallForm = (props: HallFormProps) => {
   const [rowsCount, setRowsCount] = useState<number>();
   const [seatsPerRow, setSeatsPerRow] = useState<number>();
   const [availability, setAvailability] = useState<string>('');
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const edit = (hall: Hall) => {
@@ -94,8 +99,27 @@ const HallForm = (props: HallFormProps) => {
   };
 
   const handleActionClick = () => {
-    if (name && rowsCount && seatsPerRow && availability) {
-      props.handleAction(name, rowsCount, seatsPerRow, availability);
+    const checkForm = validation();
+    if (checkForm === 'Correct') {
+      setError(undefined);
+      if (name && rowsCount && seatsPerRow && availability) {
+        props.handleAction(name, rowsCount, seatsPerRow, availability);
+      }
+    } else {
+      setError(checkForm)
+    }
+
+  };
+
+  const validation = (): string => {
+    if (!name) {
+      return 'Podaj nazwę sali';
+    } else if (!rowsCount || Math.floor(rowsCount) !== rowsCount) {
+      return 'Podaj poprawną ilość rzędów'
+    } else if (!seatsPerRow || Math.floor(seatsPerRow) !== seatsPerRow) {
+      return 'Podaj poprawną ilość miejsc w rzędzie'
+    } else {
+      return 'Correct';
     }
   };
 
@@ -152,6 +176,11 @@ const HallForm = (props: HallFormProps) => {
                   </MenuItem>
                 ))}
               </TextField>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell colSpan={4} align='center'>
+              {error ? <Red>{error}</Red> : <br />}
             </TableCell>
           </TableRow>
         </Table>
