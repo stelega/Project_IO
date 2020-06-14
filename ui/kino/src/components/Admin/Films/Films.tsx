@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Table, ThemeProvider } from '@material-ui/core';
+import { Table, ThemeProvider, Dialog } from '@material-ui/core';
 import { getFilms, deleteFilm } from '../../../services/FilmService';
 import MyTableHead, { Order, HeadCell } from '../../tableComponents/TableHead';
 import FilmsTableBody from './tableComponents/FilmsTableBody';
@@ -10,7 +10,10 @@ import AddButton from './AddFilm/AddButton';
 import MyTablePagination from '../../tableComponents/TablePagination';
 import EditFilm from './EditFilm/EditFilm';
 import SearchField from '../../SearchField';
-import { customTheme } from '../../LoginPage/sections/LoginFormStyles';
+import {
+  customTheme,
+  ErrorContent,
+} from '../../LoginPage/sections/LoginFormStyles';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -69,6 +72,7 @@ const Films = () => {
   const [editFilmId, setEditFilmId] = useState<string | undefined>(undefined);
   const [search, setSearch] = useState<string>('');
   const [typingTimeout, setTypingTimeout] = useState<number>(0);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -129,8 +133,15 @@ const Films = () => {
     event: React.MouseEvent<HTMLElement>,
     movieId: string
   ) => {
-    await deleteFilm(movieId);
-    handleUpdate();
+    try {
+      await deleteFilm(movieId);
+      handleUpdate();
+    } catch (error) {
+      setError(error);
+    }
+  };
+  const handleDialogClose = () => {
+    setError(undefined);
   };
 
   const handleUpdate = () => {
@@ -190,6 +201,14 @@ const Films = () => {
           handleEdited={handleUpdate}
           handleClose={handleEditClose}
         />
+      )}
+      {error && (
+        <Dialog
+          open={error !== undefined}
+          keepMounted
+          onClose={handleDialogClose}>
+          <ErrorContent>{error}</ErrorContent>
+        </Dialog>
       )}
     </ThemeProvider>
   );

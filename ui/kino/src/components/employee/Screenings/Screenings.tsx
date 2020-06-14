@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Table } from '@material-ui/core';
+import { Table, Dialog } from '@material-ui/core';
 import {
   deleteScreening,
   getScreenings,
@@ -13,6 +13,7 @@ import AddButton from './AddScreening/AddButton';
 import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
 import SearchField from '../../SearchField';
 import AddTicket from './AddTicket/AddTicket';
+import { ErrorContent } from '../../LoginPage/sections/LoginFormStyles';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -79,6 +80,7 @@ const Screenings = () => {
   const [search, setSearch] = useState<string>('');
   const [typingTimeout, setTypingTimeout] = useState<number>(0);
   const [screeningId, setScreeningId] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -150,8 +152,15 @@ const Screenings = () => {
     event: React.MouseEvent<HTMLElement>,
     seanceId: string
   ) => {
-    await deleteScreening(seanceId);
-    handleUpdate();
+    try {
+      await deleteScreening(seanceId);
+      handleUpdate();
+    } catch (error) {
+      setError(error);
+    }
+  };
+  const handleDialogClose = () => {
+    setError(undefined);
   };
 
   const handleUpdate = () => {
@@ -211,6 +220,14 @@ const Screenings = () => {
           open={screeningId !== undefined}
           screeningId={screeningId}
         />
+      )}
+      {error && (
+        <Dialog
+          open={error !== undefined}
+          keepMounted
+          onClose={handleDialogClose}>
+          <ErrorContent>{error}</ErrorContent>
+        </Dialog>
       )}
     </>
   );
