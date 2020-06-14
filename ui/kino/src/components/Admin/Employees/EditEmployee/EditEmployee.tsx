@@ -20,7 +20,6 @@ const EditEmployee = (props: EditEmployeeProps) => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await getEmployee(props.employeeId);
-      console.log(result);
       setEmployee(result);
     };
     fetchData();

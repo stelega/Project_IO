@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { MenuItem, Button, ThemeProvider, TextField } from '@material-ui/core';
+import {
+  MenuItem,
+  Button,
+  ThemeProvider,
+  TextField,
+  Dialog,
+} from '@material-ui/core';
 import {
   Container,
   Input,
@@ -8,6 +14,7 @@ import {
   MarginRight,
   ButtonMargin,
   customTheme,
+  ErrorContent,
 } from './LoginFormStyles';
 import { apiLogin } from '../../../api/login';
 import UserContext from '../../../services/Seassion';
@@ -37,6 +44,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState<string>('');
   const [logType, setLogType] = useState('Pracownik');
   const [logged, setLogged] = useState<boolean>(false);
+  const [error, setError] = useState<string | undefined>(undefined);
   const handleLoginChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLogin(event.target.value);
   };
@@ -46,9 +54,16 @@ const LoginForm = () => {
   const handleLogTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLogType(event.target.value);
   };
+  const handleDialogClose = () => {
+    setError(undefined);
+  };
 
   const submit = async () => {
-    await apiLogin(login, password, logType);
+    try {
+      await apiLogin(login, password, logType);
+    } catch (error) {
+      setError('Nieporawny login i/lub hasło');
+    }
     if (UserContext.isLoggedIn()) {
       setLogged(true);
     }
@@ -98,6 +113,14 @@ const LoginForm = () => {
         </ButtonMargin>
       </Container>
       {logged && <Redirect to={logType} />}
+      {error && (
+        <Dialog
+          open={error !== undefined}
+          keepMounted
+          onClose={handleDialogClose}>
+          <ErrorContent>{error}</ErrorContent>
+        </Dialog>
+      )}
     </>
   );
 };
