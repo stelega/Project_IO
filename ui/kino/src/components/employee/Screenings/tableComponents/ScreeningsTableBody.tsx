@@ -5,6 +5,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Screening } from '../../../../models/Screening';
 import CustomPopover from '../../../Popover/CustomPopover';
 import ConfirmDeletePopover from '../../../Popover/ConfirmDeletePopover';
+import moment from 'moment';
 
 interface ScreeningsTableBodyProps {
   screenings: Screening[];
@@ -50,6 +51,7 @@ const ScreeningsTableBody = (props: ScreeningsTableBodyProps) => {
                 <TableCell align='center'>{row.ticketsSold}</TableCell>
                 <TableCell align='right'>
                   <IconButton
+                    disabled={moment().isAfter(row.date, 'd')}
                     onClick={(event) =>
                       props.handleTicket(event, row.seanceId)
                     }>
