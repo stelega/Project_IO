@@ -77,6 +77,6 @@ class TicketData(Resource):
         parser.add_argument('date')
         parser.add_argument('time')
         parser.add_argument('hall')
-        parser.add_argument('filterRow')
-        parser.add_argument('filterNumber')
+        parser.add_argument('filterRow', type=int, ignore=True)
+        parser.add_argument('filterNumber', type=int, ignore=True)
         return parser.parse_args()
