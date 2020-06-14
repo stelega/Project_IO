@@ -1,5 +1,6 @@
 import { BACKEND_URL } from './../config';
 import UserContext from '../services/Seassion';
+import { UnauthorizedException } from '../Exceptions/Exceptions';
 
 export async function apiPost<T>(uri: string, jsonBody: string) {
   const url = BACKEND_URL + uri;
@@ -11,6 +12,11 @@ export async function apiPost<T>(uri: string, jsonBody: string) {
     },
     body: jsonBody,
   });
+  if (!responseJson.ok) {
+    if (responseJson.status === 401) {
+      throw UnauthorizedException();
+    }
+  }
   const response: T = await responseJson.json();
   return response;
 }
