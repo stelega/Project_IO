@@ -1,6 +1,14 @@
 import { BACKEND_URL } from './../config';
 import UserContext from '../services/Seassion';
-import { UnauthorizedException } from '../Exceptions/Exceptions';
+import {
+  UnauthorizedException,
+  DeleteException,
+  EditException,
+} from '../Exceptions/Exceptions';
+
+interface Exception {
+  message: string;
+}
 
 export async function apiPost<T>(uri: string, jsonBody: string) {
   const url = BACKEND_URL + uri;
@@ -59,7 +67,7 @@ export async function apiPostAuthorized<T>(uri: string, jsonBody: string) {
 export async function apiPutAuthorized(uri: string, jsonBody: string) {
   const url = BACKEND_URL + uri;
   const token = UserContext.getToken();
-  await fetch(url, {
+  const responseJson = await fetch(url, {
     method: 'PUT',
     mode: 'cors',
     headers: {
@@ -68,6 +76,10 @@ export async function apiPutAuthorized(uri: string, jsonBody: string) {
     },
     body: jsonBody,
   });
+  if (!responseJson.ok) {
+    const error: Exception = await responseJson.json();
+    throw EditException(error.message);
+  }
 }
 
 export async function apiDeleteAuthorized<QueryParamsType>(
@@ -78,13 +90,17 @@ export async function apiDeleteAuthorized<QueryParamsType>(
     ? BACKEND_URL + uri + queryBuilder(query)
     : BACKEND_URL + uri;
   const token = UserContext.getToken();
-  await fetch(url, {
+  const responseJson = await fetch(url, {
     method: 'DELETE',
     mode: 'cors',
     headers: {
       'access-token': token ? token : '',
     },
   });
+  if (!responseJson.ok) {
+    const error: Exception = await responseJson.json();
+    throw DeleteException(error.message);
+  }
 }
 
 const queryBuilder = (params: any): string => {

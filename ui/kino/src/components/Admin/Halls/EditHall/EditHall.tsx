@@ -3,6 +3,8 @@ import { Hall } from '../../../../models/Hall';
 import CustomModal from '../../../CustomModal';
 import HallForm from '../HallForm';
 import { getHall, editHall } from '../../../../services/HallService';
+import { Dialog } from '@material-ui/core';
+import { ErrorContent } from '../../../LoginPage/sections/LoginFormStyles';
 
 interface EditHallProps {
   handleEdited: () => void;
@@ -13,6 +15,7 @@ interface EditHallProps {
 const EditHall = (props: EditHallProps) => {
   const [open, setOpen] = useState<boolean>(true);
   const [hall, setHall] = useState<Hall | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,9 +37,16 @@ const EditHall = (props: EditHallProps) => {
     seatsPerRow: number,
     availability: string
   ) => {
-    setOpen(false);
-    await editHall(props.hallId, name, rowsCount, seatsPerRow, availability);
-    props.handleEdited();
+    try {
+      setOpen(false);
+      await editHall(props.hallId, name, rowsCount, seatsPerRow, availability);
+      props.handleEdited();
+    } catch (error) {
+      setError(error);
+    }
+  };
+  const handleDialogClose = () => {
+    setError(undefined);
   };
 
   return (
@@ -55,6 +65,14 @@ const EditHall = (props: EditHallProps) => {
             />
           }
         />
+      )}
+      {error && (
+        <Dialog
+          open={error !== undefined}
+          keepMounted
+          onClose={handleDialogClose}>
+          <ErrorContent>{error}</ErrorContent>
+        </Dialog>
       )}
     </>
   );

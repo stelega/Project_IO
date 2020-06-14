@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Table } from '@material-ui/core';
+import { Table, Dialog } from '@material-ui/core';
 import { deleteHall, getHalls } from '../../../services/HallService';
 import HallsTableBody from './tableComponents/HallsTableBody';
 import MyTablePagination from '../../tableComponents/TablePagination';
@@ -9,7 +9,8 @@ import { Hall } from '../../../models/Hall';
 import AddButton from './AddHall/AddButton';
 import MyTableHead, { HeadCell, Order } from '../../tableComponents/TableHead';
 import EditHall from './EditHall/EditHall';
-import SearchField from "../../SearchField";
+import SearchField from '../../SearchField';
+import { ErrorContent } from '../../LoginPage/sections/LoginFormStyles';
 
 const Container = styled.div`
   margin-top: 4vh;
@@ -63,6 +64,7 @@ const Halls = () => {
   const [editHallId, setEditHallId] = useState<string | undefined>(undefined);
   const [search, setSearch] = useState<string>('');
   const [typingTimeout, setTypingTimeout] = useState<number>(0);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,8 +125,15 @@ const Halls = () => {
     event: React.MouseEvent<HTMLElement>,
     hallId: string
   ) => {
-    await deleteHall(hallId);
-    handleUpdate();
+    try {
+      await deleteHall(hallId);
+      handleUpdate();
+    } catch (error) {
+      setError(error);
+    }
+  };
+  const handleDialogClose = () => {
+    setError(undefined);
   };
 
   const handleUpdate = () => {
@@ -133,14 +142,16 @@ const Halls = () => {
   };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let text = event.target.value
+    let text = event.target.value;
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
-    setTypingTimeout(setTimeout(() => {
-      setSearch(text);
-      updateHalls(rowsPerPage, page, orderBy, order, text);
-    }, 300));
+    setTypingTimeout(
+      setTimeout(() => {
+        setSearch(text);
+        updateHalls(rowsPerPage, page, orderBy, order, text);
+      }, 300)
+    );
   };
 
   return (
@@ -149,7 +160,7 @@ const Halls = () => {
         <TopContainer>
           <Title>Wszystkie Sale</Title>
           <RightSideContainer>
-            <SearchField handleSearch={handleSearch}/>
+            <SearchField handleSearch={handleSearch} />
             <AddButton handleAdded={handleUpdate} />
           </RightSideContainer>
         </TopContainer>
@@ -182,6 +193,14 @@ const Halls = () => {
           handleEdited={handleUpdate}
           handleClose={handleEditClose}
         />
+      )}
+      {error && (
+        <Dialog
+          open={error !== undefined}
+          keepMounted
+          onClose={handleDialogClose}>
+          <ErrorContent>{error}</ErrorContent>
+        </Dialog>
       )}
     </>
   );

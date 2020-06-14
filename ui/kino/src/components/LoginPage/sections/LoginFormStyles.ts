@@ -39,7 +39,7 @@ export const customTheme = createMuiTheme({
 });
 export const ErrorContent = styled.div`
   color: red;
-  width: 25vw;
+  width: 30vw;
   height: 10vh;
   text-align: center;
   padding-top: 7vh;
