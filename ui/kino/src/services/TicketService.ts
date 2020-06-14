@@ -33,7 +33,7 @@ export const getTickets = async (
   orderBy: string
 ): Promise<PagedList<TicketDto>> => {
   const dateFormated = date.format('YYYY-MM-DD').toString();
-  const time = hour + ':' + minute + '00';
+  const time = hour + ':' + minute + ':00';
   return await apiGetTickets(
     filmTitle,
     hallName,

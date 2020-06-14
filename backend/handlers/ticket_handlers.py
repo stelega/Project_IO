@@ -65,6 +65,8 @@ class TicketData(Resource):
         ticket = TicketModel.query.get(args['ticketId'])
         if ticket is None:
             return make_response(jsonify({"message": ApiMessages.RECORD_NOT_FOUND.value}), 404)
+        seance = ticket.seance
+        seance.ticketsSold = seance.ticketsSold - 1
         db.session.delete(ticket)
         db.session.commit()
         output = TicketSchema().dump(ticket)
