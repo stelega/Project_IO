@@ -23,7 +23,7 @@ interface GetTicketsQuery {
   filterRow: number | string;
   filterNumber: number | string;
   page: number;
-  rowsPerPage: number;
+  perPage: number;
   desc: boolean;
   orderBy: string;
 }
@@ -75,7 +75,7 @@ export const apiGetTickets = async (
     filterRow: '',
     filterNumber: '',
     page: page,
-    rowsPerPage: rowsPerPage,
+    perPage: rowsPerPage,
     desc: order === 'desc',
     orderBy: orderBy,
   };

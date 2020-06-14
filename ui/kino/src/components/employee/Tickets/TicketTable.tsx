@@ -51,10 +51,7 @@ const TicketTable = (props: TicketListProps) => {
   const { film, hall, date, hour, minute } = props;
   const [row, setRow] = useState<number>();
   const [seat, setSeat] = useState<number>();
-  const [tickets, setTickets] = useState<PagedList<TicketDto>>({
-    count: 0,
-    data: [],
-  });
+  const [tickets, setTickets] = useState<PagedList<TicketDto>>();
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof TicketListData>('row');
   const [page, setPage] = useState<number>(1);
@@ -143,7 +140,7 @@ const TicketTable = (props: TicketListProps) => {
 
   return (
     <>
-      {tickets.data.length > 0 && (
+      {tickets && (
         <>
           <FilterContainer>
             <TicketFilter

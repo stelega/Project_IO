@@ -12,7 +12,7 @@ def prepare_and_run_query(query, args):
     if query_params['orderBy'] is not None:
         query = order_query(query, query_params['orderBy'], query_params['desc'])
     count = query.count()
-    if paginate is not None:
+    if paginate is not None and (paginate['page'] - 1) * paginate['perPage'] < count:
         items = query.paginate(page=paginate['page'], per_page=paginate['perPage']).items
     else:
         items = query.all()
