@@ -42,6 +42,10 @@ const ButtonContainer = styled.div`
   margin-right: 5%;
 `;
 
+const Red = styled.div`
+  color: red;
+`;
+
 interface FilmFormProps {
   handleClose: (event: React.MouseEvent<HTMLElement>) => void;
   handleAction: (
@@ -68,6 +72,7 @@ const FilmForm = (props: FilmFormProps) => {
   const [duration, setDuration] = useState<number>();
   const [dateStart, setDateStart] = useState<Moment>();
   const [dateEnd, setDateEnd] = useState<Moment>();
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,26 +124,50 @@ const FilmForm = (props: FilmFormProps) => {
     setDuration(Number(event.target.value));
   };
   const handleActionClick = async (event: React.MouseEvent<HTMLElement>) => {
-    if (
-      title &&
-      director &&
-      ageCategory &&
-      movieCategory &&
-      duration &&
-      dateStart &&
-      dateEnd
-    ) {
-      props.handleAction(
-        title,
-        director,
-        ageCategory,
-        movieCategory,
-        duration,
-        dateStart,
+    const checkFilm = validation();
+    if (checkFilm === 'Correct') {
+      setError(undefined);
+      if (
+        title &&
+        director &&
+        ageCategory &&
+        movieCategory &&
+        duration &&
+        dateStart &&
         dateEnd
-      );
+      ) {
+        props.handleAction(
+          title,
+          director,
+          ageCategory,
+          movieCategory,
+          duration,
+          dateStart,
+          dateEnd
+        );
+      }
+    } else {
+      setError(checkFilm)
+    }
+
+  };
+
+  const validation = (): string => {
+    if (!title) {
+      return 'Podaj tytuł';
+    } else if(!director) {
+      return 'Podaj reżysera';
+    } else if(!ageCategory) {
+      return 'Wybierz kategorię wiekową';
+    } else if(!movieCategory) {
+      return 'Wybierz kategorię filmu';
+    } else if(!duration || Math.floor(duration) !== duration) {
+      return 'Podaj poprawny czas trwania filmu'
+    } else {
+      return 'Correct';
     }
   };
+
   return (
     <>
       <Container>
@@ -244,6 +273,11 @@ const FilmForm = (props: FilmFormProps) => {
               </TableCell>
               <TableCell align='right'></TableCell>
               <TableCell align='left'></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={4} align='center'>
+                {error ? <Red>{error}</Red> : <br />}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>
