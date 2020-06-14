@@ -3,7 +3,7 @@ from functools import wraps
 
 import jwt
 from flask import request, jsonify, make_response, current_app
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, inputs
 from passlib.hash import bcrypt
 
 from database.database import db
@@ -133,7 +133,7 @@ class EmployeesData(Resource):
         parser.add_argument('surname')
         parser.add_argument('login')
         parser.add_argument('password')
-        parser.add_argument('isAdmin')
+        parser.add_argument('isAdmin', type=inputs.boolean)
         return parser.parse_args()
 
     def _search_employees_query(self, query):
