@@ -20,8 +20,3 @@ export interface TicketDto {
   seatId: string;
   seanceId: string;
 }
-
-export interface TicketList {
-  count: number;
-  data: TicketDto[];
-}

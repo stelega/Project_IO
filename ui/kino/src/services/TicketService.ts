@@ -1,6 +1,11 @@
-import { Ticket, NewTicket, TicketList } from './../models/Ticket';
-import { apiAddTickets, apiGetTickets } from '../api/ticketApi';
+import { Ticket, NewTicket, TicketDto } from './../models/Ticket';
+import {
+  apiAddTickets,
+  apiGetTickets,
+  apiDeleteTicket,
+} from '../api/ticketApi';
 import { Moment } from 'moment';
+import { PagedList } from '../models/PagedList';
 
 export const addTickets = async (tickets: Ticket[]) => {
   const newTickets: NewTicket[] = [];
@@ -19,9 +24,30 @@ export const getTickets = async (
   hallName: string,
   date: Moment,
   hour: string,
-  minute: string
-): Promise<TicketList> => {
+  minute: string,
+  row: number | undefined,
+  seat: number | undefined,
+  page: number,
+  rowsPerPage: number,
+  order: string,
+  orderBy: string
+): Promise<PagedList<TicketDto>> => {
   const dateFormated = date.format('YYYY-MM-DD').toString();
   const time = hour + ':' + minute + '00';
-  return await apiGetTickets(filmTitle, hallName, dateFormated, time);
+  return await apiGetTickets(
+    filmTitle,
+    hallName,
+    dateFormated,
+    time,
+    row,
+    seat,
+    page,
+    rowsPerPage,
+    order,
+    orderBy
+  );
+};
+
+export const deleteTicket = async (ticketId: string) => {
+  await apiDeleteTicket(ticketId);
 };
