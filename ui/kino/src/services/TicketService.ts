@@ -7,7 +7,7 @@ import {
 import { Moment } from 'moment';
 import { PagedList } from '../models/PagedList';
 
-export const addTickets = async (tickets: Ticket[]) => {
+export const addTickets = async (tickets: Ticket[]): Promise<number> => {
   const newTickets: NewTicket[] = [];
   tickets.forEach((ticket) => {
     newTickets.push({
@@ -16,7 +16,7 @@ export const addTickets = async (tickets: Ticket[]) => {
       discount: ticket.discount,
     });
   });
-  await apiAddTickets(newTickets);
+  return await apiAddTickets(newTickets);
 };
 
 export const getTickets = async (
