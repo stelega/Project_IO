@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { HallWithSeats, Seat } from '../../../../models/Hall';
 import { getHallSeats } from '../../../../services/HallService';
 import styled from 'styled-components';
-import MyIcon from '../AddScreening/MyIcon';
+import MyIcon from './MyIcon';
 import SelectedTicketList from './SelectedTicketList';
 import { Ticket } from '../../../../models/Ticket';
 import { Button, ThemeProvider } from '@material-ui/core';

@@ -1,4 +1,4 @@
-import { FutureFilms } from './../models/Film';
+import { FutureFilms, FilmsTitles } from './../models/Film';
 import { Category, Film, NewFilm } from '../models/Film';
 import { PagedList } from '../models/PagedList';
 import {
@@ -86,4 +86,9 @@ export const apiGetFutureFilms = async (): Promise<Film[]> => {
   const url = '/movie/future/all';
   const response = await apiGetAuthorized<FutureFilms, null>(url);
   return response.data;
+};
+
+export const apiGetFutuerFilmsTitles = async (): Promise<FilmsTitles> => {
+  const url = '/movie/future/titles';
+  return await apiGetAuthorized<FilmsTitles, null>(url);
 };

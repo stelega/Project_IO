@@ -138,7 +138,18 @@ const ScreeningForm = (props: ScreeningFormProps) => {
                   id='date'
                   onChange={handleDateChange}
                   disable={filmId ? false : true}
-                  value={date}
+                  value={
+                    filmId
+                      ? moment.max(
+                          moment(
+                            filmsData?.filter(
+                              (ele) => ele.movieId === filmId
+                            )[0].releaseDate
+                          ),
+                          moment()
+                        )
+                      : moment()
+                  }
                   min={
                     filmId
                       ? moment.max(

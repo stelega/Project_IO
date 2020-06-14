@@ -7,6 +7,7 @@ import {
   apiGetHall,
   apiGetHalls,
   apiGetHallsWithHours,
+  apiGetAllHalls,
 } from '../api/hallsApi';
 import { PagedList } from '../models/PagedList';
 import { apiGetHallSeats } from '../api/screeningsApi';
@@ -19,6 +20,10 @@ export const getHalls = async (
   search?: string
 ): Promise<PagedList<Hall>> => {
   return await apiGetHalls(rowsPerPage, page, orderBy, order, search);
+};
+
+export const getAllHalls = async (): Promise<Hall[]> => {
+  return await apiGetAllHalls();
 };
 
 export const addHall = async (
