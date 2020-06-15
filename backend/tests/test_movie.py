@@ -86,7 +86,7 @@ def test_get_movie_with_wrong_id(test_client, init_database, admin_token):
         response = get_movie(test_client, str(uuid.uuid1()), admin_token)
 
         data = json.loads(response.data.decode())
-        assert data["message"] == 'Record not found'
+        assert data["message"] == 'Rekord nie istnieje'
 
 
 def test_get_all_movies(test_client, init_database, admin_token):
@@ -115,10 +115,17 @@ def test_update_non_existing_movie(test_client, init_database, admin_token):
     with test_client:
         put_response = test_client.put('/movie',
                                        data=json.dumps(dict(movieId=str(uuid.uuid1()),
-                                                            title="Poprawiony_Film")),
+                                                            title="Poprawiony_Film",
+                                                            director="PoprawionyRezyser",
+                                                            releaseDate='2020-07-12',
+                                                            closeDate='2020-08-12',
+                                                            ageCategory="16+",
+                                                            movieCategory="Film akcji",
+                                                            duration=130
+                                                            )),
                                        headers={'access-token': admin_token},
                                        content_type='application/json')
-        assert put_response.status_code == 500
+        assert put_response.status_code == 400
 
 
 def test_delete_added_movie(test_client, new_movie, init_database, admin_token):

@@ -52,7 +52,6 @@ def test_new_seat(new_seat):
 def test_new_ticket(new_ticket):
     assert new_ticket.id == 1
     assert new_ticket.price == 18.00
-    assert new_ticket.discount == 0.00
     assert new_ticket.seatId == 1
     assert new_ticket.seanceId == 1
 
@@ -92,7 +91,7 @@ def test_registered_with_already_registered_user(test_client, new_employee, init
                                     headers={'access-token': admin_token},
                                     content_type='application/json')
         data = json.loads(response.data.decode())
-        assert data['message'] == "User already exists"
+        assert data['message'] == "Podany użytkownik już istnieje"
 
 
 def register_method(client, admin_token):

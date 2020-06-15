@@ -1,12 +1,7 @@
 import json
-import os
-import sys
 import uuid
 
-import pytest
-
 from database.database import db
-from uuid import UUID
 
 
 def add_seance(client, time, date, hallId, movieId, ticketsSold, token):
@@ -67,7 +62,6 @@ def test_get_seance(test_client, new_seance, init_database, admin_token):
         response = get_seance(test_client, str(new_seance.seanceId), admin_token)
         assert response.status_code == 200
         result = json.loads(response.data)
-        print(result)
         data = result['data'][0]
 
         assert data['time'] == str(new_seance.time)
@@ -96,7 +90,7 @@ def test_update_seance_with_wrong_id(test_client, init_database, admin_token):
                                content_type='application/json')
 
     data = json.loads(response.data)
-    assert data['message'] == 'Record not found'
+    assert data['message'] == 'Rekord nie istnieje'
 
 
 def test_delete_seance(test_client, new_seance, init_database, admin_token):
@@ -112,7 +106,7 @@ def test_delete_seance(test_client, new_seance, init_database, admin_token):
         assert data['date'] == str(new_seance.date)
 
 
-def test_get_available_hours(test_client, new_movie, new_hall , init_database, admin_token):
+def test_get_available_hours(test_client, new_movie, new_hall, init_database, admin_token):
     with test_client:
         response = test_client.get('/seance/possible_hours',
                                    data=json.dumps(dict(movieId=str(new_movie.movieId),
@@ -121,4 +115,5 @@ def test_get_available_hours(test_client, new_movie, new_hall , init_database, a
                                    headers={'access-token': admin_token},
                                    content_type='application/json')
         data = json.loads(response.data)
-        print(data)
+
+

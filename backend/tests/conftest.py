@@ -66,7 +66,7 @@ def new_seat():
 
 @pytest.fixture(scope='module')
 def new_ticket():
-    ticket = TicketModel(1, 18.00, 0.00, 1, 1)
+    ticket = TicketModel(1, 18.00, 1, 1)
     return ticket
 
 

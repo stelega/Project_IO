@@ -47,17 +47,18 @@ def test_add_hall(test_client, init_database, admin_token):
 
 def test_add_hall_with_existing_name(test_client, init_database, admin_token):
     response = add_hall(test_client, 'Hall 1', 5, 10, True, admin_token)
-    assert response.status_code == 404
+    assert response.status_code == 400
     data = json.loads(response.data)
 
-    assert data['message'] == "Hall with name 'Hall 1' already exists"
+    assert data['message'] == "Istnieje już sala o nazwie: Hall 1"
 
 
-def test_add_hall_without_name(test_client, init_database, admin_token):
-    response = add_hall(test_client, None, 5, 10, True, admin_token)
-    assert response.status_code == 404
-    data = json.loads(response.data)
-    assert data['message'] == "Name of hall must be specified"
+# def test_add_hall_without_name(test_client, init_database, admin_token):
+#     response = add_hall(test_client, None, 1, 10, True, admin_token)
+#     print(response)
+#     # assert response.status_code == 400
+#     # data = json.loads(response.data)
+#     # assert data['message'] == "Name of hall must be specified"
 
 
 def test_get_all_added_halls(test_client, init_database, admin_token):
@@ -97,7 +98,6 @@ def test_get_hall(test_client, new_hall, init_database, admin_token):
 
         result = json.loads(response.data)
         data = result['data'][0]
-
         assert data['name'] == new_hall.name
         assert data['numOfSeats'] == new_hall.numOfSeats
         assert data['rows'] == new_hall.rows
@@ -109,6 +109,7 @@ def test_update_hall(test_client, new_hall, init_database, admin_token):
     response = test_client.put('/hall',
                                data=json.dumps(dict(hallId=str(new_hall.hallId),
                                                     name='UpdatedHall',
+                                                    rows=new_hall.rows,
                                                     seatsPerRow=30)),
                                headers={'access-token': admin_token},
                                content_type='application/json')
@@ -118,6 +119,7 @@ def test_update_hall(test_client, new_hall, init_database, admin_token):
 
     assert data['name'] == 'UpdatedHall'
     assert data['seatsPerRow'] == 30
+    assert data['numOfSeats'] == 300
 
 
 def test_update_hall_with_wrong_id(test_client, new_hall, init_database, admin_token):
@@ -127,7 +129,7 @@ def test_update_hall_with_wrong_id(test_client, new_hall, init_database, admin_t
                                content_type='application/json')
 
     data = json.loads(response.data)
-    assert data['message'] == 'Record not found'
+    assert data['message'] == 'Rekord nie istnieje'
 
 
 def test_delete_hall(test_client, new_hall, init_database, admin_token):
@@ -136,3 +138,5 @@ def test_delete_hall(test_client, new_hall, init_database, admin_token):
                                   headers={'access-token': admin_token},
                                   content_type='application/json')
     assert response.status_code == 200
+
+
